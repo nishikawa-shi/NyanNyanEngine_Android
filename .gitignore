@@ -12,3 +12,11 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Build secrets
+
+app/gradle_secret.properties
+
+# Deployment secrets
+
+app/android-deploy-user.json
