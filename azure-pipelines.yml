@@ -12,6 +12,15 @@ pool:
 
 steps:
 - task: Gradle@2
+  displayName: '全環境に対してlint'
+  inputs:
+    workingDirectory: ''
+    gradleWrapperFile: 'gradlew'
+    gradleOptions: '-Xmx3072m'
+    publishJUnitResults: false
+    testResultsFiles: '**/TEST-*.xml'
+    tasks: 'lint'
+- task: Gradle@2
   displayName: 'Debug環境でビルド'
   inputs:
     workingDirectory: ''
