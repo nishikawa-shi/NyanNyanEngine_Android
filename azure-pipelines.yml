@@ -66,6 +66,14 @@ stages:
     - script: |
         sudo ln -s $(appKeyProperties.secureFilePath) app/gradle_secret.properties
       displayName: 'ビルド用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'リリースビルド署名用キーストアを取得'
+      name: appReleaseKeystore
+      inputs:
+        secureFile: app_nyan_nyan_engine_android_release.jks
+    - script: |
+        sudo ln -s $(appReleaseKeystore.secureFilePath) app/nyan_nyan_engine_android_release.jks
+      displayName: 'リリースビルド署名用キーストアの参照をプロジェクト内部に設置'
     - task: Gradle@2
       displayName: 'dev環境Releaseビルドを配布'
       inputs:
