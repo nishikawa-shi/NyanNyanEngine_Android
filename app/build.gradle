@@ -8,6 +8,15 @@ def keyProperties = new Properties()
 keyProperties.load(new FileInputStream(keyPropertiesFile))
 
 android {
+    signingConfigs {
+        release {
+            storeFile file(keyProperties["storeFilePath"])
+            storePassword keyProperties["storePassword"]
+            keyAlias keyProperties["keyAlias"]
+            keyPassword keyProperties["keyPassword"]
+        }
+    }
+
     compileSdkVersion 28
 
 
@@ -25,6 +34,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 

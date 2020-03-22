@@ -16,6 +16,7 @@
 # Build secrets
 
 app/gradle_secret.properties
+app/nyan_nyan_engine_android_release.jks
 
 # Deployment secrets
 
