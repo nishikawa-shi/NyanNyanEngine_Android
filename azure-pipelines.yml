@@ -1,5 +1,6 @@
 trigger:
 - master
+- develop
 - feature/*
 
 pool:
@@ -8,6 +9,7 @@ pool:
 stages:
 - stage: qa_stage
   displayName: 動作検証ステージ
+  condition: always()
   jobs:
   - job: lint_job
     displayName: lintエラー検出
@@ -34,6 +36,7 @@ stages:
         tasks: 'assembleDebug'
 - stage: beta_app_deploy_stage
   displayName: β版アプリ配布ステージ
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
   dependsOn: qa_stage
   jobs:
   - job: firebase_deploy_job
