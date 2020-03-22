@@ -33,6 +33,17 @@ android {
         }
     }
 
+    flavorDimensions "apiEnv"
+    productFlavors {
+        dev {
+            dimension "apiEnv"
+            applicationIdSuffix ".dev"
+        }
+        prd {
+            dimension "apiEnv"
+        }
+    }
+
 }
 
 buildscript {
