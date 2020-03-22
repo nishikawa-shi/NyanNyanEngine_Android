@@ -1,31 +1,66 @@
-# Android
-# Build your Android project with Gradle.
-# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/android
-
 trigger:
 - master
+- develop
 - feature/*
 
 pool:
   vmImage: 'macos-latest'
 
-steps:
-- task: Gradle@2
-  displayName: '全環境に対してlint'
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'lint'
-- task: Gradle@2
-  displayName: 'Debug環境でビルド'
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'assembleDebug'
+stages:
+- stage: qa_stage
+  displayName: 動作検証ステージ
+  condition: always()
+  jobs:
+  - job: lint_job
+    displayName: lintエラー検出
+    steps:
+    - script: |
+        cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
+      displayName: 'appモジュールビルド用ダミー設定の設置'
+    - task: Gradle@2
+      displayName: '全環境に対してlint'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'lint'
+  - job: build_job
+    displayName: buildエラー検出
+    steps:
+    - script: |
+        cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
+      displayName: 'appモジュールビルド用ダミー設定の設置'
+    - task: Gradle@2
+      displayName: 'Debug環境でビルド'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        gradleOptions: '-Xmx3072m'
+        tasks: 'assembleDebug'
+- stage: beta_app_deploy_stage
+  displayName: β版アプリ配布ステージ
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+  dependsOn: qa_stage
+  jobs:
+  - job: firebase_deploy_job
+    displayName: Firebaseへapk配布
+    steps:
+    - task: DownloadSecureFile@1
+      displayName: 'App Distribution用のクレデンシャルを取得'
+      name: deployUserCredential
+      inputs:
+        secureFile: nyannyanengine-android-deploy-user.json
+    - script: |
+        sudo ln -s $(deployUserCredential.secureFilePath) app/android-deploy-user.json
+      displayName: 'App Distribution用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'ビルド用のクレデンシャルを取得'
+      name: appKeyProperties
+      inputs:
+        secureFile: app_gradle_secret.properties
+    - script: |
+        sudo ln -s $(appKeyProperties.secureFilePath) app/gradle_secret.properties
+      displayName: 'ビルド用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: Gradle@2
+      displayName: 'Releaseビルドを配布'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        gradleOptions: '-Xmx3072m'
+        tasks: 'assembleRelease appDistributionUploadRelease'
