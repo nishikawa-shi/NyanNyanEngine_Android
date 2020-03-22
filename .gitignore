@@ -19,4 +19,5 @@ app/gradle_secret.properties
 
 # Deployment secrets
 
-app/android-deploy-user.json
+app/android-deploy-user-dev.json
+app/android-deploy-user-prd.json

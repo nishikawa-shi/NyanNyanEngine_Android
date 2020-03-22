@@ -25,10 +25,26 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    flavorDimensions "apiEnv"
+    productFlavors {
+        dev {
+            dimension "apiEnv"
+            applicationIdSuffix ".dev"
             firebaseAppDistribution {
                 appId=keyProperties["appDistributionIdDev"]
-                serviceCredentialsFile="$rootDir/app/android-deploy-user.json"
+                serviceCredentialsFile="$rootDir/app/android-deploy-user-dev.json"
                 testers=keyProperties["appDistributionTestersDev"]
+            }
+        }
+        prd {
+            dimension "apiEnv"
+            firebaseAppDistribution {
+                appId=keyProperties["appDistributionIdPrd"]
+                serviceCredentialsFile="$rootDir/app/android-deploy-user-prd.json"
+                testers=keyProperties["appDistributionTestersPrd"]
             }
         }
     }
