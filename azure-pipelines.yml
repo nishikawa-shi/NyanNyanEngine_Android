@@ -43,13 +43,21 @@ stages:
     displayName: Firebaseへapk配布
     steps:
     - task: DownloadSecureFile@1
-      displayName: 'App Distribution用のクレデンシャルを取得'
-      name: deployUserCredential
+      displayName: 'App Distribution dev環境用のクレデンシャルを取得'
+      name: deployUserDevCredential
       inputs:
-        secureFile: nyannyanengine-android-deploy-user.json
+        secureFile: nyannyanengine-android-deploy-user-dev.json
     - script: |
-        sudo ln -s $(deployUserCredential.secureFilePath) app/android-deploy-user.json
-      displayName: 'App Distribution用クレデンシャルの参照をプロジェクト内部に設置'
+        sudo ln -s $(deployUserDevCredential.secureFilePath) app/android-deploy-user-dev.json
+      displayName: 'App Distribution dev環境用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'App Distribution prd環境用のクレデンシャルを取得'
+      name: deployUserPrdCredential
+      inputs:
+        secureFile: nyannyanengine-android-deploy-user-prd.json
+    - script: |
+        sudo ln -s $(deployUserPrdCredential.secureFilePath) app/android-deploy-user-prd.json
+      displayName: 'App Distribution prd環境用クレデンシャルの参照をプロジェクト内部に設置'
     - task: DownloadSecureFile@1
       displayName: 'ビルド用のクレデンシャルを取得'
       name: appKeyProperties
@@ -59,8 +67,14 @@ stages:
         sudo ln -s $(appKeyProperties.secureFilePath) app/gradle_secret.properties
       displayName: 'ビルド用クレデンシャルの参照をプロジェクト内部に設置'
     - task: Gradle@2
-      displayName: 'Releaseビルドを配布'
+      displayName: 'dev環境Releaseビルドを配布'
       inputs:
         gradleWrapperFile: 'gradlew'
         gradleOptions: '-Xmx3072m'
-        tasks: 'assembleRelease appDistributionUploadRelease'
+        tasks: 'assembleDevRelease appDistributionUploadDevRelease'
+    - task: Gradle@2
+      displayName: 'prd環境Releaseビルドを配布'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        gradleOptions: '-Xmx3072m'
+        tasks: 'assemblePrdRelease appDistributionUploadPrdRelease'
