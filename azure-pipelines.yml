@@ -1,8 +1,3 @@
-# Android
-# Build your Android project with Gradle.
-# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/android
-
 trigger:
 - master
 - feature/*
@@ -23,16 +18,10 @@ stages:
     - task: Gradle@2
       displayName: '全環境に対してlint'
       inputs:
-        workingDirectory: ''
         gradleWrapperFile: 'gradlew'
-        gradleOptions: '-Xmx3072m'
-        publishJUnitResults: false
-        testResultsFiles: '**/TEST-*.xml'
         tasks: 'lint'
   - job: build_job
     displayName: buildエラー検出
-    pool:
-      vmImage: 'macos-latest'
     steps:
     - script: |
         cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
@@ -40,11 +29,8 @@ stages:
     - task: Gradle@2
       displayName: 'Debug環境でビルド'
       inputs:
-        workingDirectory: ''
         gradleWrapperFile: 'gradlew'
         gradleOptions: '-Xmx3072m'
-        publishJUnitResults: false
-        testResultsFiles: '**/TEST-*.xml'
         tasks: 'assembleDebug'
 - stage: beta_app_deploy_stage
   displayName: β版アプリ配布ステージ
@@ -74,5 +60,4 @@ stages:
       inputs:
         gradleWrapperFile: 'gradlew'
         gradleOptions: '-Xmx3072m'
-        testResultsFiles: '**/TEST-*.xml'
         tasks: 'assembleRelease appDistributionUploadRelease'
