@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 
@@ -12,7 +13,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val navController = findNavController(R.id.mainNavFragment)
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.mainNavFragment) as NavHostFragment
+        val navController = navHostFragment.navController
         val configuration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, configuration)
     }
