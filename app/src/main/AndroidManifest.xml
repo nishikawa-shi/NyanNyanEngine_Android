@@ -3,6 +3,7 @@
     package="com.ntetz.android.nyannyanengine_android">
 
     <application
+        android:name=".MainApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/nyannyan_backup_rules"
         android:icon="@mipmap/ic_launcher"

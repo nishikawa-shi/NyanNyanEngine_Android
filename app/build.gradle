@@ -19,6 +19,9 @@ android {
 
     compileSdkVersion 28
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     defaultConfig {
         applicationId "com.ntetz.android.nyannyanengine_android"
@@ -44,17 +47,17 @@ android {
             dimension "apiEnv"
             applicationIdSuffix ".dev"
             firebaseAppDistribution {
-                appId=keyProperties["appDistributionIdDev"]
-                serviceCredentialsFile="$rootDir/app/android-deploy-user-dev.json"
-                groups=keyProperties["appDistributionGroupsDev"]
+                appId = keyProperties["appDistributionIdDev"]
+                serviceCredentialsFile = "$rootDir/app/android-deploy-user-dev.json"
+                groups = keyProperties["appDistributionGroupsDev"]
             }
         }
         prd {
             dimension "apiEnv"
             firebaseAppDistribution {
-                appId=keyProperties["appDistributionIdPrd"]
-                serviceCredentialsFile="$rootDir/app/android-deploy-user-prd.json"
-                groups=keyProperties["appDistributionGroupsPrd"]
+                appId = keyProperties["appDistributionIdPrd"]
+                serviceCredentialsFile = "$rootDir/app/android-deploy-user-prd.json"
+                groups = keyProperties["appDistributionGroupsPrd"]
             }
         }
     }
@@ -81,11 +84,24 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    def koin_version = "2.0.1"
+    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-core-ext:$koin_version"
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-android-scope:$koin_version"
+    implementation "org.koin:koin-android-viewmodel:$koin_version"
+    implementation "org.koin:koin-android-ext:$koin_version"
+
     ktlint "com.pinterest:ktlint:0.36.0"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
@@ -95,3 +111,10 @@ task ktlint(type: JavaExec, group: "verification") {
     args "src/**/*.kt"
 }
 check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
