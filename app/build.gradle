@@ -46,7 +46,7 @@ android {
             firebaseAppDistribution {
                 appId=keyProperties["appDistributionIdDev"]
                 serviceCredentialsFile="$rootDir/app/android-deploy-user-dev.json"
-                testers=keyProperties["appDistributionTestersDev"]
+                groups=keyProperties["appDistributionGroupsDev"]
             }
         }
         prd {
@@ -54,7 +54,7 @@ android {
             firebaseAppDistribution {
                 appId=keyProperties["appDistributionIdPrd"]
                 serviceCredentialsFile="$rootDir/app/android-deploy-user-prd.json"
-                testers=keyProperties["appDistributionTestersPrd"]
+                groups=keyProperties["appDistributionGroupsPrd"]
             }
         }
     }
