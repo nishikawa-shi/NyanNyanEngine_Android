@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.firebase.appdistribution'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 def keyPropertiesFile = rootProject.file("app/gradle_secret.properties")
 def keyProperties = new Properties()
@@ -39,6 +40,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+    }
+
+    dataBinding {
+        enabled true
     }
 
     flavorDimensions "apiEnv"
@@ -104,6 +109,16 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
 
     implementation 'com.google.android.material:material:1.1.0'
+
+    // jaxbの記述は、dataBinding有効化時でも、java 11環境でgradle checkを行えるようにするためのもの。
+    if (project.hasProperty('kapt')) {
+        kapt "javax.xml.bind:jaxb-api:2.3.1"
+        kapt "com.sun.xml.bind:jaxb-core:2.3.0.1"
+        kapt "com.sun.xml.bind:jaxb-impl:2.3.2"
+    }
+    annotationProcessor "javax.xml.bind:jaxb-api:2.3.1"
+    annotationProcessor "com.sun.xml.bind:jaxb-core:2.3.0.1"
+    annotationProcessor "com.sun.xml.bind:jaxb-impl:2.3.2"
 }
 
 task ktlint(type: JavaExec, group: "verification") {
