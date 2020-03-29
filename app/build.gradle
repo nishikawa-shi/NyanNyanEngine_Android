@@ -44,17 +44,17 @@ android {
             dimension "apiEnv"
             applicationIdSuffix ".dev"
             firebaseAppDistribution {
-                appId=keyProperties["appDistributionIdDev"]
-                serviceCredentialsFile="$rootDir/app/android-deploy-user-dev.json"
-                groups=keyProperties["appDistributionGroupsDev"]
+                appId = keyProperties["appDistributionIdDev"]
+                serviceCredentialsFile = "$rootDir/app/android-deploy-user-dev.json"
+                groups = keyProperties["appDistributionGroupsDev"]
             }
         }
         prd {
             dimension "apiEnv"
             firebaseAppDistribution {
-                appId=keyProperties["appDistributionIdPrd"]
-                serviceCredentialsFile="$rootDir/app/android-deploy-user-prd.json"
-                groups=keyProperties["appDistributionGroupsPrd"]
+                appId = keyProperties["appDistributionIdPrd"]
+                serviceCredentialsFile = "$rootDir/app/android-deploy-user-prd.json"
+                groups = keyProperties["appDistributionGroupsPrd"]
             }
         }
     }
