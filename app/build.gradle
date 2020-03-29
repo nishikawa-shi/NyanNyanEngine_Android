@@ -19,6 +19,9 @@ android {
 
     compileSdkVersion 28
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     defaultConfig {
         applicationId "com.ntetz.android.nyannyanengine_android"
@@ -97,6 +100,8 @@ dependencies {
     implementation "org.koin:koin-android-ext:$koin_version"
 
     ktlint "com.pinterest:ktlint:0.36.0"
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
 }
 
 task ktlint(type: JavaExec, group: "verification") {
