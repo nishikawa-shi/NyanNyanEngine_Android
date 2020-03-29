@@ -11,29 +11,17 @@ stages:
   displayName: 動作検証ステージ
   condition: always()
   jobs:
-  - job: lint_job
-    displayName: lintエラー検出
+  - job: check_job
+    displayName: 標準のcheckエラー検出
     steps:
     - script: |
         cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
       displayName: 'appモジュールビルド用ダミー設定の設置'
     - task: Gradle@2
-      displayName: '全環境に対してlint'
+      displayName: '全環境に対してのbuild, lint, test'
       inputs:
         gradleWrapperFile: 'gradlew'
-        tasks: 'lint'
-  - job: build_job
-    displayName: buildエラー検出
-    steps:
-    - script: |
-        cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
-      displayName: 'appモジュールビルド用ダミー設定の設置'
-    - task: Gradle@2
-      displayName: 'Debug環境でビルド'
-      inputs:
-        gradleWrapperFile: 'gradlew'
-        gradleOptions: '-Xmx3072m'
-        tasks: 'assembleDebug'
+        tasks: 'check'
 - stage: beta_app_deploy_stage
   displayName: β版アプリ配布ステージ
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
