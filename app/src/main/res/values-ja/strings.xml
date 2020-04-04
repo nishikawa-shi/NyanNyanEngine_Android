@@ -1,0 +1,9 @@
+<resources>
+    <string name="default_twitter_name">にゃんにゃ先生</string>
+    <string name="default_twitter_id">\@NNyansu</string>
+    <string name="nav_header_desc">アカウント情報</string>
+
+    <string name="menu_hash_tag">はっしゅたぐ</string>
+    <string name="menu_sign_in">ログインする</string>
+
+</resources>
