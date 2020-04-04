@@ -1,10 +1,9 @@
 <resources>
-    <string name="app_name">NyanNyanEngine_Android</string>
-
     <string name="default_twitter_name">Dr. Nyannya</string>
     <string name="default_twitter_id">\@NNyansu</string>
     <string name="nav_header_desc">Account info</string>
 
     <string name="menu_hash_tag">Hash Tags</string>
     <string name="menu_sign_in">Sign in</string>
+
 </resources>
