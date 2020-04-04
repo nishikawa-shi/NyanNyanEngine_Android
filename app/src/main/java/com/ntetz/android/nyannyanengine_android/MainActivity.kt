@@ -38,6 +38,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         main_drawer.closeDrawers()
+        when (item.itemId) {
+            R.id.nav_settings_hash_tag -> findNavController(R.id.main_nav_fragment)
+                .navigate(R.id.action_mainFragment_to_hashtagSettingFragment)
+        }
         return NavigationUI.onNavDestinationSelected(
             item,
             findNavController(R.id.main_nav_fragment)

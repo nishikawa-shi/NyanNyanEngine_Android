@@ -17,9 +17,16 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_mainFragment_to_hashtagSettingFragment"
+            app:destination="@id/hashtagSettingFragment" />
     </fragment>
     <fragment
         android:id="@+id/postNekogoFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
         android:label="PostNekogoFragment" />
+    <fragment
+        android:id="@+id/hashtagSettingFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"
+        android:label="HashtagSettingFragment" />
 </navigation>
