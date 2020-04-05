@@ -14,7 +14,7 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="MainDrawerTheme" parent="Widget.AppCompat.Toolbar.Button.Navigation">
+    <style name="MainDrawerTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="itemTextAppearance">@style/TextAppearance.MenuListEntry</item>
     </style>
 
