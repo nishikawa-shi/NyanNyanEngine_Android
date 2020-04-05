@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.ntetz.android.nyannyanengine_android.databinding.HashtagSettingFragmentBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -31,5 +32,7 @@ class HashtagSettingFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        binding.hashtagList.adapter = HashtagSettingAdapter(viewModel, this)
+        binding.hashtagList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
     }
 }
