@@ -15,6 +15,11 @@ stages:
     displayName: 標準のcheckエラー検出
     steps:
     - script: |
+        echo $(Build.BuildId) | xargs -I {} sed -e 's/versionCode 1/versionCode {}/g' app/build.gradle > app/build.gradle.versioned
+        diff app/build.gradle.versioned app/build.gradle
+        mv app/build.gradle.versioned app/build.gradle
+      displayName: 'build.gradleのVersionCode更新'
+    - script: |
         cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
       displayName: 'appモジュールビルド用ダミー設定の設置'
     - task: Gradle@2
@@ -30,6 +35,11 @@ stages:
   - job: firebase_deploy_job
     displayName: Firebaseへapk配布
     steps:
+    - script: |
+        echo $(Build.BuildId) | xargs -I {} sed -e 's/versionCode 1/versionCode {}/g' app/build.gradle > app/build.gradle.versioned
+        diff app/build.gradle.versioned app/build.gradle
+        mv app/build.gradle.versioned app/build.gradle
+      displayName: 'build.gradleのVersionCode更新'
     - task: DownloadSecureFile@1
       displayName: 'App Distribution dev環境用のクレデンシャルを取得'
       name: deployUserDevCredential
