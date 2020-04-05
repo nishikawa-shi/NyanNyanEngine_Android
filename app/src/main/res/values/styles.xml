@@ -14,4 +14,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="TextAppearance.SelfTwitterName" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textSize">@dimen/large_text_size</item>
+    </style>
+
+    <style name="TextAppearance.SelfTwitterId" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
 </resources>
