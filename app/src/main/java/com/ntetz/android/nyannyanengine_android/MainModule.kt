@@ -9,6 +9,10 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
+object MainModule {
+    val modules = listOf(viewModelModule)
+}
+
 private val viewModelModule = module {
     viewModel {
         val dao = UserProfileDatabase.getDatabase(androidContext()).defaultHashtagsDao()
@@ -17,9 +21,4 @@ private val viewModelModule = module {
     }
     viewModel { MainViewModel() }
     viewModel { PostNekogoViewModel() }
-}
-
-
-object MainModule {
-    val modules = listOf(viewModelModule)
 }
