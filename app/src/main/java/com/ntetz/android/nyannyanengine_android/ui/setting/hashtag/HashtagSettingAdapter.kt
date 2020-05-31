@@ -13,7 +13,7 @@ class HashtagSettingAdapter(
     }
 
     override fun getItemCount(): Int {
-        return viewModel.settingsList.size
+        return viewModel.defaultHashtags.value?.size ?: 0
     }
 
     override fun onBindViewHolder(holder: HashtagSettingViewHolder, position: Int) {
