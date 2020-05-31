@@ -6,21 +6,18 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ntetz.android.nyannyanengine_android.model.dao.room.DefaultHashtagsDao
-import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Database(entities = arrayOf(DefaultHashtag::class), version = 1, exportSchema = false)
 abstract class UserProfileDatabase : RoomDatabase() {
     abstract fun defaultHashtagsDao(): DefaultHashtagsDao
 
-    private class UserProfileDatabaseCallback(
-        private val scope: CoroutineScope
-    ) : RoomDatabase.Callback() {
-
+    private class UserProfileDatabaseCallback : RoomDatabase.Callback() {
         override fun onOpen(db: SupportSQLiteDatabase) {
             super.onOpen(db)
             INSTANCE?.let { database ->
-                scope.launch {
+                GlobalScope.launch {
                     populateDatabase(database.defaultHashtagsDao())
                 }
             }
@@ -38,8 +35,7 @@ abstract class UserProfileDatabase : RoomDatabase() {
         private var INSTANCE: UserProfileDatabase? = null
 
         fun getDatabase(
-            context: Context,
-            scope: CoroutineScope
+            context: Context
         ): UserProfileDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {
@@ -52,7 +48,7 @@ abstract class UserProfileDatabase : RoomDatabase() {
                         UserProfileDatabase::class.java,
                         "user_profile_database"
                     )
-                    .addCallback(UserProfileDatabaseCallback(scope))
+                    .addCallback(UserProfileDatabaseCallback())
                     .build()
                 INSTANCE = instance
                 return instance
