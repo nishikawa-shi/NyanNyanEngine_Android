@@ -6,9 +6,5 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHas
 import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsRepository
 
 class HashtagSettingViewModel(hashtagsRepository: HashtagsRepository) : ViewModel() {
-    val defaultHashtags: LiveData<List<DefaultHashtag>>
-
-    init {
-        defaultHashtags = hashtagsRepository.allDefaultHashtags
-    }
+    val defaultHashtags: LiveData<List<DefaultHashtag>> = hashtagsRepository.allDefaultHashtags
 }
