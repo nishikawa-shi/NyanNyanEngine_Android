@@ -25,7 +25,7 @@
             android:id="@+id/hashtag_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Hello World!"
+            android:text="@{viewModel.defaultHashtags[position].textBody}"
             android:textAppearance="@style/TextAppearance.MenuListEntry"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -3,6 +3,9 @@
     <string name="default_twitter_id">\@NNyansu</string>
     <string name="nav_header_desc">アカウント情報</string>
 
+    <string name="settings_title_hashtag_engine">#にゃんにゃんエンジン</string>
+    <string name="settings_title_hashtag_nadenade">#なでてほしいにゃ🧶</string>
+
     <string name="menu_hash_tag">はっしゅたぐ</string>
     <string name="menu_sign_in">ログインする</string>
 
