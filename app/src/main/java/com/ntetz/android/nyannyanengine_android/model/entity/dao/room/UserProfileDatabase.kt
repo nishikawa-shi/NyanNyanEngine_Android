@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultData
 import com.ntetz.android.nyannyanengine_android.model.dao.room.DefaultHashtagsDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,8 +22,7 @@ abstract class UserProfileDatabase : RoomDatabase() {
     }
 
     private suspend fun populate(defaultHashtagsDao: DefaultHashtagsDao) {
-        // TODO: まともな初期データを考える
-        defaultHashtagsDao.insert(DefaultHashtag(1, true))
+        DefaultData.hashTags.forEach { defaultHashtagsDao.insert(it) }
     }
 
     companion object {
