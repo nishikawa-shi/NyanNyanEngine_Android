@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.sqlite.db.SupportSQLiteDatabase
 import com.ntetz.android.nyannyanengine_android.model.dao.room.DefaultHashtagsDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -13,21 +12,17 @@ import kotlinx.coroutines.launch
 abstract class UserProfileDatabase : RoomDatabase() {
     abstract fun defaultHashtagsDao(): DefaultHashtagsDao
 
-    private class UserProfileDatabaseCallback : RoomDatabase.Callback() {
-        override fun onOpen(db: SupportSQLiteDatabase) {
-            super.onOpen(db)
-            INSTANCE?.let { database ->
-                GlobalScope.launch {
-                    populateDatabase(database.defaultHashtagsDao())
-                }
+    fun initialize() {
+        INSTANCE?.let { database ->
+            GlobalScope.launch {
+                populate(database.defaultHashtagsDao())
             }
         }
+    }
 
-        suspend fun populateDatabase(defaultHashtagsDao: DefaultHashtagsDao) {
-            // DB初期化時に走るここの処理で、初期値が投入される。
-            // TODO: まともな初期データを考える
-            defaultHashtagsDao.insert(DefaultHashtag(1, true))
-        }
+    private suspend fun populate(defaultHashtagsDao: DefaultHashtagsDao) {
+        // TODO: まともな初期データを考える
+        defaultHashtagsDao.insert(DefaultHashtag(1, true))
     }
 
     companion object {
@@ -48,7 +43,6 @@ abstract class UserProfileDatabase : RoomDatabase() {
                         UserProfileDatabase::class.java,
                         "user_profile_database"
                     )
-                    .addCallback(UserProfileDatabaseCallback())
                     .build()
                 INSTANCE = instance
                 return instance
