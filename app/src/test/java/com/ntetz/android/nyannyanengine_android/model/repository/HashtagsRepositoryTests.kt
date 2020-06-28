@@ -3,7 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.repository
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
-import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtag
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -18,10 +18,10 @@ class HashtagsRepositoryTests {
     @Test
     fun allDefaultHashtags_daoのgetAll由来の値が取得できること() {
         `when`(mockDefaultHashtagsDao.getAll()).thenReturn(
-            MutableLiveData(listOf(DefaultHashtag(9999, true)))
+            MutableLiveData(listOf(DefaultHashtagRecord(9999, true)))
         )
 
-        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).allDefaultHashtags.value)
-            .isEqualTo(listOf(DefaultHashtag(9999, true)))
+        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).allDefaultHashtagRecords.value)
+            .isEqualTo(listOf(DefaultHashtagRecord(9999, true)))
     }
 }
