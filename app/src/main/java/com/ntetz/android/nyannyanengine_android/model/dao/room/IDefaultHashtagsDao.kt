@@ -8,7 +8,7 @@ import androidx.room.Query
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtag
 
 @Dao
-interface DefaultHashtagsDao {
+interface IDefaultHashtagsDao {
     @Query("SELECT * FROM default_hashtags")
     fun getAll(): LiveData<List<DefaultHashtag>>
 

@@ -5,13 +5,13 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultData
-import com.ntetz.android.nyannyanengine_android.model.dao.room.DefaultHashtagsDao
+import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @Database(entities = arrayOf(DefaultHashtag::class), version = 1, exportSchema = false)
 abstract class UserProfileDatabase : RoomDatabase() {
-    abstract fun defaultHashtagsDao(): DefaultHashtagsDao
+    abstract fun defaultHashtagsDao(): IDefaultHashtagsDao
 
     fun initialize() {
         INSTANCE?.let { database ->
@@ -21,7 +21,7 @@ abstract class UserProfileDatabase : RoomDatabase() {
         }
     }
 
-    private suspend fun populate(defaultHashtagsDao: DefaultHashtagsDao) {
+    private suspend fun populate(defaultHashtagsDao: IDefaultHashtagsDao) {
         DefaultData.hashTags.forEach { defaultHashtagsDao.insert(it) }
     }
 
