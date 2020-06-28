@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "default_hashtags")
-class DefaultHashtag(
+data class DefaultHashtag(
     @PrimaryKey @ColumnInfo(name = "id") val id: Int,
     @ColumnInfo(name = "enabled") val enabled: Boolean
 )
