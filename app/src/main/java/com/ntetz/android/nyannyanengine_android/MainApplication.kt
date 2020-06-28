@@ -12,7 +12,7 @@ class MainApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         setDependency()
-        inject<ApplicationUsecase>().value.initialize()
+        inject<ApplicationUsecase>().value.launch()
     }
 
     private fun setDependency() {
