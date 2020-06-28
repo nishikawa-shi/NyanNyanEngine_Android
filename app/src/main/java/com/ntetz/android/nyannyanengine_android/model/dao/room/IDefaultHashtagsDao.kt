@@ -5,13 +5,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtag
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
 
 @Dao
-interface DefaultHashtagsDao {
+interface IDefaultHashtagsDao {
     @Query("SELECT * FROM default_hashtags")
-    fun getAll(): LiveData<List<DefaultHashtag>>
+    fun getAll(): LiveData<List<DefaultHashtagRecord>>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insert(defaultHashtag: DefaultHashtag)
+    suspend fun insert(defaultHashtagRecord: DefaultHashtagRecord)
 }

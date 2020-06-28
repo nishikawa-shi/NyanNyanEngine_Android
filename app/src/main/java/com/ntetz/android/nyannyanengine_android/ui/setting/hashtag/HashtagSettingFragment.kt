@@ -36,7 +36,7 @@ class HashtagSettingFragment : Fragment() {
 
         val adapter = HashtagSettingAdapter(viewModel, this)
         binding.hashtagList.adapter = adapter
-        viewModel.defaultHashtags.observe(viewLifecycleOwner, Observer {
+        viewModel.defaultHashtagComponents.observe(viewLifecycleOwner, Observer {
             adapter.notifyDataSetChanged()
         })
 

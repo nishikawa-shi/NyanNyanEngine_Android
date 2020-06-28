@@ -1,6 +1,7 @@
 package com.ntetz.android.nyannyanengine_android
 
 import android.content.Context
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
@@ -17,12 +18,14 @@ object MainModule {
 }
 
 private val viewModelModule = module {
+    single { DefaultHashtagConfig() }
+
     single { ApplicationUsecase(getUserProfileDatabase(androidContext())) }
 
     viewModel {
         val dao = getUserProfileDatabase(androidContext()).defaultHashtagsDao()
         val repository = HashtagsRepository(dao)
-        val usecase = HashtagUsecase(repository, androidContext())
+        val usecase = HashtagUsecase(repository, get<DefaultHashtagConfig>(), androidContext())
         HashtagSettingViewModel(usecase)
     }
     viewModel { MainViewModel() }
