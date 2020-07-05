@@ -18,7 +18,7 @@ android {
         }
     }
 
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     kotlinOptions {
         jvmTarget = "1.8"
@@ -27,7 +27,7 @@ android {
     defaultConfig {
         applicationId "com.ntetz.android.nyannyanengine_android"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
 
