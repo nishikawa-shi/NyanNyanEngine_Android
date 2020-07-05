@@ -10,5 +10,5 @@ interface IHashtagsRepository {
 
 class HashtagsRepository(
     private val defaultHashtagsDao: IDefaultHashtagsDao,
-    override val allDefaultHashtagRecords: LiveData<List<DefaultHashtagRecord>> = defaultHashtagsDao.getAll()
+    override val allDefaultHashtagRecords: LiveData<List<DefaultHashtagRecord>> = defaultHashtagsDao.allRecords()
 ) : IHashtagsRepository
