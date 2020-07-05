@@ -17,7 +17,7 @@ class HashtagsRepositoryTests {
 
     @Test
     fun allDefaultHashtags_daoのgetAll由来の値が取得できること() {
-        `when`(mockDefaultHashtagsDao.getAll()).thenReturn(
+        `when`(mockDefaultHashtagsDao.allRecords()).thenReturn(
             MutableLiveData(listOf(DefaultHashtagRecord(9999, true)))
         )
 

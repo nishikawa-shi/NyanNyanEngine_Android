@@ -10,7 +10,10 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHas
 @Dao
 interface IDefaultHashtagsDao {
     @Query("SELECT * FROM default_hashtags")
-    fun getAll(): LiveData<List<DefaultHashtagRecord>>
+    fun allRecords(): LiveData<List<DefaultHashtagRecord>>
+
+    @Query("SELECT * FROM default_hashtags")
+    fun getAll(): List<DefaultHashtagRecord>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(defaultHashtagRecord: DefaultHashtagRecord)
