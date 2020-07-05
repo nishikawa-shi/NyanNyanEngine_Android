@@ -19,13 +19,9 @@ abstract class UserProfileDatabase : RoomDatabase(), KoinComponent {
     fun initialize() {
         INSTANCE?.let { database ->
             GlobalScope.launch {
-                populate(database.defaultHashtagsDao())
+                defaultHashtagConfig.populate(database.defaultHashtagsDao())
             }
         }
-    }
-
-    private suspend fun populate(defaultHashtagsDao: IDefaultHashtagsDao) {
-        defaultHashtagConfig.getInitializationRecords().forEach { defaultHashtagsDao.insert(it) }
     }
 
     companion object {

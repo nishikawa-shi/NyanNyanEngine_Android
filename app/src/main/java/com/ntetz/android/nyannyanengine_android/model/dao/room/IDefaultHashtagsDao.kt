@@ -12,6 +12,9 @@ interface IDefaultHashtagsDao {
     @Query("SELECT * FROM default_hashtags")
     fun allRecords(): LiveData<List<DefaultHashtagRecord>>
 
+    @Query("SELECT * FROM default_hashtags")
+    fun getAll(): List<DefaultHashtagRecord>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(defaultHashtagRecord: DefaultHashtagRecord)
 }
