@@ -9,11 +9,15 @@ import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConf
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
+import kotlinx.coroutines.runBlocking
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -80,5 +84,19 @@ class HashtagUsecaseTests {
             Truth.assertThat(it)
                 .isEqualTo(listOf<DefaultHashTagComponent>())
         }
+    }
+
+    @Test
+    fun updateDefaultHashtag_レポジトリのupdate用メソッドが1度呼ばれること() = runBlocking {
+        val testDefaultHashTagComponent = DefaultHashTagComponent(3, "", true)
+        val expectedRecord = DefaultHashtagRecord(3, true)
+        doNothing().`when`(mockHashtagRepository).updateDefaultHashtagRecord(expectedRecord, this)
+
+        HashtagUsecase(mockHashtagRepository, mockDefaultHashtagConfig, mockContext).updateDefaultHashtag(
+            testDefaultHashTagComponent,
+            this
+        )
+
+        verify(mockHashtagRepository, times(1)).updateDefaultHashtagRecord(expectedRecord, this)
     }
 }
