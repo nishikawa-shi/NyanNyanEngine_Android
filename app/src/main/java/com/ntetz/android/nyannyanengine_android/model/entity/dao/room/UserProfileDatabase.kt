@@ -11,12 +11,17 @@ import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 
+interface IUserProfileDatabase {
+    fun initialize()
+    fun defaultHashtagsDao(): IDefaultHashtagsDao
+}
+
 @Database(entities = arrayOf(DefaultHashtagRecord::class), version = 1, exportSchema = false)
-abstract class UserProfileDatabase : RoomDatabase(), KoinComponent {
-    abstract fun defaultHashtagsDao(): IDefaultHashtagsDao
+abstract class UserProfileDatabase : RoomDatabase(), KoinComponent, IUserProfileDatabase {
+    abstract override fun defaultHashtagsDao(): IDefaultHashtagsDao
     private val defaultHashtagConfig: IDefaultHashtagConfig by inject()
 
-    fun initialize() {
+    override fun initialize() {
         INSTANCE?.let { database ->
             GlobalScope.launch {
                 defaultHashtagConfig.populate(database.defaultHashtagsDao())
