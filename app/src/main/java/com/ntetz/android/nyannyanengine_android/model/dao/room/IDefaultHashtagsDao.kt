@@ -1,6 +1,5 @@
 package com.ntetz.android.nyannyanengine_android.model.dao.room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,9 +9,6 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHas
 
 @Dao
 interface IDefaultHashtagsDao {
-    @Query("SELECT * FROM default_hashtags")
-    fun allRecords(): LiveData<List<DefaultHashtagRecord>>
-
     @Query("SELECT * FROM default_hashtags")
     fun getAll(): List<DefaultHashtagRecord>
 

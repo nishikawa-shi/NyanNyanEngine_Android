@@ -1,6 +1,5 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
-import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
@@ -33,7 +32,6 @@ class HashtagsRepositoryTests {
     @Test
     fun updateDefaultHashtagRecord_defaultHashtagsDaoのupdateOneが1度実行されること() = runBlocking {
         val testDefaultHashtagRecord = DefaultHashtagRecord(9999, true)
-        `when`(mockDefaultHashtagsDao.allRecords()).thenReturn(MutableLiveData(listOf()))
         doNothing().`when`(mockDefaultHashtagsDao).updateOne(testDefaultHashtagRecord)
 
         HashtagsRepository(mockDefaultHashtagsDao).updateDefaultHashtagRecord(testDefaultHashtagRecord, this)
