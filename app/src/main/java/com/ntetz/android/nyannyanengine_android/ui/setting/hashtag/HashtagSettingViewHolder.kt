@@ -7,6 +7,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.HashtagSettingCellBinding
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 
 class HashtagSettingViewHolder(
     private val binding: HashtagSettingCellBinding
@@ -16,6 +17,16 @@ class HashtagSettingViewHolder(
         binding.viewModel = viewModel
         binding.position = position
         binding.lifecycleOwner = lifecycleOwner
+        binding.hashtagSwitch.setOnCheckedChangeListener { _, enabled ->
+            val hashtagId = position + 1
+            viewModel.updateDefaultHashtagComponent(
+                DefaultHashTagComponent(
+                    id = hashtagId,
+                    textBody = binding.hashtagName.toString(),
+                    isEnabled = enabled
+                )
+            )
+        }
     }
 
     companion object {

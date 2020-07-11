@@ -7,9 +7,11 @@ import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConf
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
+import kotlinx.coroutines.CoroutineScope
 
 interface IHashtagUsecase {
     val defaultHashtagComponents: LiveData<List<DefaultHashTagComponent>>
+    fun updateDefaultHashtag(component: DefaultHashTagComponent, scope: CoroutineScope)
 }
 
 class HashtagUsecase(
@@ -26,11 +28,22 @@ class HashtagUsecase(
             }
         }
 
+    override fun updateDefaultHashtag(component: DefaultHashTagComponent, scope: CoroutineScope) {
+        hashtagsRepository.updateDefaultHashtagRecord(createDefaultHashtagRecord(component), scope)
+    }
+
     private fun createDefaultHashtagComponent(record: DefaultHashtagRecord): DefaultHashTagComponent? {
         return DefaultHashTagComponent(
             id = record.id,
             textBody = context.getString(defaultHashtagConfig.getTextBodyId(record.id) ?: return null),
             isEnabled = record.enabled
+        )
+    }
+
+    private fun createDefaultHashtagRecord(component: DefaultHashTagComponent): DefaultHashtagRecord {
+        return DefaultHashtagRecord(
+            id = component.id,
+            enabled = component.isEnabled
         )
     }
 }
