@@ -21,12 +21,12 @@ class HashtagsRepositoryTests {
     private lateinit var mockDefaultHashtagsDao: IDefaultHashtagsDao
 
     @Test
-    fun allDefaultHashtags_daoのgetAll由来の値が取得できること() {
-        `when`(mockDefaultHashtagsDao.allRecords()).thenReturn(
-            MutableLiveData(listOf(DefaultHashtagRecord(9999, true)))
+    fun getDefaultHashtagRecords_daoのgetAll由来の値が取得できること() = runBlocking {
+        `when`(mockDefaultHashtagsDao.getAll()).thenReturn(
+            listOf(DefaultHashtagRecord(9999, true))
         )
 
-        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).allDefaultHashtagRecords.value)
+        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).getDefaultHashtagRecords(this))
             .isEqualTo(listOf(DefaultHashtagRecord(9999, true)))
     }
 

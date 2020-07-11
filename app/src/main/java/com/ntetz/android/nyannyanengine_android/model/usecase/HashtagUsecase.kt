@@ -1,8 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
@@ -10,7 +8,7 @@ import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsReposi
 import kotlinx.coroutines.CoroutineScope
 
 interface IHashtagUsecase {
-    val defaultHashtagComponents: LiveData<List<DefaultHashTagComponent>>
+    suspend fun getDefaultHashtags(scope: CoroutineScope): List<DefaultHashTagComponent>
     fun updateDefaultHashtag(component: DefaultHashTagComponent, scope: CoroutineScope)
 }
 
@@ -19,14 +17,9 @@ class HashtagUsecase(
     private val defaultHashtagConfig: IDefaultHashtagConfig,
     private val context: Context
 ) : IHashtagUsecase {
-    override val defaultHashtagComponents: LiveData<List<DefaultHashTagComponent>>
-        get() {
-            return Transformations.map(hashtagsRepository.allDefaultHashtagRecords) { savedList ->
-                savedList.mapNotNull {
-                    createDefaultHashtagComponent(it)
-                }
-            }
-        }
+    override suspend fun getDefaultHashtags(scope: CoroutineScope): List<DefaultHashTagComponent> {
+        return hashtagsRepository.getDefaultHashtagRecords(scope).mapNotNull { createDefaultHashtagComponent(it) }
+    }
 
     override fun updateDefaultHashtag(component: DefaultHashTagComponent, scope: CoroutineScope) {
         hashtagsRepository.updateDefaultHashtagRecord(createDefaultHashtagRecord(component), scope)
