@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android
 import android.content.Context
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
@@ -33,4 +34,4 @@ private val viewModelModule = module {
     viewModel { PostNekogoViewModel() }
 }
 
-private fun getUserProfileDatabase(context: Context): UserProfileDatabase = UserProfileDatabase.getDatabase(context)
+private fun getUserProfileDatabase(context: Context): IUserProfileDatabase = UserProfileDatabase.getDatabase(context)
