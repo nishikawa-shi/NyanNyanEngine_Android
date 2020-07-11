@@ -33,6 +33,7 @@ class HashtagSettingFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        viewModel.initialize()
 
         val adapter = HashtagSettingAdapter(viewModel, this)
         binding.hashtagList.adapter = adapter

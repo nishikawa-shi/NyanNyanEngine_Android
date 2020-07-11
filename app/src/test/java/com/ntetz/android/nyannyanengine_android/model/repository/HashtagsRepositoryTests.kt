@@ -1,6 +1,5 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
-import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
@@ -21,19 +20,18 @@ class HashtagsRepositoryTests {
     private lateinit var mockDefaultHashtagsDao: IDefaultHashtagsDao
 
     @Test
-    fun allDefaultHashtags_daoのgetAll由来の値が取得できること() {
-        `when`(mockDefaultHashtagsDao.allRecords()).thenReturn(
-            MutableLiveData(listOf(DefaultHashtagRecord(9999, true)))
+    fun getDefaultHashtagRecords_daoのgetAll由来の値が取得できること() = runBlocking {
+        `when`(mockDefaultHashtagsDao.getAll()).thenReturn(
+            listOf(DefaultHashtagRecord(9999, true))
         )
 
-        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).allDefaultHashtagRecords.value)
+        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).getDefaultHashtagRecords(this))
             .isEqualTo(listOf(DefaultHashtagRecord(9999, true)))
     }
 
     @Test
     fun updateDefaultHashtagRecord_defaultHashtagsDaoのupdateOneが1度実行されること() = runBlocking {
         val testDefaultHashtagRecord = DefaultHashtagRecord(9999, true)
-        `when`(mockDefaultHashtagsDao.allRecords()).thenReturn(MutableLiveData(listOf()))
         doNothing().`when`(mockDefaultHashtagsDao).updateOne(testDefaultHashtagRecord)
 
         HashtagsRepository(mockDefaultHashtagsDao).updateDefaultHashtagRecord(testDefaultHashtagRecord, this)
