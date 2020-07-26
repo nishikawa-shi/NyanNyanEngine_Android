@@ -17,8 +17,6 @@ class TwitterRequestMetadataTests {
 
     @Test
     fun fullUrl_ドメインと第一階層のパスが結合された文字列が取得できること() {
-        `when`(mockTwitterConfig.baseEndpoint).thenReturn("https://test.ntetz.com/")
-
         Truth.assertThat(
             TwitterRequestMetadata(
                 method = "POST",
@@ -26,13 +24,11 @@ class TwitterRequestMetadataTests {
                 oneTimeParams = mockOnetimeParams,
                 twitterConfig = mockTwitterConfig
             ).fullUrl
-        ).isEqualTo("https://test.ntetz.com/level1")
+        ).isEqualTo("https://api.twitter.com/level1")
     }
 
     @Test
     fun fullUrl_ドメインと複数階層のパスが結合された文字列が取得できること() {
-        `when`(mockTwitterConfig.baseEndpoint).thenReturn("https://test.ntetz.com/")
-
         Truth.assertThat(
             TwitterRequestMetadata(
                 method = "POST",
@@ -40,13 +36,11 @@ class TwitterRequestMetadataTests {
                 oneTimeParams = mockOnetimeParams,
                 twitterConfig = mockTwitterConfig
             ).fullUrl
-        ).isEqualTo("https://test.ntetz.com/level1/level2")
+        ).isEqualTo("https://api.twitter.com/level1/level2")
     }
 
     @Test
     fun fullUrl_ドメインと特殊文字付きパスが変換されず結合されること() {
-        `when`(mockTwitterConfig.baseEndpoint).thenReturn("https://test.ntetz.com/")
-
         Truth.assertThat(
             TwitterRequestMetadata(
                 method = "POST",
@@ -54,7 +48,7 @@ class TwitterRequestMetadataTests {
                 oneTimeParams = mockOnetimeParams,
                 twitterConfig = mockTwitterConfig
             ).fullUrl
-        ).isEqualTo("https://test.ntetz.com/level1/level2/level3?osakana=tabel&tabekata=yaku")
+        ).isEqualTo("https://api.twitter.com/level1/level2/level3?osakana=tabel&tabekata=yaku")
     }
 
     @Test

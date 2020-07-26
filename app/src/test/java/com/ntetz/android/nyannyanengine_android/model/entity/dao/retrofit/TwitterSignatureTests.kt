@@ -22,7 +22,6 @@ class TwitterSignatureTests {
 
     @Test
     fun getOAuthValue_リクエスト情報を元に値を生成できること() {
-        `when`(mockTwitterConfig.baseEndpoint).thenReturn("https://endpoint.test.ntetz.com/")
         `when`(mockTwitterConfig.consumerKey).thenReturn("abcConsumerKey")
         `when`(mockTwitterConfig.apiSecret).thenReturn("abcApiSecret")
 
@@ -54,7 +53,7 @@ class TwitterSignatureTests {
                     "oauth_timestamp=1600000000",
                     "oauth_token=",
                     "oauth_version=1.0",
-                    "oauth_signature=HL-OzfZ8FSJTas0-il7JofBStDY%3D"
+                    "oauth_signature=OOuKWsgJkf9byY4o9xEjyu1AyeI%3D"
                 ).joinToString(",")
             )
     }
