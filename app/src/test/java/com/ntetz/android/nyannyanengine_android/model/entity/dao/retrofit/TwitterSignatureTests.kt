@@ -1,9 +1,8 @@
 package com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit
 
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
-import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
-import java.util.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -40,7 +39,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = testRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
 
         Truth.assertThat(testSignature.getOAuthValue())
@@ -68,7 +67,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.getOAuthValue())
             .isEqualTo("OAuth key1=value1,oauth_signature=9bkADMZLChr-L2qV0XkuYLMqHtY%3D")
@@ -84,7 +83,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.getOAuthBody())
             .isEqualTo("key1=value1,oauth_signature=9bkADMZLChr-L2qV0XkuYLMqHtY%3D")
@@ -95,7 +94,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.getBase64EncodedHmacSha1("abcKey", "defData"))
             .isEqualTo("TgNZ5JvKg7L6xk88nxXpELLKW7s=")
@@ -108,7 +107,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.combinedSecretKeys).isEqualTo("abcApiSecret&")
     }
@@ -120,7 +119,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.combinedSecretKeys)
             .isEqualTo("abc%2FApiSecret&")
@@ -135,7 +134,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.combinedRequestMetadata)
             .isEqualTo("POST&testFullUrl&param1")
@@ -150,7 +149,7 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.combinedRequestMetadata)
             .isEqualTo("POST&testFullUrl&param1%26param2")
@@ -165,16 +164,9 @@ class TwitterSignatureTests {
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
-            base64Encoder = MockBase64Encoder()
+            base64Encoder = TestUtil.mockBase64Encoder
         )
         Truth.assertThat(testSignature.combinedRequestMetadata)
             .isEqualTo("POST&https%3A%2F%2Ftest.ntetz.com&key1%3Dvalue1")
-    }
-}
-
-private class MockBase64Encoder : IBase64Encoder {
-    override fun encodeToStringForHttp(byteArray: ByteArray): String {
-        val encoder = Base64.getUrlEncoder()
-        return encoder.encodeToString(byteArray)
     }
 }
