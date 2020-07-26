@@ -22,9 +22,9 @@ class TwitterSignatureTests {
 
     @Test
     fun getOAuthValue_リクエスト情報を元に値を生成できること() {
-        `when`(mockTwitterConfig.getBaseEndpoint()).thenReturn("https://endpoint.test.ntetz.com/")
-        `when`(mockTwitterConfig.getConsumerKey()).thenReturn("abcConsumerKey")
-        `when`(mockTwitterConfig.getApiSecret()).thenReturn("abcApiSecret")
+        `when`(mockTwitterConfig.baseEndpoint).thenReturn("https://endpoint.test.ntetz.com/")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("abcConsumerKey")
+        `when`(mockTwitterConfig.apiSecret).thenReturn("abcApiSecret")
 
         val testRequestMetadata = TwitterRequestMetadata(
             additionalParams = listOf(
@@ -53,7 +53,8 @@ class TwitterSignatureTests {
                     "oauth_signature_method=HMAC-SHA1",
                     "oauth_timestamp=1600000000",
                     "oauth_token=",
-                    "oauth_version=1.0,oauth_signature=HL-OzfZ8FSJTas0-il7JofBStDY%3D"
+                    "oauth_version=1.0",
+                    "oauth_signature=HL-OzfZ8FSJTas0-il7JofBStDY%3D"
                 ).joinToString(",")
             )
     }
@@ -63,7 +64,7 @@ class TwitterSignatureTests {
         `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("key1=value1"))
         `when`(mockTwitterRequestMetadata.method).thenReturn("")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("")
-        `when`(mockTwitterConfig.getApiSecret()).thenReturn("")
+        `when`(mockTwitterConfig.apiSecret).thenReturn("")
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
@@ -79,7 +80,7 @@ class TwitterSignatureTests {
         `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("key1=value1"))
         `when`(mockTwitterRequestMetadata.method).thenReturn("")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("")
-        `when`(mockTwitterConfig.getApiSecret()).thenReturn("")
+        `when`(mockTwitterConfig.apiSecret).thenReturn("")
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
@@ -103,7 +104,7 @@ class TwitterSignatureTests {
 
     @Test
     fun combinedSecretKeys_秘密鍵がアンパサンドで結合された文字列が得られること() {
-        `when`(mockTwitterConfig.getApiSecret()).thenReturn("abcApiSecret")
+        `when`(mockTwitterConfig.apiSecret).thenReturn("abcApiSecret")
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
@@ -115,7 +116,7 @@ class TwitterSignatureTests {
 
     @Test
     fun combinedSecretKeys_特殊文字がURLエンコードされた秘密鍵を含むこと() {
-        `when`(mockTwitterConfig.getApiSecret()).thenReturn("abc/ApiSecret")
+        `when`(mockTwitterConfig.apiSecret).thenReturn("abc/ApiSecret")
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
