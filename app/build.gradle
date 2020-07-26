@@ -115,6 +115,9 @@ dependencies {
     implementation "org.koin:koin-android-viewmodel:$koin_version"
     implementation "org.koin:koin-android-ext:$koin_version"
 
+    implementation 'com.squareup.retrofit2:retrofit:2.6.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.6.0'
+
     ktlint "com.pinterest:ktlint:0.36.0"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
