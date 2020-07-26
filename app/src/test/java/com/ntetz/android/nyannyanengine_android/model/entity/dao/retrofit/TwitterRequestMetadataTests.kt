@@ -17,8 +17,6 @@ class TwitterRequestMetadataTests {
 
     @Test
     fun fullUrl_ドメインと第一階層のパスが結合された文字列が取得できること() {
-        `when`(mockTwitterConfig.getBaseEndpoint()).thenReturn("https://test.ntetz.com/")
-
         Truth.assertThat(
             TwitterRequestMetadata(
                 method = "POST",
@@ -26,13 +24,11 @@ class TwitterRequestMetadataTests {
                 oneTimeParams = mockOnetimeParams,
                 twitterConfig = mockTwitterConfig
             ).fullUrl
-        ).isEqualTo("https://test.ntetz.com/level1")
+        ).isEqualTo("https://api.twitter.com/level1")
     }
 
     @Test
     fun fullUrl_ドメインと複数階層のパスが結合された文字列が取得できること() {
-        `when`(mockTwitterConfig.getBaseEndpoint()).thenReturn("https://test.ntetz.com/")
-
         Truth.assertThat(
             TwitterRequestMetadata(
                 method = "POST",
@@ -40,13 +36,11 @@ class TwitterRequestMetadataTests {
                 oneTimeParams = mockOnetimeParams,
                 twitterConfig = mockTwitterConfig
             ).fullUrl
-        ).isEqualTo("https://test.ntetz.com/level1/level2")
+        ).isEqualTo("https://api.twitter.com/level1/level2")
     }
 
     @Test
     fun fullUrl_ドメインと特殊文字付きパスが変換されず結合されること() {
-        `when`(mockTwitterConfig.getBaseEndpoint()).thenReturn("https://test.ntetz.com/")
-
         Truth.assertThat(
             TwitterRequestMetadata(
                 method = "POST",
@@ -54,12 +48,12 @@ class TwitterRequestMetadataTests {
                 oneTimeParams = mockOnetimeParams,
                 twitterConfig = mockTwitterConfig
             ).fullUrl
-        ).isEqualTo("https://test.ntetz.com/level1/level2/level3?osakana=tabel&tabekata=yaku")
+        ).isEqualTo("https://api.twitter.com/level1/level2/level3?osakana=tabel&tabekata=yaku")
     }
 
     @Test
     fun requestParams_追加パラメータ未指定時基本パラメータのみ得られること() {
-        `when`(mockTwitterConfig.getConsumerKey()).thenReturn("abc123GHI")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
         val testRequestMetadata = TwitterRequestMetadata(
             method = "POST",
@@ -80,7 +74,7 @@ class TwitterRequestMetadataTests {
 
     @Test
     fun requestParams_追加パラメータ指定時先頭に追加されること() {
-        `when`(mockTwitterConfig.getConsumerKey()).thenReturn("abc123GHI")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
         val testResponseMetadata = TwitterRequestMetadata(
             additionalParams = listOf(TwitterSignParam("testKey1", "testVal1")),
@@ -103,7 +97,7 @@ class TwitterRequestMetadataTests {
 
     @Test
     fun requestParams_追加パラメータ複数指定時順番が維持されること() {
-        `when`(mockTwitterConfig.getConsumerKey()).thenReturn("abc123GHI")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
         val testResponseMetadata = TwitterRequestMetadata(
             additionalParams = listOf(
@@ -130,7 +124,7 @@ class TwitterRequestMetadataTests {
 
     @Test
     fun requestParams_特殊文字つきパラメータがURLエンコードされること() {
-        `when`(mockTwitterConfig.getConsumerKey()).thenReturn("abc123GHI")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
         val testResponseMetadata = TwitterRequestMetadata(
             additionalParams = listOf(

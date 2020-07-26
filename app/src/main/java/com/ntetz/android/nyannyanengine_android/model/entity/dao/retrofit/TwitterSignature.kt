@@ -37,7 +37,7 @@ class TwitterSignature(
 
     val combinedSecretKeys: String
         get() = listOf(
-            twitterConfig.getApiSecret().addingPercentEncoding(),
+            twitterConfig.apiSecret.addingPercentEncoding(),
             ""
         ).joinToString("&")
 

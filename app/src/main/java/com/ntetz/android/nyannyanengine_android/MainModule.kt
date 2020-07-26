@@ -3,11 +3,15 @@ package com.ntetz.android.nyannyanengine_android
 import android.content.Context
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
+import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.TwitterApi
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
+import com.ntetz.android.nyannyanengine_android.model.repository.AccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsRepository
+import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.HashtagUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel
 import com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoViewModel
 import com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingViewModel
@@ -23,6 +27,10 @@ private val viewModelModule = module {
     single<IDefaultHashtagConfig> { DefaultHashtagConfig() }
 
     single { ApplicationUsecase(getUserProfileDatabase(androidContext())) }
+    single<IAccountUsecase> {
+        val repository = AccountRepository(TwitterApi)
+        AccountUsecase(repository)
+    }
 
     viewModel {
         val dao = getUserProfileDatabase(androidContext()).defaultHashtagsDao()
