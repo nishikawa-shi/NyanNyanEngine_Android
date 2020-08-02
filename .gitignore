@@ -22,3 +22,7 @@ app/nyan_nyan_engine_android_release.jks
 
 app/android-deploy-user-dev.json
 app/android-deploy-user-prd.json
+
+# Bundle secrets
+
+secure-config-master-lib.cpp
