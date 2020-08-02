@@ -74,6 +74,13 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
+    // API用の設定値はあまり目立たせたくないのでNDKを利用
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+        }
+    }
 }
 
 buildscript {

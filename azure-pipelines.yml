@@ -72,6 +72,14 @@ stages:
     - script: |
         sudo ln -s $(appReleaseKeystore.secureFilePath) app/nyan_nyan_engine_android_release.jks
       displayName: 'リリースビルド署名用キーストアの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: '秘匿系設定ファイルを取得'
+      name: privateBundle
+      inputs:
+        secureFile: secure-config-master-lib.cpp
+    - script: |
+        sudo ln -s $(privateBundle.secureFilePath) app/src/main/cpp/secure-config-master-lib.cpp
+      displayName: '秘匿系設定ファイルの参照をプロジェクト内部に設置'
     - task: Gradle@2
       displayName: 'dev環境Releaseビルドを配布'
       inputs:
