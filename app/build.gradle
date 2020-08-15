@@ -76,6 +76,7 @@ android {
     }
 
     // API用の設定値はあまり目立たせたくないのでNDKを利用
+    ndkVersion "21.3.6528147"
     externalNativeBuild {
         cmake {
             path file('src/main/cpp/CMakeLists.txt')
