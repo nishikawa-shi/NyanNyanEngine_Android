@@ -23,11 +23,21 @@
         <deepLink
             android:id="@+id/dev_twitter_callback"
             android:autoVerify="true"
-            app:uri="https://nyannyanengine-ios-d.firebaseapp.com/authorized/" />
+            app:uri="https://nyannyanengine-ios-d.firebaseapp.com/authorized/?oauth_token={oauthToken}&amp;oauth_verifier={oauthVerifier}" />
         <deepLink
             android:id="@+id/prod_twitter_callback"
             android:autoVerify="true"
-            app:uri="https://nyannyanengine.firebaseapp.com/authorized/" />
+            app:uri="https://nyannyanengine.firebaseapp.com/authorized/?oauth_token={oauthToken}&amp;oauth_verifier={oauthVerifier}" />
+        <argument
+            android:name="oauthToken"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+        <argument
+            android:name="oauthVerifier"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
     </fragment>
     <fragment
         android:id="@+id/postNekogoFragment"
