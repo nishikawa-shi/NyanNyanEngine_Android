@@ -3,6 +3,8 @@
     <string name="default_twitter_id">\@NNyansu</string>
     <string name="nav_header_desc">Account info</string>
 
+    <string name="home_timeline_description_post_nekogo">Post cat language</string>
+
     <string name="settings_title_hashtag_engine">#MeowMeowEngine</string>
     <string name="settings_title_hashtag_nadenade">#PetMeMeeow🧶</string>
 
