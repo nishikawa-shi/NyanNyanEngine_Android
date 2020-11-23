@@ -20,6 +20,12 @@
         <action
             android:id="@+id/action_mainFragment_to_hashtagSettingFragment"
             app:destination="@id/hashtagSettingFragment" />
+        <deepLink
+            android:id="@+id/dev_twitter_callback"
+            app:uri="https://nyannyanengine-ios-d.firebaseapp.com/authorized/" />
+        <deepLink
+            android:id="@+id/prod_twitter_callback"
+            app:uri="https://nyannyanengine.firebaseapp.com/authorized/" />
     </fragment>
     <fragment
         android:id="@+id/postNekogoFragment"
