@@ -22,9 +22,11 @@
             app:destination="@id/hashtagSettingFragment" />
         <deepLink
             android:id="@+id/dev_twitter_callback"
+            android:autoVerify="true"
             app:uri="https://nyannyanengine-ios-d.firebaseapp.com/authorized/" />
         <deepLink
             android:id="@+id/prod_twitter_callback"
+            android:autoVerify="true"
             app:uri="https://nyannyanengine.firebaseapp.com/authorized/" />
     </fragment>
     <fragment
