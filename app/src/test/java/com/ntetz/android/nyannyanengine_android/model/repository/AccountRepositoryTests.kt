@@ -6,6 +6,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
+import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
 import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -27,6 +28,9 @@ class AccountRepositoryTests {
 
     @Mock
     private lateinit var mockTwitterConfig: ITwitterConfig
+
+    @Mock
+    private lateinit var mockTwitterUserDao: ITwitterUserDao
 
     @Test
     fun getAuthorizationToken_Retrofitのレスポンス由来の値が得られること() = runBlocking {
@@ -56,7 +60,8 @@ class AccountRepositoryTests {
                 AccountRepository(
                     twitterApi = mockTwitterApi,
                     twitterConfig = mockTwitterConfig,
-                    base64Encoder = TestUtil.mockBase64Encoder
+                    base64Encoder = TestUtil.mockBase64Encoder,
+                    twitterUserDao = mockTwitterUserDao
                 )
             Truth.assertThat(testRepository.getAuthorizationToken(this))
                 .isEqualTo("mockResponseString")

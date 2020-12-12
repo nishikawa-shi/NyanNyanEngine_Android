@@ -29,7 +29,10 @@ private val viewModelModule = module {
 
     single { ApplicationUsecase(getUserProfileDatabase(androidContext())) }
     single<IAccountUsecase> {
-        val repository = AccountRepository(TwitterApi)
+        val repository = AccountRepository(
+            twitterApi = TwitterApi,
+            twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao()
+        )
         AccountUsecase(repository)
     }
 
