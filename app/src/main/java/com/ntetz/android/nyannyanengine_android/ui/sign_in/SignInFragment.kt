@@ -32,11 +32,13 @@ class SignInFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        println("oauth token is ${this.args.oauthToken}")
         viewModel.signInEvent.observe(viewLifecycleOwner, Observer {
             println("sign in finished! $it")
             findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
         })
-        viewModel.executeSignIn()
+        viewModel.executeSignIn(
+            oauthVerifier = this.args.oauthVerifier,
+            oauthToken = this.args.oauthToken
+        )
     }
 }

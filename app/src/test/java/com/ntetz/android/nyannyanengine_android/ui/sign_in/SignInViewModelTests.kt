@@ -2,6 +2,7 @@ package com.ntetz.android.nyannyanengine_android.ui.sign_in
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import kotlinx.coroutines.Dispatchers
@@ -46,17 +47,17 @@ class SignInViewModelTests {
 
     @Test
     fun executeSignIn_fetchAccessTokenが呼ばれること() = runBlocking {
-        `when`(mockAccountUsecase.fetchAccessToken()).thenReturn(null)
-        SignInViewModel(mockAccountUsecase).executeSignIn()
+        `when`(mockAccountUsecase.fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(null)
+        SignInViewModel(mockAccountUsecase).executeSignIn("authVerifierDummy", "oauthTokenDummy")
         delay(10) // これがないとCIでコケる
 
-        verify(mockAccountUsecase, times(1)).fetchAccessToken()
+        verify(mockAccountUsecase, times(1)).fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())
         return@runBlocking
     }
 
     @Test
     fun executeSignIn_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
-        `when`(mockAccountUsecase.fetchAccessToken()).thenReturn(
+        `when`(mockAccountUsecase.fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
             SignInResultComponent(
                 isSucceeded = true,
                 errorMessage = "testTokenEventTest"
@@ -64,7 +65,7 @@ class SignInViewModelTests {
         )
 
         val testViewModel = SignInViewModel(mockAccountUsecase)
-        testViewModel.executeSignIn()
+        testViewModel.executeSignIn("authVerifierDummy", "oauthTokenDummy")
         delay(10) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.signInEvent.value).isEqualTo(

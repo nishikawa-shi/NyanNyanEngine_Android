@@ -13,9 +13,21 @@ class SignInViewModel(private val accountUsecase: IAccountUsecase) : ViewModel()
     val signInEvent: LiveData<SignInResultComponent?>
         get() = _signInEvent
 
-    fun executeSignIn() {
+    fun executeSignIn(oauthVerifier: String?, oauthToken: String?) {
         viewModelScope.launch {
-            _signInEvent.postValue(accountUsecase.fetchAccessToken())
+            if (oauthVerifier == null || oauthToken == null) {
+                // TODO: 基本的には発生しないが、クエリストリングなしでアプリに遷移してきた時のエラーハンドリング
+                _signInEvent.postValue(null)
+                println("tootteruyo")
+                return@launch
+            }
+            _signInEvent.postValue(
+                accountUsecase.fetchAccessToken(
+                    oauthVerifier = oauthVerifier,
+                    oauthToken = oauthToken,
+                    scope = this
+                )
+            )
         }
     }
 }
