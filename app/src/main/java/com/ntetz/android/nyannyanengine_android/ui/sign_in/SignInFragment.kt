@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ntetz.android.nyannyanengine_android.R
@@ -32,6 +33,10 @@ class SignInFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         println("oauth token is ${this.args.oauthToken}")
-        findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
+        viewModel.signInEvent.observe(viewLifecycleOwner, Observer {
+            println("sign in finished! $it")
+            findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
+        })
+        viewModel.executeSignIn()
     }
 }

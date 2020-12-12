@@ -40,7 +40,7 @@ private val viewModelModule = module {
         HashtagSettingViewModel(usecase)
     }
     viewModel { MainViewModel() }
-    viewModel { SignInViewModel() }
+    viewModel { SignInViewModel(get()) }
     viewModel { PostNekogoViewModel() }
 }
 
