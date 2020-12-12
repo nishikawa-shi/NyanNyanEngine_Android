@@ -19,6 +19,7 @@ import retrofit2.Response
 interface IAccountRepository {
     suspend fun getAuthorizationToken(scope: CoroutineScope): String?
     suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): Response<String?>?
+    suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
 }
 
@@ -83,6 +84,14 @@ class AccountRepository(
                         authorization = authorization
                     )
                     .execute()
+            }
+        }
+    }
+
+    override suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord? {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterUserDao.getAll().firstOrNull()
             }
         }
     }

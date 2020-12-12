@@ -14,6 +14,8 @@ interface IAccountUsecase {
         oauthToken: String,
         scope: CoroutineScope
     ): SignInResultComponent?
+
+    suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord?
 }
 
 class AccountUsecase(private val accountRepository: IAccountRepository) : IAccountUsecase {
@@ -57,6 +59,10 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
             )
         }
         return SignInResultComponent(isSucceeded = true)
+    }
+
+    override suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord? {
+        return accountRepository.loadTwitterUser(scope)
     }
 
     private fun createTwitterUserRecord(tokenApiResponse: String?): TwitterUserRecord? {
