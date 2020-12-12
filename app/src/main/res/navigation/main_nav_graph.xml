@@ -20,6 +20,23 @@
         <action
             android:id="@+id/action_mainFragment_to_hashtagSettingFragment"
             app:destination="@id/hashtagSettingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postNekogoFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
+        android:label="PostNekogoFragment" />
+    <fragment
+        android:id="@+id/hashtagSettingFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"
+        android:label="HashtagSettingFragment" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.sign_in.SignInFragment"
+        android:label="sign_in_fragment"
+        tools:layout="@layout/sign_in_fragment">
+        <action
+            android:id="@+id/action_singInFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
         <deepLink
             android:id="@+id/dev_twitter_callback"
             android:autoVerify="true"
@@ -39,12 +56,4 @@
             app:nullable="true"
             android:defaultValue="null" />
     </fragment>
-    <fragment
-        android:id="@+id/postNekogoFragment"
-        android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
-        android:label="PostNekogoFragment" />
-    <fragment
-        android:id="@+id/hashtagSettingFragment"
-        android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"
-        android:label="HashtagSettingFragment" />
 </navigation>
