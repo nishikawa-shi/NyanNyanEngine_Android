@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ntetz.android.nyannyanengine_android.R
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class SignInFragment : Fragment() {
 
@@ -17,7 +18,7 @@ class SignInFragment : Fragment() {
         fun newInstance() = SignInFragment()
     }
 
-    private lateinit var viewModel: SignInViewModel
+    private val viewModel: SignInViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +30,6 @@ class SignInFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(SignInViewModel::class.java)
 
         println("oauth token is ${this.args.oauthToken}")
         findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
