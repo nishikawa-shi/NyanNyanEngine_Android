@@ -8,6 +8,7 @@ import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignParam
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.util.Base64Encoder
 import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
 import kotlinx.coroutines.CoroutineScope
@@ -18,6 +19,7 @@ import retrofit2.Response
 interface IAccountRepository {
     suspend fun getAuthorizationToken(scope: CoroutineScope): String?
     suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): Response<String?>?
+    suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
 }
 
 class AccountRepository(
@@ -81,6 +83,14 @@ class AccountRepository(
                         authorization = authorization
                     )
                     .execute()
+            }
+        }
+    }
+
+    override suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope) {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterUserDao.upsert(record)
             }
         }
     }

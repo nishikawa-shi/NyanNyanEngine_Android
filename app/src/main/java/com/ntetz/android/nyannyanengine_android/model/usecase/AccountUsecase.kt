@@ -2,6 +2,7 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 
 import android.net.Uri
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +44,29 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
                 errorMessage = "network error code ${token.code()}"
             )
         }
+        val twitterUserRecord = createTwitterUserRecord(token.body()) ?: return SignInResultComponent(
+            isSucceeded = false,
+            errorCode = 9998,
+            errorMessage = "broken response..."
+        )
+        kotlin.runCatching { accountRepository.saveTwitterUser(twitterUserRecord, scope) }.onFailure {
+            return SignInResultComponent(
+                isSucceeded = false,
+                errorCode = 9997,
+                errorMessage = "failed to save token..."
+            )
+        }
         return SignInResultComponent(isSucceeded = true)
+    }
+
+    private fun createTwitterUserRecord(tokenApiResponse: String?): TwitterUserRecord? {
+        // Uriクラスのクエリストリングのパースを正常動作するために、ダミーのURLを結合させている
+        val uri = Uri.parse("${TwitterEndpoints.baseEndpoint}?$tokenApiResponse") ?: return null
+        return TwitterUserRecord(
+            id = uri.getQueryParameter("user_id") ?: return null,
+            oauthToken = uri.getQueryParameter("oauth_token") ?: return null,
+            oauthTokenSecret = uri.getQueryParameter("oauth_token_secret") ?: return null,
+            screenName = uri.getQueryParameter("screen_name") ?: return null
+        )
     }
 }
