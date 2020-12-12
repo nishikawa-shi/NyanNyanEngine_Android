@@ -8,6 +8,8 @@ object TwitterEndpoints {
     const val authorizePagePath: String = "oauth/authorize"
 
     const val requestTokenPath: String = "oauth/request_token"
+    const val accessTokenPath: String = "oauth/access_token"
     const val requestTokenMethod: String = "POST"
+    const val accessTokenMethod: String = "POST"
     const val requestTokenOauthCallbackParamName: String = "oauth_callback"
 }
