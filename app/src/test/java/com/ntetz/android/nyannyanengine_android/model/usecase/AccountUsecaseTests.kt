@@ -2,8 +2,15 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 
 import android.net.Uri
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.TestUtil
+import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -11,6 +18,10 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.mock.MockRetrofit
+import retrofit2.mock.NetworkBehavior
 
 @RunWith(MockitoJUnitRunner::class)
 class AccountUsecaseTests {
@@ -39,5 +50,75 @@ class AccountUsecaseTests {
         AccountUsecase(mockAccountRepository).createAuthorizationEndpoint(this)
         verify(mockAccountRepository, times(1)).getAuthorizationToken(this)
         return@runBlocking
+    }
+
+    @Test
+    fun fetchAccessToken_Uriが不正な時エラー用の値を返すこと() = runBlocking {
+        // Robolectricを入れたくない関係上、android.Uriクラスがnullを返すことを応用している
+        withContext(Dispatchers.IO) {
+            val retrofit = Retrofit
+                .Builder()
+                .baseUrl(TwitterEndpoints.baseEndpoint)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build()
+            val behavior = NetworkBehavior.create().also {
+                it.setDelay(0, TimeUnit.MILLISECONDS)
+                it.setFailurePercent(0)
+                it.setErrorPercent(0)
+            }
+            val mockResponse = MockRetrofit
+                .Builder(retrofit)
+                .networkBehavior(behavior)
+                .build()
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse("oauth_token=mTk&oauth_token_secret=mSc&user_id=mkI&screen_name=mNm")
+                .accessToken("dummy", "dummy2", "dummy3")
+                .execute()
+
+            `when`(mockAccountRepository.getAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
+                mockResponse
+            )
+
+            Truth.assertThat(AccountUsecase(mockAccountRepository).fetchAccessToken("dummyVeri", "dummyTok", this))
+                .isEqualTo(
+                    SignInResultComponent(
+                        isSucceeded = false,
+                        errorCode = 9998,
+                        errorMessage = "broken response..."
+                    )
+                )
+        }
+    }
+
+    @Test
+    fun fetchAccessToken_accessTokenAPIがレポジトリを通して1度呼ばれること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val retrofit = Retrofit
+                .Builder()
+                .baseUrl(TwitterEndpoints.baseEndpoint)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build()
+            val behavior = NetworkBehavior.create().also {
+                it.setDelay(0, TimeUnit.MILLISECONDS)
+                it.setFailurePercent(0)
+                it.setErrorPercent(0)
+            }
+            val mockResponse = MockRetrofit
+                .Builder(retrofit)
+                .networkBehavior(behavior)
+                .build()
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse("oauth_token=mTk&oauth_token_secret=mSc&user_id=mkI&screen_name=mNm")
+                .accessToken("dummy", "dummy2", "dummy3")
+                .execute()
+
+            `when`(mockAccountRepository.getAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
+                mockResponse
+            )
+
+            AccountUsecase(mockAccountRepository).fetchAccessToken("dummyVeri", "dummyTok", this)
+            verify(mockAccountRepository, times(1)).getAccessToken("dummyVeri", "dummyTok", this)
+            return@withContext
+        }
     }
 }
