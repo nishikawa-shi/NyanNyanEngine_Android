@@ -4,6 +4,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
@@ -15,7 +16,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 interface ITweetsRepository {
-    suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): Response<String?>?
+    suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): Response<List<Tweet>?>?
 }
 
 class TweetsRepository(
@@ -24,7 +25,7 @@ class TweetsRepository(
     private val base64Encoder: IBase64Encoder = Base64Encoder()
 ) : ITweetsRepository {
 
-    override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): Response<String?>? {
+    override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): Response<List<Tweet>?>? {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
                 val requestMetadata = TwitterRequestMetadata(
@@ -39,7 +40,7 @@ class TweetsRepository(
                     base64Encoder = base64Encoder
                 ).getOAuthValue(user)
 
-                twitterApi.client
+                twitterApi.objectClient
                     .getTweets(
                         authorization = authorization
                     )

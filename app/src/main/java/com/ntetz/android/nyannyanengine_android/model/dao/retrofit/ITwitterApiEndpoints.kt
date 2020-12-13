@@ -1,6 +1,7 @@
 package com.ntetz.android.nyannyanengine_android.model.dao.retrofit
 
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -19,5 +20,5 @@ interface ITwitterApiEndpoints {
     ): Call<String>
 
     @GET(TwitterEndpoints.homeTimelinePath)
-    fun getTweets(@Header(TwitterEndpoints.authorizationHeaderName) authorization: String): Call<String>
+    fun getTweets(@Header(TwitterEndpoints.authorizationHeaderName) authorization: String): Call<List<Tweet>>
 }
