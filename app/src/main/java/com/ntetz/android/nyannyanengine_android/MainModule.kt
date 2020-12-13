@@ -8,10 +8,13 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfi
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.repository.AccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsRepository
+import com.ntetz.android.nyannyanengine_android.model.repository.TweetsRepository
 import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.HashtagUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.TweetsUsecase
 import com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel
 import com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoViewModel
 import com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingViewModel
@@ -34,6 +37,16 @@ private val viewModelModule = module {
             twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao()
         )
         AccountUsecase(repository)
+    }
+    single<ITweetsUsecase> {
+        val tweetRepository = TweetsRepository(
+            twitterApi = TwitterApi
+        )
+        val accountRepository = AccountRepository(
+            twitterApi = TwitterApi,
+            twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao()
+        )
+        TweetsUsecase(tweetsRepository = tweetRepository, accountRepository = accountRepository)
     }
 
     viewModel {

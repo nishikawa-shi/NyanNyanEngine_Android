@@ -28,7 +28,7 @@ class MainFragment : Fragment() {
         binding = MainFragmentBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        viewModel.twitterUserEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.tweetsEvent.observe(viewLifecycleOwner, Observer {
             println("record is $it")
         })
         viewModel.initialize()

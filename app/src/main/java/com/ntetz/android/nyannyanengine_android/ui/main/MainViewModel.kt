@@ -4,20 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
-import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val accountUsecase: IAccountUsecase) : ViewModel() {
-    private val _twitterUserEvent: MutableLiveData<TwitterUserRecord?> =
+class MainViewModel(private val tweetsUsecase: ITweetsUsecase) : ViewModel() {
+    private val _tweetsEvent: MutableLiveData<String?> =
         MutableLiveData()
 
-    val twitterUserEvent: LiveData<TwitterUserRecord?>
-        get() = _twitterUserEvent
+    val tweetsEvent: LiveData<String?>
+        get() = _tweetsEvent
 
     fun initialize() {
         viewModelScope.launch {
-            _twitterUserEvent.postValue(accountUsecase.loadAccessToken(this))
+            _tweetsEvent.postValue(tweetsUsecase.getTweets(this))
         }
     }
 }
