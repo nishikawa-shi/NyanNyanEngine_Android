@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultTweetConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
@@ -14,8 +15,14 @@ class TweetsUsecase(
     private val accountRepository: IAccountRepository
 ) : ITweetsUsecase {
     override suspend fun getTweets(scope: CoroutineScope): List<Tweet>? {
-        val user = accountRepository.loadTwitterUser(scope) ?: return null
+        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
         val result = tweetsRepository.getTweets(user = user, scope = scope)
-        return result?.body()
+        if (result?.isSuccessful != true) {
+            return when (result?.code()) {
+                429 -> DefaultTweetConfig.tooManyRequestList
+                else -> DefaultTweetConfig.undefinedErrorList
+            }
+        }
+        return result.body()
     }
 }
