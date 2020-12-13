@@ -28,15 +28,19 @@ class MainFragment : Fragment() {
         binding = MainFragmentBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        viewModel.tweetsEvent.observe(viewLifecycleOwner, Observer {
-            println("record is $it")
-        })
-        viewModel.initialize()
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        val adapter = MainAdapter(viewModel, this)
+        binding.tweetList.adapter = adapter
+        viewModel.tweetsEvent.observe(viewLifecycleOwner, Observer {
+            adapter.notifyDataSetChanged()
+        })
+        viewModel.initialize()
+
         binding.postNekogoFragmentOpenButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_postNekogoFragment)
         }
