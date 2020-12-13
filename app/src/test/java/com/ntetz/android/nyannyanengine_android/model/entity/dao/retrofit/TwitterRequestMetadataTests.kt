@@ -69,7 +69,7 @@ class TwitterRequestMetadataTests {
             "oauth_token=",
             "oauth_version=1.0"
         )
-        Truth.assertThat(testRequestMetadata.requestParams).isEqualTo(exp)
+        Truth.assertThat(testRequestMetadata.getRequestParams(token = "")).isEqualTo(exp)
     }
 
     @Test
@@ -92,7 +92,7 @@ class TwitterRequestMetadataTests {
             "oauth_token=",
             "oauth_version=1.0"
         )
-        Truth.assertThat(testResponseMetadata.requestParams).isEqualTo(exp)
+        Truth.assertThat(testResponseMetadata.getRequestParams(token = "")).isEqualTo(exp)
     }
 
     @Test
@@ -119,7 +119,7 @@ class TwitterRequestMetadataTests {
             "oauth_token=",
             "oauth_version=1.0"
         )
-        Truth.assertThat(testResponseMetadata.requestParams).isEqualTo(exp)
+        Truth.assertThat(testResponseMetadata.getRequestParams(token = "")).isEqualTo(exp)
     }
 
     @Test
@@ -135,6 +135,6 @@ class TwitterRequestMetadataTests {
             oneTimeParams = mockOnetimeParams,
             twitterConfig = mockTwitterConfig
         )
-        Truth.assertThat(testResponseMetadata.requestParams[0]).isEqualTo("testKey%2F1=testVal%3F1")
+        Truth.assertThat(testResponseMetadata.getRequestParams(token = "")[0]).isEqualTo("testKey%2F1=testVal%3F1")
     }
 }

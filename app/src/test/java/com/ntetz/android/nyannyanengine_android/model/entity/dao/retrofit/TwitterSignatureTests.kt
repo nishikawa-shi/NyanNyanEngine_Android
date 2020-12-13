@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -59,7 +60,7 @@ class TwitterSignatureTests {
 
     @Test
     fun getOAuthValue_先頭にOAuthとついたURLエンコード済署名つきパラメータ一覧が得られること() {
-        `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("key1=value1"))
+        `when`(mockTwitterRequestMetadata.getRequestParams("")).thenReturn(listOf("key1=value1"))
         `when`(mockTwitterRequestMetadata.method).thenReturn("")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("")
         `when`(mockTwitterConfig.apiSecret).thenReturn("")
@@ -74,8 +75,8 @@ class TwitterSignatureTests {
     }
 
     @Test
-    fun getOAuthBody_URLエンコード署名つきパラメータ一覧が得られること() {
-        `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("key1=value1"))
+    fun getOAuthValue_ログイン時のユーザー情報が反映された値が得られること() {
+        `when`(mockTwitterRequestMetadata.getRequestParams("oauthVTestToken")).thenReturn(listOf("key1=value1"))
         `when`(mockTwitterRequestMetadata.method).thenReturn("")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("")
         `when`(mockTwitterConfig.apiSecret).thenReturn("")
@@ -85,7 +86,29 @@ class TwitterSignatureTests {
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder
         )
-        Truth.assertThat(testSignature.getOAuthBody())
+        val testUser = TwitterUserRecord(
+            id = "oauthVTestId",
+            oauthToken = "oauthVTestToken",
+            oauthTokenSecret = "oauthVTestSecret",
+            screenName = "oauthVTestSNm"
+        )
+        Truth.assertThat(testSignature.getOAuthValue(testUser))
+            .isEqualTo("OAuth key1=value1,oauth_signature=BJw5r3yoEMMGBIjV5VCKXgOh4uc%3D")
+    }
+
+    @Test
+    fun getOAuthBody_URLエンコード署名つきパラメータ一覧が得られること() {
+        `when`(mockTwitterRequestMetadata.getRequestParams()).thenReturn(listOf("key1=value1"))
+        `when`(mockTwitterRequestMetadata.method).thenReturn("")
+        `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("")
+        `when`(mockTwitterConfig.apiSecret).thenReturn("")
+
+        val testSignature = TwitterSignature(
+            requestMetadata = mockTwitterRequestMetadata,
+            twitterConfig = mockTwitterConfig,
+            base64Encoder = TestUtil.mockBase64Encoder
+        )
+        Truth.assertThat(testSignature.getOAuthBody(token = "", tokenSecret = ""))
             .isEqualTo("key1=value1,oauth_signature=9bkADMZLChr-L2qV0XkuYLMqHtY%3D")
     }
 
@@ -109,7 +132,7 @@ class TwitterSignatureTests {
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder
         )
-        Truth.assertThat(testSignature.combinedSecretKeys).isEqualTo("abcApiSecret&")
+        Truth.assertThat(testSignature.getCombinedSecretKeys(tokenSecret = "")).isEqualTo("abcApiSecret&")
     }
 
     @Test
@@ -121,7 +144,7 @@ class TwitterSignatureTests {
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder
         )
-        Truth.assertThat(testSignature.combinedSecretKeys)
+        Truth.assertThat(testSignature.getCombinedSecretKeys(tokenSecret = ""))
             .isEqualTo("abc%2FApiSecret&")
     }
 
@@ -129,14 +152,14 @@ class TwitterSignatureTests {
     fun combinedRequestMetadata_リクエスト情報がアンパサンドで結合された文字列が得られること() {
         `when`(mockTwitterRequestMetadata.method).thenReturn("POST")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("testFullUrl")
-        `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("param1"))
+        `when`(mockTwitterRequestMetadata.getRequestParams()).thenReturn(listOf("param1"))
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder
         )
-        Truth.assertThat(testSignature.combinedRequestMetadata)
+        Truth.assertThat(testSignature.getCombinedRequestMetadata(token = ""))
             .isEqualTo("POST&testFullUrl&param1")
     }
 
@@ -144,14 +167,14 @@ class TwitterSignatureTests {
     fun combinedRequestMetadata_リクエストパラメータが複数ある時アンバサンドで結合後URLエンコードされること() {
         `when`(mockTwitterRequestMetadata.method).thenReturn("POST")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("testFullUrl")
-        `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("param1", "param2"))
+        `when`(mockTwitterRequestMetadata.getRequestParams()).thenReturn(listOf("param1", "param2"))
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder
         )
-        Truth.assertThat(testSignature.combinedRequestMetadata)
+        Truth.assertThat(testSignature.getCombinedRequestMetadata(token = ""))
             .isEqualTo("POST&testFullUrl&param1%26param2")
     }
 
@@ -159,14 +182,14 @@ class TwitterSignatureTests {
     fun combinedRequestMetadata_リクエスト情報内の特殊文字がURLエンコードされること() {
         `when`(mockTwitterRequestMetadata.method).thenReturn("POST")
         `when`(mockTwitterRequestMetadata.fullUrl).thenReturn("https://test.ntetz.com")
-        `when`(mockTwitterRequestMetadata.requestParams).thenReturn(listOf("key1=value1"))
+        `when`(mockTwitterRequestMetadata.getRequestParams()).thenReturn(listOf("key1=value1"))
 
         val testSignature = TwitterSignature(
             requestMetadata = mockTwitterRequestMetadata,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder
         )
-        Truth.assertThat(testSignature.combinedRequestMetadata)
+        Truth.assertThat(testSignature.getCombinedRequestMetadata(token = ""))
             .isEqualTo("POST&https%3A%2F%2Ftest.ntetz.com&key1%3Dvalue1")
     }
 }
