@@ -47,7 +47,7 @@ class AccountRepository(
             ).getOAuthValue()
 
             withContext(Dispatchers.IO) {
-                twitterApi.client
+                twitterApi.scalarClient
                     .requestToken(authorization)
                     .execute()
                     .body()
@@ -77,7 +77,7 @@ class AccountRepository(
             ).getOAuthValue()
 
             withContext(Dispatchers.IO) {
-                twitterApi.client
+                twitterApi.scalarClient
                     .accessToken(
                         oauthVerifier = oauthVerifier,
                         oauthToken = oauthToken,

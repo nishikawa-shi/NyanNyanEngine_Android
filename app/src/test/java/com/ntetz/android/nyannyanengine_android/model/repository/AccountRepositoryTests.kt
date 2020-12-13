@@ -35,7 +35,7 @@ class AccountRepositoryTests {
             val mockEndpoints = TestUtil.mockNormalRetrofit
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse("mockResponseString")
-            `when`(mockTwitterApi.client).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.scalarClient).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -58,7 +58,7 @@ class AccountRepositoryTests {
             val mockEndpoints = TestUtil.mockNormalRetrofit
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse("mockTokenResponseString")
-            `when`(mockTwitterApi.client).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.scalarClient).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")

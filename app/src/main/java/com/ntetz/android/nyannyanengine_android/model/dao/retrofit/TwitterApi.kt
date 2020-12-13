@@ -9,12 +9,12 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.create
 
 interface ITwitterApi {
-    val client: ITwitterApiEndpoints
+    val scalarClient: ITwitterApiEndpoints
     val objectClient: ITwitterApiEndpoints
 }
 
 object TwitterApi : ITwitterApi {
-    override val client: ITwitterApiEndpoints = Retrofit
+    override val scalarClient: ITwitterApiEndpoints = Retrofit
         .Builder()
         .baseUrl(TwitterEndpoints.baseEndpoint)
         .addConverterFactory(ScalarsConverterFactory.create())
