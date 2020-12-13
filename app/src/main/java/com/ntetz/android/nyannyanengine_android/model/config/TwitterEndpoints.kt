@@ -9,7 +9,9 @@ object TwitterEndpoints {
 
     const val requestTokenPath: String = "oauth/request_token"
     const val accessTokenPath: String = "oauth/access_token"
+    const val homeTimelinePath: String = "1.1/statuses/home_timeline.json"
     const val requestTokenMethod: String = "POST"
     const val accessTokenMethod: String = "POST"
+    const val homeTimelineMethod: String = "GET"
     const val requestTokenOauthCallbackParamName: String = "oauth_callback"
 }

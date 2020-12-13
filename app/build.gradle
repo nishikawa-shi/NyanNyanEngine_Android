@@ -133,9 +133,15 @@ dependencies {
     implementation "org.koin:koin-android-viewmodel:$koin_version"
     implementation "org.koin:koin-android-ext:$koin_version"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.6.0'
-    testImplementation 'com.squareup.retrofit2:retrofit-mock:2.6.0'
+    def retrofit_version = '2.9.0'
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
+
+    def moshi_version = '1.11.0'
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
 
     ktlint "com.pinterest:ktlint:0.36.0"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.1'

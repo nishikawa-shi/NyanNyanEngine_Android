@@ -9,7 +9,7 @@ interface ITwitterRequestMetadata {
     val path: String
     val fullUrl: String
     val oneTimeParams: TwitterOneTimeParams
-    val requestParams: List<String>
+    fun getRequestParams(token: String = ""): List<String>
 }
 
 data class TwitterRequestMetadata(
@@ -22,29 +22,29 @@ data class TwitterRequestMetadata(
     override val fullUrl: String
         get() = listOf(TwitterEndpoints.baseEndpoint, path).joinToString("")
 
-    override val requestParams: List<String>
-        get() {
-            val baseParams = listOf(
-                TwitterSignParam(
-                    "oauth_consumer_key", twitterConfig.consumerKey
-                ),
-                TwitterSignParam(
-                    "oauth_nonce", oneTimeParams.oauthNonce
-                ),
-                TwitterSignParam(
-                    "oauth_signature_method", "HMAC-SHA1"
-                ),
-                TwitterSignParam(
-                    "oauth_timestamp", oneTimeParams.oauthTimestamp
-                ),
-                TwitterSignParam(
-                    "oauth_token", ""
-                ),
-                TwitterSignParam(
-                    "oauth_version", "1.0"
-                )
+    // 保管先を、Roomではなくsuspend fun外でも動作させられる場所としたら、tokenはこのメソッド内で取得する方が良い。
+    override fun getRequestParams(token: String): List<String> {
+        val baseParams = listOf(
+            TwitterSignParam(
+                "oauth_consumer_key", twitterConfig.consumerKey
+            ),
+            TwitterSignParam(
+                "oauth_nonce", oneTimeParams.oauthNonce
+            ),
+            TwitterSignParam(
+                "oauth_signature_method", "HMAC-SHA1"
+            ),
+            TwitterSignParam(
+                "oauth_timestamp", oneTimeParams.oauthTimestamp
+            ),
+            TwitterSignParam(
+                "oauth_token", token
+            ),
+            TwitterSignParam(
+                "oauth_version", "1.0"
             )
-            return additionalParams.plus(baseParams)
-                .map { it.toUrlString() }
-        }
+        )
+        return additionalParams.plus(baseParams)
+            .map { it.toUrlString() }
+    }
 }
