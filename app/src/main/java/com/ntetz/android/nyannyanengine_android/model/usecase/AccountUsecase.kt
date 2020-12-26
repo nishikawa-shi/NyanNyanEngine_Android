@@ -2,6 +2,7 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 
 import android.net.Uri
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
@@ -33,31 +34,29 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         oauthToken: String,
         scope: CoroutineScope
     ): SignInResultComponent {
-        val token =
-            accountRepository.getAccessToken(
-                oauthVerifier = oauthVerifier,
-                oauthToken = oauthToken,
-                scope = scope
-            ) ?: return SignInResultComponent(isSucceeded = false, errorCode = 9999, errorMessage = "no response...")
-        if (!token.isSuccessful) {
-            return SignInResultComponent(
-                isSucceeded = false,
-                errorCode = token.code(),
-                errorMessage = "network error code ${token.code()}"
-            )
-        }
-        val twitterUserRecord = createTwitterUserRecord(token.body()) ?: return SignInResultComponent(
-            isSucceeded = false,
-            errorCode = 9998,
-            errorMessage = "broken response..."
+        val tokenApiResult = accountRepository.getAccessToken(
+            oauthVerifier = oauthVerifier,
+            oauthToken = oauthToken,
+            scope = scope
         )
-        kotlin.runCatching { accountRepository.saveTwitterUser(twitterUserRecord, scope) }.onFailure {
+        if (!tokenApiResult.isValid) {
             return SignInResultComponent(
                 isSucceeded = false,
-                errorCode = 9997,
-                errorMessage = "failed to save token..."
+                errorMessage = tokenApiResult.errorDescription
             )
         }
+        val twitterUserRecord = createTwitterUserRecord(tokenApiResult)
+            ?: return SignInResultComponent(
+                isSucceeded = false,
+                errorMessage = "shortage response. code: 9997"
+            )
+        runCatching { accountRepository.saveTwitterUser(twitterUserRecord, scope) }
+            .onFailure {
+                return SignInResultComponent(
+                    isSucceeded = false,
+                    errorMessage = "failed to save token. code: 9996"
+                )
+            }
         return SignInResultComponent(isSucceeded = true)
     }
 
@@ -65,14 +64,12 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         return accountRepository.loadTwitterUser(scope)
     }
 
-    private fun createTwitterUserRecord(tokenApiResponse: String?): TwitterUserRecord? {
-        // Uriクラスのクエリストリングのパースを正常動作するために、ダミーのURLを結合させている
-        val uri = Uri.parse("${TwitterEndpoints.baseEndpoint}?$tokenApiResponse") ?: return null
+    private fun createTwitterUserRecord(tokenApiResponse: AccessToken): TwitterUserRecord? {
         return TwitterUserRecord(
-            id = uri.getQueryParameter("user_id") ?: return null,
-            oauthToken = uri.getQueryParameter("oauth_token") ?: return null,
-            oauthTokenSecret = uri.getQueryParameter("oauth_token_secret") ?: return null,
-            screenName = uri.getQueryParameter("screen_name") ?: return null
+            id = tokenApiResponse.userId ?: return null,
+            oauthToken = tokenApiResponse.oauthToken ?: return null,
+            oauthTokenSecret = tokenApiResponse.oauthTokenSecret ?: return null,
+            screenName = tokenApiResponse.screenName ?: return null
         )
     }
 }

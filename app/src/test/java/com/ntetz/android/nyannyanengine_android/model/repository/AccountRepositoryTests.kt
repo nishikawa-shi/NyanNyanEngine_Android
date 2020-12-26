@@ -55,13 +55,15 @@ class AccountRepositoryTests {
     @Test
     fun getAccessToken_Retrofitのレスポンス由来の値が得られること() = runBlocking {
         withContext(Dispatchers.IO) {
-            val mockEndpoints = TestUtil.mockNormalRetrofit
+            // 通常レスポンスだと、android.Uriクラスを利用してしまうためエラーレスポンスとしている。
+            val mockEndpoints = TestUtil.mockErrorRetrofit
                 .create(ITwitterApiEndpoints::class.java)
-                .returningResponse("mockTokenResponseString")
-            `when`(mockTwitterApi.scalarClient).thenReturn(mockEndpoints)
+                .returningResponse("error!")
 
+            `when`(mockTwitterApi.scalarClient).thenReturn(mockEndpoints)
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
+
             val testRepository =
                 AccountRepository(
                     twitterApi = mockTwitterApi,
@@ -69,8 +71,8 @@ class AccountRepositoryTests {
                     base64Encoder = TestUtil.mockBase64Encoder,
                     twitterUserDao = mockTwitterUserDao
                 )
-            Truth.assertThat(testRepository.getAccessToken("", "", this)!!.body())
-                .isEqualTo("mockTokenResponseString")
+            Truth.assertThat(testRepository.getAccessToken("", "", this).errorDescription)
+                .isEqualTo("network error. code: 500")
         }
     }
 

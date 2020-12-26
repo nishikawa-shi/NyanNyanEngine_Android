@@ -38,6 +38,23 @@ class TestUtil private constructor() {
                     .build()
             }
 
+        val mockErrorRetrofit: MockRetrofit
+            get() {
+                val retrofit = Retrofit
+                    .Builder()
+                    .baseUrl(TwitterEndpoints.baseEndpoint)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .build()
+                val behavior = NetworkBehavior.create().also {
+                    it.setDelay(0, TimeUnit.MILLISECONDS)
+                    it.setErrorPercent(100)
+                }
+                return MockRetrofit
+                    .Builder(retrofit)
+                    .networkBehavior(behavior)
+                    .build()
+            }
+
         private fun <T> nullReturn(): T = null as T
     }
 }
