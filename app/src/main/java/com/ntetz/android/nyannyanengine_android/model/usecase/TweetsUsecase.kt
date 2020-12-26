@@ -16,13 +16,6 @@ class TweetsUsecase(
 ) : ITweetsUsecase {
     override suspend fun getTweets(scope: CoroutineScope): List<Tweet>? {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
-        val result = tweetsRepository.getTweets(user = user, scope = scope)
-        if (result?.isSuccessful != true) {
-            return when (result?.code()) {
-                429 -> DefaultTweetConfig.tooManyRequestList
-                else -> DefaultTweetConfig.undefinedErrorList
-            }
-        }
-        return result.body()
+        return tweetsRepository.getTweets(user = user, scope = scope)
     }
 }

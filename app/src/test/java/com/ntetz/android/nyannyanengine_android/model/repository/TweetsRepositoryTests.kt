@@ -50,7 +50,7 @@ class TweetsRepositoryTests {
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder
                 )
-            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)!!.body())
+            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)!!)
                 .isEqualTo(
                     listOf(
                         Tweet(
