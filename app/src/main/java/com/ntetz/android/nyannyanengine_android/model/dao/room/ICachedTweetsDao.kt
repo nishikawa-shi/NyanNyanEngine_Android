@@ -13,4 +13,7 @@ interface ICachedTweetsDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun upsert(cachedTweetRecords: List<CachedTweetRecord>)
+
+    @Query("DELETE FROM cached_tweets")
+    fun deleteAll()
 }

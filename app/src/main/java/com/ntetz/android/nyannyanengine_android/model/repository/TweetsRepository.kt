@@ -5,9 +5,12 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
+import com.ntetz.android.nyannyanengine_android.model.dao.room.ICachedTweetsDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.CachedTweetRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.util.Base64Encoder
 import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
@@ -22,24 +25,41 @@ interface ITweetsRepository {
 class TweetsRepository(
     private val twitterApi: ITwitterApi,
     private val twitterConfig: ITwitterConfig = TwitterConfig(),
-    private val base64Encoder: IBase64Encoder = Base64Encoder()
+    private val base64Encoder: IBase64Encoder = Base64Encoder(),
+    private val cachedTweetsDao: ICachedTweetsDao
 ) : ITweetsRepository {
 
     override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+        val cache = getTweetsFromCache(scope)
+        if (cache.isNotEmpty()) {
+            return cache
+        }
+        return fetchLatestTweets(user, scope)
+    }
+
+    private suspend fun getTweetsFromCache(scope: CoroutineScope): List<Tweet> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                val requestMetadata = TwitterRequestMetadata(
-                    method = TwitterEndpoints.homeTimelineMethod,
-                    path = TwitterEndpoints.homeTimelinePath,
-                    twitterConfig = twitterConfig
-                )
+                cachedTweetsDao.getAll().toTweets()
+            }
+        }
+    }
 
-                val authorization = TwitterSignature(
-                    requestMetadata = requestMetadata,
-                    twitterConfig = twitterConfig,
-                    base64Encoder = base64Encoder
-                ).getOAuthValue(user)
+    private suspend fun fetchLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+        val requestMetadata = TwitterRequestMetadata(
+            method = TwitterEndpoints.homeTimelineMethod,
+            path = TwitterEndpoints.homeTimelinePath,
+            twitterConfig = twitterConfig
+        )
 
+        val authorization = TwitterSignature(
+            requestMetadata = requestMetadata,
+            twitterConfig = twitterConfig,
+            base64Encoder = base64Encoder
+        ).getOAuthValue(user)
+
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
                 val result = twitterApi.objectClient
                     .getTweets(
                         authorization = authorization
@@ -52,8 +72,39 @@ class TweetsRepository(
                         else -> DefaultTweetConfig.undefinedErrorList
                     }
                 }
-                result.body()
+                result.body().also {
+                    cachedTweetsDao.deleteAll()
+                    cachedTweetsDao.upsert(it?.toCachedTweetRecords() ?: listOf())
+                }
             }
+        }
+    }
+
+    private fun List<Tweet>.toCachedTweetRecords(): List<CachedTweetRecord> {
+        return this.map {
+            CachedTweetRecord(
+                id = it.id,
+                text = it.text,
+                createdAt = it.createdAt,
+                userName = it.user.name,
+                userScreenName = it.user.screenName,
+                profileImageUrlHttps = it.user.profileImageUrlHttps ?: ""
+            )
+        }
+    }
+
+    private fun List<CachedTweetRecord>.toTweets(): List<Tweet> {
+        return this.map {
+            Tweet(
+                id = it.id,
+                text = it.text,
+                createdAt = it.createdAt,
+                user = User(
+                    name = it.userName,
+                    screenName = it.userScreenName,
+                    profileImageUrlHttps = it.profileImageUrlHttps
+                )
+            )
         }
     }
 }
