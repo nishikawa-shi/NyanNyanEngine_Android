@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultTweetConfig
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
@@ -13,10 +14,9 @@ import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import retrofit2.Response
 
 interface ITweetsRepository {
-    suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): Response<List<Tweet>?>?
+    suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
 }
 
 class TweetsRepository(
@@ -25,7 +25,7 @@ class TweetsRepository(
     private val base64Encoder: IBase64Encoder = Base64Encoder()
 ) : ITweetsRepository {
 
-    override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): Response<List<Tweet>?>? {
+    override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
                 val requestMetadata = TwitterRequestMetadata(
@@ -40,11 +40,19 @@ class TweetsRepository(
                     base64Encoder = base64Encoder
                 ).getOAuthValue(user)
 
-                twitterApi.objectClient
+                val result = twitterApi.objectClient
                     .getTweets(
                         authorization = authorization
                     )
                     .execute()
+
+                if (!result.isSuccessful) {
+                    when (result.code()) {
+                        429 -> DefaultTweetConfig.tooManyRequestList
+                        else -> DefaultTweetConfig.undefinedErrorList
+                    }
+                }
+                result.body()
             }
         }
     }

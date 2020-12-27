@@ -1,10 +1,12 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import android.net.Uri
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignParam
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
@@ -18,7 +20,7 @@ import retrofit2.Response
 
 interface IAccountRepository {
     suspend fun getAuthorizationToken(scope: CoroutineScope): String?
-    suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): Response<String?>?
+    suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): AccessToken
     suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
 }
@@ -59,7 +61,7 @@ class AccountRepository(
         oauthVerifier: String,
         oauthToken: String,
         scope: CoroutineScope
-    ): Response<String?>? {
+    ): AccessToken {
         val fullPath = listOf(
             TwitterEndpoints.accessTokenPath,
             "?oauth_verifier=$oauthVerifier&oauth_token=$oauthToken"
@@ -84,6 +86,7 @@ class AccountRepository(
                         authorization = authorization
                     )
                     .execute()
+                    .toAccessToken()
             }
         }
     }
@@ -102,5 +105,27 @@ class AccountRepository(
                 twitterUserDao.upsert(record)
             }
         }
+    }
+
+    private fun Response<String>.toAccessToken(): AccessToken {
+        if (!this.isSuccessful) {
+            return AccessToken(
+                isValid = false,
+                errorDescription = "network error. code: ${this.code()}"
+            )
+        }
+        val brokenAccessToken = AccessToken(
+            isValid = false,
+            errorDescription = "broken response. code: 9998"
+        )
+        // Uriクラスのクエリストリングのパースを正常動作するために、ダミーのURLを結合させている
+        val uri = Uri.parse("${TwitterEndpoints.baseEndpoint}?${this.body()}")
+        return AccessToken(
+            isValid = true,
+            userId = uri.getQueryParameter("user_id") ?: return brokenAccessToken,
+            oauthToken = uri.getQueryParameter("oauth_token") ?: return brokenAccessToken,
+            oauthTokenSecret = uri.getQueryParameter("oauth_token_secret") ?: return brokenAccessToken,
+            screenName = uri.getQueryParameter("screen_name") ?: return brokenAccessToken
+        )
     }
 }

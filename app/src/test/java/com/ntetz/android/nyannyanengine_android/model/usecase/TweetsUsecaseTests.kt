@@ -1,8 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
 import com.google.common.truth.Truth
-import com.ntetz.android.nyannyanengine_android.TestUtil
-import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
@@ -58,19 +56,16 @@ class TweetsUsecaseTests {
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
             )
-
-            val mockResponse = TestUtil.mockNormalRetrofit.create(ITwitterApiEndpoints::class.java)
-                .returningResponse(
-                    listOf(
-                        Tweet(
-                            id = 2828,
-                            text = "dummyUsCsNom",
-                            createdAt = "3 gatsu 2 nichi",
-                            user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
-                        )
+            `when`(mockTweetsRepository.getTweets(user = testUser, scope = this)).thenReturn(
+                listOf(
+                    Tweet(
+                        id = 2828,
+                        text = "dummyUsCsNom",
+                        createdAt = "3 gatsu 2 nichi",
+                        user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
                     )
-                ).getTweets(authorization = "").execute()
-            `when`(mockTweetsRepository.getTweets(user = testUser, scope = this)).thenReturn(mockResponse)
+                )
+            )
 
             val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
             Truth.assertThat(testUsecase.getTweets(this)).isEqualTo(
