@@ -9,8 +9,7 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val tweetsUsecase: ITweetsUsecase) : ViewModel() {
-    private val _tweetsEvent: MutableLiveData<List<Tweet>?> =
-        MutableLiveData()
+    private val _tweetsEvent: MutableLiveData<List<Tweet>?> = MutableLiveData()
 
     val tweetsEvent: LiveData<List<Tweet>?>
         get() = _tweetsEvent
