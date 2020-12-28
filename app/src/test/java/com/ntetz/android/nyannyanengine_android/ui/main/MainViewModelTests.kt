@@ -45,7 +45,7 @@ class MainViewModelTests {
     }
 
     @Test
-    fun initialize_loadAccessTokenが呼ばれること() = runBlocking {
+    fun initialize_getTweetsが呼ばれること() = runBlocking {
         Mockito.`when`(mockTweetsUsecase.getTweets(TestUtil.any())).thenReturn(null)
         MainViewModel(mockTweetsUsecase).initialize()
         delay(10) // これがないとCIでコケる
@@ -56,7 +56,7 @@ class MainViewModelTests {
     }
 
     @Test
-    fun initialize_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
+    fun initialize_対応するツイート取得結果がliveDataが更新されること() = runBlocking {
         Mockito.`when`(mockTweetsUsecase.getTweets(TestUtil.any())).thenReturn(
             listOf(
                 Tweet(

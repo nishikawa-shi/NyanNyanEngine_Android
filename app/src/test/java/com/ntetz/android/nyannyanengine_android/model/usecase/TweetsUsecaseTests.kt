@@ -45,7 +45,7 @@ class TweetsUsecaseTests {
     }
 
     @Test
-    fun getTweets_レスポンスが回数超過の時専用の値を返すこと() = runBlocking {
+    fun getTweets_レポジトリ由来の値を返すこと() = runBlocking {
         withContext(Dispatchers.IO) {
             val testUser = TwitterUserRecord(
                 id = "getTweetsResChId",
