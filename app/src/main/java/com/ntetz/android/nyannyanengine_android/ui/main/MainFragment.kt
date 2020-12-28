@@ -36,13 +36,20 @@ class MainFragment : Fragment() {
 
         val adapter = MainAdapter(viewModel, this)
         binding.tweetList.adapter = adapter
-        viewModel.tweetsEvent.observe(viewLifecycleOwner, Observer {
-            adapter.notifyDataSetChanged()
-        })
-        viewModel.initialize()
-
+        binding.tweetListFrame.setOnRefreshListener {
+            viewModel.getLatestTweets()
+        }
         binding.postNekogoFragmentOpenButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_postNekogoFragment)
         }
+
+        viewModel.tweetsEvent.observe(viewLifecycleOwner, Observer {
+            adapter.notifyDataSetChanged()
+        })
+        viewModel.isLoadingFirstView.observe(viewLifecycleOwner, {
+            binding.tweetListFrame.isRefreshing = it
+        })
+
+        viewModel.initialize()
     }
 }

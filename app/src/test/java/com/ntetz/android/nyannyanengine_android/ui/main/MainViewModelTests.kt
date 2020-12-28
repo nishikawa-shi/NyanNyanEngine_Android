@@ -45,7 +45,7 @@ class MainViewModelTests {
     }
 
     @Test
-    fun initialize_loadAccessTokenが呼ばれること() = runBlocking {
+    fun initialize_getTweetsが呼ばれること() = runBlocking {
         Mockito.`when`(mockTweetsUsecase.getTweets(TestUtil.any())).thenReturn(null)
         MainViewModel(mockTweetsUsecase).initialize()
         delay(10) // これがないとCIでコケる
@@ -56,7 +56,7 @@ class MainViewModelTests {
     }
 
     @Test
-    fun initialize_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
+    fun initialize_対応するツイート取得結果がliveDataが更新されること() = runBlocking {
         Mockito.`when`(mockTweetsUsecase.getTweets(TestUtil.any())).thenReturn(
             listOf(
                 Tweet(
@@ -70,6 +70,47 @@ class MainViewModelTests {
 
         val testViewModel = MainViewModel(mockTweetsUsecase)
         testViewModel.initialize()
+        delay(10) // これがないとCIでコケる
+
+        Truth.assertThat(testViewModel.tweetsEvent.value).isEqualTo(
+            listOf(
+                Tweet(
+                    id = 123,
+                    text = "liveDataTest",
+                    createdAt = "3 gatsu 2 nichi",
+                    user = User(name = "nishik", screenName = "@nishik")
+                )
+            )
+        )
+        return@runBlocking
+    }
+
+    @Test
+    fun getLatestTweets_getLatestTweetsが呼ばれること() = runBlocking {
+        Mockito.`when`(mockTweetsUsecase.getLatestTweets(TestUtil.any())).thenReturn(null)
+        MainViewModel(mockTweetsUsecase).getLatestTweets()
+        delay(10) // これがないとCIでコケる
+
+        Mockito.verify(mockTweetsUsecase, Mockito.times(1))
+            .getLatestTweets(TestUtil.any())
+        return@runBlocking
+    }
+
+    @Test
+    fun getLatestTweets_対応するツイート取得結果liveDataが更新されること() = runBlocking {
+        Mockito.`when`(mockTweetsUsecase.getLatestTweets(TestUtil.any())).thenReturn(
+            listOf(
+                Tweet(
+                    id = 123,
+                    text = "liveDataTest",
+                    createdAt = "3 gatsu 2 nichi",
+                    user = User(name = "nishik", screenName = "@nishik")
+                )
+            )
+        )
+
+        val testViewModel = MainViewModel(mockTweetsUsecase)
+        testViewModel.getLatestTweets()
         delay(10) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.tweetsEvent.value).isEqualTo(

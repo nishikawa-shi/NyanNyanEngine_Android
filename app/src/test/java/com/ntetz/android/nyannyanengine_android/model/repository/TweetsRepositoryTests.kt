@@ -173,4 +173,44 @@ class TweetsRepositoryTests {
                 )
         }
     }
+
+    @Test
+    fun getLatestTweets_キャッシュ非存在時Retrofitのレスポンス由来の値が得られること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val mockEndpoints = TestUtil.mockNormalRetrofit
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse(
+                    listOf(
+                        Tweet(
+                            id = 2828,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        )
+                    )
+                )
+            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+
+            `when`(mockTwitterConfig.apiSecret).thenReturn("")
+            `when`(mockTwitterConfig.consumerKey).thenReturn("")
+            val testRepository =
+                TweetsRepository(
+                    twitterApi = mockTwitterApi,
+                    twitterConfig = mockTwitterConfig,
+                    base64Encoder = TestUtil.mockBase64Encoder,
+                    cachedTweetsDao = mockCachedTweetsDao
+                )
+            Truth.assertThat(testRepository.getLatestTweets(TwitterUserRecord("", "", "", ""), this)!!)
+                .isEqualTo(
+                    listOf(
+                        Tweet(
+                            id = 2828,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        )
+                    )
+                )
+        }
+    }
 }
