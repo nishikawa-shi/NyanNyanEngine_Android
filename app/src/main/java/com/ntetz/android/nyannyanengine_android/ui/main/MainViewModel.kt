@@ -10,13 +10,24 @@ import kotlinx.coroutines.launch
 
 class MainViewModel(private val tweetsUsecase: ITweetsUsecase) : ViewModel() {
     private val _tweetsEvent: MutableLiveData<List<Tweet>?> = MutableLiveData()
+    private val _isLoadingFirstView: MutableLiveData<Boolean> = MutableLiveData()
 
     val tweetsEvent: LiveData<List<Tweet>?>
         get() = _tweetsEvent
+    val isLoadingFirstView: LiveData<Boolean>
+        get() = _isLoadingFirstView
 
     fun initialize() {
         viewModelScope.launch {
             _tweetsEvent.postValue(tweetsUsecase.getTweets(this))
+        }
+    }
+
+    fun getLatestTweets() {
+        viewModelScope.launch {
+            _isLoadingFirstView.postValue(true)
+            _tweetsEvent.postValue(tweetsUsecase.getLatestTweets(this))
+            _isLoadingFirstView.postValue(false)
         }
     }
 }
