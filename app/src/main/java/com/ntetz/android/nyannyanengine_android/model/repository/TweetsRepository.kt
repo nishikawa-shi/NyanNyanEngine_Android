@@ -20,6 +20,7 @@ import kotlinx.coroutines.withContext
 
 interface ITweetsRepository {
     suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
+    suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
 }
 
 class TweetsRepository(
@@ -34,6 +35,10 @@ class TweetsRepository(
         if (cache.isNotEmpty()) {
             return cache
         }
+        return fetchLatestTweets(user, scope)
+    }
+
+    override suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
         return fetchLatestTweets(user, scope)
     }
 
