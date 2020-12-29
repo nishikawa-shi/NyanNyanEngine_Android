@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.MainFragmentBinding
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class MainFragment : Fragment() {
@@ -19,6 +22,8 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModel()
     private lateinit var binding: MainFragmentBinding
+    private val adapter = MainAdapter(this)
+    private var searchJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,22 +39,23 @@ class MainFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val adapter = MainAdapter(viewModel, this)
         binding.tweetList.adapter = adapter
         binding.tweetListFrame.setOnRefreshListener {
-            viewModel.getLatestTweets()
+            adapter.refresh()
+            binding.tweetListFrame.isRefreshing = false
         }
         binding.postNekogoFragmentOpenButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_postNekogoFragment)
         }
+        setupAdapter()
+    }
 
-        viewModel.tweetsEvent.observe(viewLifecycleOwner, Observer {
-            adapter.notifyDataSetChanged()
-        })
-        viewModel.isLoadingFirstView.observe(viewLifecycleOwner, {
-            binding.tweetListFrame.isRefreshing = it
-        })
-
-        viewModel.initialize()
+    private fun setupAdapter() {
+        searchJob?.cancel()
+        searchJob = viewModel.viewModelScope.launch {
+            viewModel.tweetStream.collectLatest {
+                adapter.submitData(it)
+            }
+        }
     }
 }

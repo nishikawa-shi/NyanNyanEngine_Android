@@ -4,14 +4,9 @@
     xmlns:tool="http://schemas.android.com/tools">
 
     <data>
-
         <variable
-            name="viewModel"
-            type="com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel" />
-
-        <variable
-            name="position"
-            type="Integer" />
+            name="tweetTextBody"
+            type="String" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -24,7 +19,7 @@
             android:id="@+id/tweet_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{viewModel.tweetsEvent[position].text}"
+            android:text="@{tweetTextBody}"
             android:textAppearance="@style/TextAppearance.MenuListEntry"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

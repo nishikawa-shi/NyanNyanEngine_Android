@@ -14,11 +14,18 @@ interface ITwitterApiEndpoints {
 
     @POST(TwitterEndpoints.accessTokenPath)
     fun accessToken(
-        @Query("oauth_verifier") oauthVerifier: String,
-        @Query("oauth_token") oauthToken: String,
+        @Query(TwitterEndpoints.accessTokenOauthVerifierParamName) oauthVerifier: String,
+        @Query(TwitterEndpoints.accessTokenOauthTokenParamName) oauthToken: String,
         @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
     ): Call<String>
 
     @GET(TwitterEndpoints.homeTimelinePath)
     fun getTweets(@Header(TwitterEndpoints.authorizationHeaderName) authorization: String): Call<List<Tweet>>
+
+    @GET(TwitterEndpoints.homeTimelinePath)
+    fun getTweetsWithPage(
+        @Query(TwitterEndpoints.homeTimelineMaxIdParamName) maxId: String,
+        @Query(TwitterEndpoints.homeTimelineCountParamName) count: String,
+        @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
+    ): Call<List<Tweet>>
 }

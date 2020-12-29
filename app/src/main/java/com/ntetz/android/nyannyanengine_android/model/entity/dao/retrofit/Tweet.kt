@@ -11,4 +11,7 @@ data class Tweet(
     val createdAt: String,
 
     val user: User
-)
+) {
+    val isError: Boolean
+        get() = id.toInt() == 28
+}

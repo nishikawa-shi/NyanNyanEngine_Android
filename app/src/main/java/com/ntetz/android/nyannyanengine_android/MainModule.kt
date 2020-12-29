@@ -40,8 +40,7 @@ private val viewModelModule = module {
     }
     single<ITweetsUsecase> {
         val tweetRepository = TweetsRepository(
-            twitterApi = TwitterApi,
-            cachedTweetsDao = getUserProfileDatabase(androidContext()).cachedTweetsDao()
+            twitterApi = TwitterApi
         )
         val accountRepository = AccountRepository(
             twitterApi = TwitterApi,
