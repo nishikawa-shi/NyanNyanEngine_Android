@@ -18,6 +18,7 @@ import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.Response
 
 interface ITweetsRepository {
     suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
@@ -48,14 +49,6 @@ class TweetsRepository(
         return getPreviousTweets(maxId = maxId.toString(), user = user, scope = scope)
     }
 
-    private suspend fun getTweetsFromCache(scope: CoroutineScope): List<Tweet> {
-        return withContext(scope.coroutineContext) {
-            withContext(Dispatchers.IO) {
-                cachedTweetsDao.getAll().toTweets()
-            }
-        }
-    }
-
     private suspend fun fetchLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.homeTimelineMethod,
@@ -69,25 +62,12 @@ class TweetsRepository(
             base64Encoder = base64Encoder
         ).getOAuthValue(user)
 
-        return withContext(scope.coroutineContext) {
-            withContext(Dispatchers.IO) {
-                val result = twitterApi.objectClient
-                    .getTweets(
-                        authorization = authorization
-                    )
-                    .execute()
-
-                if (!result.isSuccessful) {
-                    when (result.code()) {
-                        429 -> DefaultTweetConfig.tooManyRequestList
-                        else -> DefaultTweetConfig.undefinedErrorList
-                    }
-                }
-                result.body().also {
-                    cachedTweetsDao.deleteAll()
-                    cachedTweetsDao.upsert(it?.toCachedTweetRecords() ?: listOf())
-                }
-            }
+        val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope)
+        if (!result.isSuccessful) {
+            return getErrorTweets(result)
+        }
+        return result.body()?.also {
+            replaceTweetsCache(it, scope)
         }
     }
 
@@ -113,23 +93,66 @@ class TweetsRepository(
             base64Encoder = base64Encoder
         ).getOAuthValue(user)
 
+        val result = getPreviousTweetsFromWeb(maxId = maxId, authorization = authorization, scope = scope)
+        if (!result.isSuccessful) {
+            return getErrorTweets(result)
+        }
+        return result.body()
+    }
+
+    private suspend fun getTweetsFromCache(scope: CoroutineScope): List<Tweet> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                val result = twitterApi.objectClient
+                cachedTweetsDao.getAll().toTweets()
+            }
+        }
+    }
+
+    private suspend fun getLatestTweetsFromWeb(
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<List<Tweet>> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.objectClient
+                    .getTweets(
+                        authorization = authorization
+                    )
+                    .execute()
+            }
+        }
+    }
+
+    private suspend fun getPreviousTweetsFromWeb(
+        maxId: String,
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<List<Tweet>> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.objectClient
                     .getTweetsWithPage(
                         authorization = authorization,
                         count = TwitterEndpoints.homeTimelineCountParamDefaultValue,
                         maxId = maxId
                     )
                     .execute()
+            }
+        }
+    }
 
-                if (!result.isSuccessful) {
-                    when (result.code()) {
-                        429 -> DefaultTweetConfig.tooManyRequestList
-                        else -> DefaultTweetConfig.undefinedErrorList
-                    }
-                }
-                result.body()
+    private fun getErrorTweets(result: Response<List<Tweet>>): List<Tweet> {
+        return when (result.code()) {
+            429 -> DefaultTweetConfig.tooManyRequestList
+            else -> DefaultTweetConfig.undefinedErrorList
+        }
+    }
+
+    private suspend fun replaceTweetsCache(tweets: List<Tweet>, scope: CoroutineScope) {
+        withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                cachedTweetsDao.deleteAll()
+                cachedTweetsDao.upsert(tweets.toCachedTweetRecords())
             }
         }
     }
