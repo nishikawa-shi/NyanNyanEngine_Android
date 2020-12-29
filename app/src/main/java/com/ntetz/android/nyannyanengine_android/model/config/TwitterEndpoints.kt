@@ -14,4 +14,7 @@ object TwitterEndpoints {
     const val accessTokenMethod: String = "POST"
     const val homeTimelineMethod: String = "GET"
     const val requestTokenOauthCallbackParamName: String = "oauth_callback"
+    const val homeTimelineCountParamName: String = "count"
+    const val homeTimelineMaxIdParamName: String = "max_id"
+    const val homeTimelineCountParamDefaultValue: String = "200"
 }

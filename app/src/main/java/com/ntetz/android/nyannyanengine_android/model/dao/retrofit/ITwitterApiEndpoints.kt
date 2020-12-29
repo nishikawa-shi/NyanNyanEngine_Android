@@ -21,4 +21,11 @@ interface ITwitterApiEndpoints {
 
     @GET(TwitterEndpoints.homeTimelinePath)
     fun getTweets(@Header(TwitterEndpoints.authorizationHeaderName) authorization: String): Call<List<Tweet>>
+
+    @GET(TwitterEndpoints.homeTimelinePath)
+    fun getTweetsWithPage(
+        @Query(TwitterEndpoints.homeTimelineMaxIdParamName) maxId: String,
+        @Query(TwitterEndpoints.homeTimelineCountParamName) count: String,
+        @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
+    ): Call<List<Tweet>>
 }

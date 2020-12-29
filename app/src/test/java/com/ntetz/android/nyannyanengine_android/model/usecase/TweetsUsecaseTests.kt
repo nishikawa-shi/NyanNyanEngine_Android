@@ -117,4 +117,47 @@ class TweetsUsecaseTests {
             )
         }
     }
+
+    @Test
+    fun getPreviousTweets_レポジトリ由来の値を返すこと() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val testUser = TwitterUserRecord(
+                id = "getTweetsResChId",
+                oauthToken = "getTweetsResChToken",
+                oauthTokenSecret = "getTweetsResChSecret",
+                screenName = "getTweetsResChSNm"
+            )
+            `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
+                testUser
+            )
+            `when`(
+                mockTweetsRepository.getPreviousTweets(
+                    maxId = 1234567890123456789,
+                    user = testUser,
+                    scope = this
+                )
+            ).thenReturn(
+                listOf(
+                    Tweet(
+                        id = 2828,
+                        text = "dummyUsCsNomPrev",
+                        createdAt = "3 gatsu 2 nichi",
+                        user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
+                    )
+                )
+            )
+
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            Truth.assertThat(testUsecase.getPreviousTweets(maxId = 1234567890123456789, this)).isEqualTo(
+                listOf(
+                    Tweet(
+                        id = 2828,
+                        text = "dummyUsCsNomPrev",
+                        createdAt = "3 gatsu 2 nichi",
+                        user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
+                    )
+                )
+            )
+        }
+    }
 }
