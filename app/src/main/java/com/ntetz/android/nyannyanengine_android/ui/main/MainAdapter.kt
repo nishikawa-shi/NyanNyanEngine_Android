@@ -2,21 +2,28 @@ package com.ntetz.android.nyannyanengine_android.ui.main
 
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.RecyclerView
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 
 class MainAdapter(
-    private val viewModel: MainViewModel,
     private val parentLifecycleOwner: LifecycleOwner
-) : RecyclerView.Adapter<MainViewHolder>() {
+) : PagingDataAdapter<Tweet, MainViewHolder>(REPO_COMPARATOR) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder.create(parent)
     }
 
-    override fun getItemCount(): Int {
-        return viewModel.tweetsEvent.value?.size ?: 0
+    override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
+        holder.onBind(getItem(position) ?: return, parentLifecycleOwner)
     }
 
-    override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
-        holder.onBind(viewModel, position, parentLifecycleOwner)
+    companion object {
+        private val REPO_COMPARATOR = object : DiffUtil.ItemCallback<Tweet>() {
+            override fun areItemsTheSame(oldItem: Tweet, newItem: Tweet): Boolean =
+                oldItem.id == newItem.id
+
+            override fun areContentsTheSame(oldItem: Tweet, newItem: Tweet): Boolean =
+                oldItem == newItem
+        }
     }
 }

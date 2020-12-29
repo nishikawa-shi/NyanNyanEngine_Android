@@ -7,13 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.MainCellBinding
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 
 class MainViewHolder(
     private val binding: MainCellBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun onBind(viewModel: MainViewModel, position: Int, lifecycleOwner: LifecycleOwner) {
-        binding.viewModel = viewModel
-        binding.position = position
+    fun onBind(item: Tweet, lifecycleOwner: LifecycleOwner) {
+        binding.tweetTextBody = item.createdAt + item.text
         binding.lifecycleOwner = lifecycleOwner
     }
 
