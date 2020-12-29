@@ -28,7 +28,7 @@ class TweetsUsecaseTests {
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(null)
 
         val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
-        Truth.assertThat(testUsecase.getTweets(this)).isEqualTo(
+        Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
             listOf(
                 Tweet(
                     id = 28,
@@ -56,7 +56,7 @@ class TweetsUsecaseTests {
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
             )
-            `when`(mockTweetsRepository.getTweets(user = testUser, scope = this)).thenReturn(
+            `when`(mockTweetsRepository.getLatestTweets(user = testUser, scope = this)).thenReturn(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -68,7 +68,7 @@ class TweetsUsecaseTests {
             )
 
             val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
-            Truth.assertThat(testUsecase.getTweets(this)).isEqualTo(
+            Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
                 listOf(
                     Tweet(
                         id = 2828,
