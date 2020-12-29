@@ -13,6 +13,9 @@ class MainViewHolder(
     private val binding: MainCellBinding
 ) : RecyclerView.ViewHolder(binding.root) {
     fun onBind(item: Tweet, lifecycleOwner: LifecycleOwner) {
+        binding.root.setOnClickListener {
+            binding.isNyanNyan = !(binding.isNyanNyan as Boolean)
+        }
         binding.isNyanNyan = true
         binding.nyanNyanTweetTextBody = "nya--n"
         binding.tweetTextBody = item.createdAt + item.text
