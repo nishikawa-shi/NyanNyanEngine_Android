@@ -14,8 +14,8 @@ interface ITwitterApiEndpoints {
 
     @POST(TwitterEndpoints.accessTokenPath)
     fun accessToken(
-        @Query("oauth_verifier") oauthVerifier: String,
-        @Query("oauth_token") oauthToken: String,
+        @Query(TwitterEndpoints.accessTokenOauthVerifierParamName) oauthVerifier: String,
+        @Query(TwitterEndpoints.accessTokenOauthTokenParamName) oauthToken: String,
         @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
     ): Call<String>
 
