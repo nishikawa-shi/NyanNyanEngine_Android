@@ -11,12 +11,15 @@ class TweetsPagingSource(
 ) : PagingSource<Long, Tweet>() {
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, Tweet> {
         val maxId = params.key
+
         if (maxId == null) {
-            val tweets = tweetsUsecase.getTweets(scope)
+            val tweets = tweetsUsecase.getLatestTweets(scope)
+            val prevKey = null
+            val nextKey = if (tweets[0].isError) null else tweets.last().id
             return LoadResult.Page(
                 data = tweets,
-                prevKey = null,
-                nextKey = tweets.last().id
+                prevKey = prevKey,
+                nextKey = nextKey
             )
         }
 
