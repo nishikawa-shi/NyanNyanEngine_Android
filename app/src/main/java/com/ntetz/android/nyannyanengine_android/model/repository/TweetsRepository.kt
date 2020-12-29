@@ -21,9 +21,9 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 interface ITweetsRepository {
-    suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
-    suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
-    suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>?
+    suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
+    suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
+    suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
 }
 
 class TweetsRepository(
@@ -33,7 +33,7 @@ class TweetsRepository(
     private val cachedTweetsDao: ICachedTweetsDao
 ) : ITweetsRepository {
 
-    override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+    override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
         val cache = getTweetsFromCache(scope)
         if (cache.isNotEmpty()) {
             return cache
@@ -41,15 +41,15 @@ class TweetsRepository(
         return fetchLatestTweets(user, scope)
     }
 
-    override suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+    override suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
         return fetchLatestTweets(user, scope)
     }
 
-    override suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+    override suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
         return getPreviousTweets(maxId = maxId.toString(), user = user, scope = scope)
     }
 
-    private suspend fun fetchLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+    private suspend fun fetchLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.homeTimelineMethod,
             path = TwitterEndpoints.homeTimelinePath,
@@ -63,15 +63,16 @@ class TweetsRepository(
         ).getOAuthValue(user)
 
         val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope)
-        if (!result.isSuccessful) {
+        val body = result.body()
+        if (!result.isSuccessful || body == null) {
             return getErrorTweets(result)
         }
-        return result.body()?.also {
+        return body.also {
             replaceTweetsCache(it, scope)
         }
     }
 
-    private suspend fun getPreviousTweets(maxId: String, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>? {
+    private suspend fun getPreviousTweets(maxId: String, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.homeTimelineCountParamName,
@@ -94,10 +95,11 @@ class TweetsRepository(
         ).getOAuthValue(user)
 
         val result = getPreviousTweetsFromWeb(maxId = maxId, authorization = authorization, scope = scope)
-        if (!result.isSuccessful) {
+        val body = result.body()
+        if (!result.isSuccessful || body == null) {
             return getErrorTweets(result)
         }
-        return result.body()
+        return body
     }
 
     private suspend fun getTweetsFromCache(scope: CoroutineScope): List<Tweet> {

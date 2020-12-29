@@ -59,7 +59,7 @@ class TweetsRepositoryTests {
                     base64Encoder = TestUtil.mockBase64Encoder,
                     cachedTweetsDao = mockCachedTweetsDao
                 )
-            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)!!)
+            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this))
                 .isEqualTo(
                     listOf(
                         Tweet(
@@ -100,7 +100,7 @@ class TweetsRepositoryTests {
                     base64Encoder = TestUtil.mockBase64Encoder,
                     cachedTweetsDao = mockCachedTweetsDao
                 )
-            testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)!!
+            testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)
 
             verify(mockCachedTweetsDao, times(1)).deleteAll()
         }
@@ -133,7 +133,7 @@ class TweetsRepositoryTests {
                     base64Encoder = TestUtil.mockBase64Encoder,
                     cachedTweetsDao = mockCachedTweetsDao
                 )
-            testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)!!
+            testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)
 
             verify(mockCachedTweetsDao, times(1)).upsert(TestUtil.any())
         }
@@ -160,7 +160,7 @@ class TweetsRepositoryTests {
                     twitterConfig = mockTwitterConfig,
                     cachedTweetsDao = mockCachedTweetsDao
                 )
-            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this)!!)
+            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this))
                 .isEqualTo(
                     listOf(
                         Tweet(
@@ -200,7 +200,7 @@ class TweetsRepositoryTests {
                     base64Encoder = TestUtil.mockBase64Encoder,
                     cachedTweetsDao = mockCachedTweetsDao
                 )
-            Truth.assertThat(testRepository.getLatestTweets(TwitterUserRecord("", "", "", ""), this)!!)
+            Truth.assertThat(testRepository.getLatestTweets(TwitterUserRecord("", "", "", ""), this))
                 .isEqualTo(
                     listOf(
                         Tweet(
@@ -245,7 +245,7 @@ class TweetsRepositoryTests {
                     maxId = 1234567890123456789,
                     user = TwitterUserRecord("", "", "", ""),
                     this
-                )!!
+                )
             )
                 .isEqualTo(
                     listOf(
