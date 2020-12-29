@@ -5,6 +5,14 @@
 
     <data>
         <variable
+            name="isNyanNyan"
+            type="Boolean" />
+
+        <variable
+            name="nyanNyanTweetTextBody"
+            type="String" />
+
+        <variable
             name="tweetTextBody"
             type="String" />
     </data>
@@ -19,7 +27,7 @@
             android:id="@+id/tweet_body"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{tweetTextBody}"
+            android:text="@{isNyanNyan ? nyanNyanTweetTextBody : tweetTextBody}"
             android:textAppearance="@style/TextAppearance.MenuListEntry"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
