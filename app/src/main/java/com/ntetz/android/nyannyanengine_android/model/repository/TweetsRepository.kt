@@ -36,7 +36,7 @@ class TweetsRepository(
     override suspend fun getTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
         val cache = getTweetsFromCache(scope)
         if (cache.isNotEmpty()) {
-            return cache
+            return cache.toSortedById()
         }
         return fetchLatestTweets(user, scope)
     }
@@ -63,7 +63,7 @@ class TweetsRepository(
         ).getOAuthValue(user)
 
         val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope)
-        val body = result.body()
+        val body = result.body()?.toSortedById()
         if (!result.isSuccessful || body == null) {
             return getErrorTweets(result)
         }
@@ -95,7 +95,7 @@ class TweetsRepository(
         ).getOAuthValue(user)
 
         val result = getPreviousTweetsFromWeb(maxId = maxId, authorization = authorization, scope = scope)
-        val body = result.body()
+        val body = result.body()?.toSortedById()
         if (!result.isSuccessful || body == null) {
             return getErrorTweets(result)
         }
@@ -170,6 +170,10 @@ class TweetsRepository(
                 profileImageUrlHttps = it.user.profileImageUrlHttps ?: ""
             )
         }
+    }
+
+    private fun List<Tweet>.toSortedById(): List<Tweet> {
+        return this.toMutableList().apply { this.sortByDescending { it.id } }
     }
 
     private fun List<CachedTweetRecord>.toTweets(): List<Tweet> {

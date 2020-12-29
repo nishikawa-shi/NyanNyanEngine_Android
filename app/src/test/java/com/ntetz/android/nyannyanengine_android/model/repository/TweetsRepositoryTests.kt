@@ -74,6 +74,71 @@ class TweetsRepositoryTests {
     }
 
     @Test
+    fun getTweets_Retrofitのレスポンスがidで降順ソートされていること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val mockEndpoints = TestUtil.mockNormalRetrofit
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse(
+                    listOf(
+                        Tweet(
+                            id = 2828,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        ),
+                        Tweet(
+                            id = 2830,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        ),
+                        Tweet(
+                            id = 2829,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        )
+                    )
+                )
+            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+
+            `when`(mockTwitterConfig.apiSecret).thenReturn("")
+            `when`(mockTwitterConfig.consumerKey).thenReturn("")
+            `when`(mockCachedTweetsDao.getAll()).thenReturn(listOf())
+            val testRepository =
+                TweetsRepository(
+                    twitterApi = mockTwitterApi,
+                    twitterConfig = mockTwitterConfig,
+                    base64Encoder = TestUtil.mockBase64Encoder,
+                    cachedTweetsDao = mockCachedTweetsDao
+                )
+            Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this))
+                .isEqualTo(
+                    listOf(
+                        Tweet(
+                            id = 2830,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        ),
+                        Tweet(
+                            id = 2829,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        ),
+                        Tweet(
+                            id = 2828,
+                            text = "dummyTextRepo",
+                            createdAt = "3 gatsu 2 nichi",
+                            user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                        )
+                    )
+                )
+        }
+    }
+
+    @Test
     fun getTweets_キャッシュ非存在時Retrofitのレスポンス取得後キャッシュ用テーブル初期化が走ること() = runBlocking {
         withContext(Dispatchers.IO) {
             val mockEndpoints = TestUtil.mockNormalRetrofit
@@ -172,6 +237,67 @@ class TweetsRepositoryTests {
                     )
                 )
         }
+    }
+
+    @Test
+    fun getTweets_Roomのレスポンスがidで降順ソートされていること() = runBlocking {
+        `when`(mockCachedTweetsDao.getAll()).thenReturn(
+            listOf(
+                CachedTweetRecord(
+                    id = 3838,
+                    text = "dummyCachedTweet",
+                    createdAt = "kinou",
+                    userName = "cachedUser",
+                    userScreenName = "cachedScreenUser",
+                    profileImageUrlHttps = "https://ntetz.com/test.jpg"
+                ),
+                CachedTweetRecord(
+                    id = 3839,
+                    text = "dummyCachedTweet",
+                    createdAt = "kinou",
+                    userName = "cachedUser",
+                    userScreenName = "cachedScreenUser",
+                    profileImageUrlHttps = "https://ntetz.com/test.jpg"
+                ),
+                CachedTweetRecord(
+                    id = 3837,
+                    text = "dummyCachedTweet",
+                    createdAt = "kinou",
+                    userName = "cachedUser",
+                    userScreenName = "cachedScreenUser",
+                    profileImageUrlHttps = "https://ntetz.com/test.jpg"
+                )
+            )
+        )
+        val testRepository =
+            TweetsRepository(
+                twitterApi = mockTwitterApi,
+                twitterConfig = mockTwitterConfig,
+                cachedTweetsDao = mockCachedTweetsDao
+            )
+        Truth.assertThat(testRepository.getTweets(TwitterUserRecord("", "", "", ""), this))
+            .isEqualTo(
+                listOf(
+                    Tweet(
+                        id = 3839,
+                        text = "dummyCachedTweet",
+                        createdAt = "kinou",
+                        user = User("cachedUser", "cachedScreenUser", "https://ntetz.com/test.jpg")
+                    ),
+                    Tweet(
+                        id = 3838,
+                        text = "dummyCachedTweet",
+                        createdAt = "kinou",
+                        user = User("cachedUser", "cachedScreenUser", "https://ntetz.com/test.jpg")
+                    ),
+                    Tweet(
+                        id = 3837,
+                        text = "dummyCachedTweet",
+                        createdAt = "kinou",
+                        user = User("cachedUser", "cachedScreenUser", "https://ntetz.com/test.jpg")
+                    )
+                )
+            )
     }
 
     @Test
