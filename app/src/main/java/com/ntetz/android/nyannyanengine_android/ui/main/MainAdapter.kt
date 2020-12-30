@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.main
 
+import android.content.Context
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.paging.PagingDataAdapter
@@ -7,10 +8,11 @@ import androidx.recyclerview.widget.DiffUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 
 class MainAdapter(
+    private val context: Context?,
     private val parentLifecycleOwner: LifecycleOwner
 ) : PagingDataAdapter<Tweet, MainViewHolder>(REPO_COMPARATOR) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-        return MainViewHolder.create(parent)
+        return MainViewHolder.create(context, parent)
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
