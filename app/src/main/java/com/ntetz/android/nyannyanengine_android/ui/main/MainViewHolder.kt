@@ -20,7 +20,7 @@ class MainViewHolder(
         binding.root.setOnClickListener {
             binding.isNyanNyan = !(binding.isNyanNyan as Boolean)
         }
-        binding.isNyanNyan = true
+        binding.isNyanNyan = !item.isError
         binding.nyanNyanTweetTextBody = item.text.toNyanNyan(context)
         binding.tweetTextBody = item.createdAt + item.text
         binding.lifecycleOwner = lifecycleOwner
