@@ -57,7 +57,7 @@ private val viewModelModule = module {
     }
     viewModel { MainViewModel(get()) }
     viewModel { SignInViewModel(get()) }
-    viewModel { PostNekogoViewModel() }
+    viewModel { PostNekogoViewModel(get()) }
 }
 
 private fun getUserProfileDatabase(context: Context): IUserProfileDatabase = UserProfileDatabase.getDatabase(context)

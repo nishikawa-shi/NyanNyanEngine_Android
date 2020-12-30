@@ -160,4 +160,44 @@ class TweetsUsecaseTests {
             )
         }
     }
+
+    @Test
+    fun postTweet_レポジトリ由来の値を返すこと() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val testUser = TwitterUserRecord(
+                id = "getTweetsResChId",
+                oauthToken = "getTweetsResChToken",
+                oauthTokenSecret = "getTweetsResChSecret",
+                screenName = "getTweetsResChSNm"
+            )
+            `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
+                testUser
+            )
+            `when`(
+                mockTweetsRepository.postTweet(
+                    tweetBody = "testtweeeetBody",
+                    user = testUser,
+                    scope = this
+                )
+            ).thenReturn(
+                Tweet(
+                    id = 2828,
+                    text = "dummyUsCsNomPrev",
+                    createdAt = "3 gatsu 2 nichi",
+                    user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
+                )
+            )
+
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            Truth.assertThat(testUsecase.postTweet(tweetBody = "testtweeeetBody", scope = this))
+                .isEqualTo(
+                    Tweet(
+                        id = 2828,
+                        text = "dummyUsCsNomPrev",
+                        createdAt = "3 gatsu 2 nichi",
+                        user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
+                    )
+                )
+        }
+    }
 }
