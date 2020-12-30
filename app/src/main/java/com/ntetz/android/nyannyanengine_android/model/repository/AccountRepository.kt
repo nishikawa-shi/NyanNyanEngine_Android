@@ -63,14 +63,10 @@ class AccountRepository(
         oauthToken: String,
         scope: CoroutineScope
     ): AccessToken {
-        val fullPath = listOf(
-            TwitterEndpoints.accessTokenPath,
-            "?oauth_verifier=$oauthVerifier&oauth_token=$oauthToken"
-        ).joinToString(separator = "")
         return withContext(scope.coroutineContext) {
             val requestMetadata = TwitterRequestMetadata(
                 method = TwitterEndpoints.accessTokenMethod,
-                path = fullPath,
+                path = TwitterEndpoints.accessTokenPath,
                 twitterConfig = twitterConfig
             )
             val authorization = TwitterSignature(
