@@ -22,7 +22,7 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModel()
     private lateinit var binding: MainFragmentBinding
-    private val adapter = MainAdapter(this)
+    private val adapter: MainAdapter by lazy { MainAdapter(this.context, this) }
     private var searchJob: Job? = null
 
     override fun onCreateView(
