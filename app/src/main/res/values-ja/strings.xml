@@ -11,4 +11,14 @@
     <string name="menu_hash_tag">はっしゅたぐ</string>
     <string name="menu_sign_in">ログインする</string>
 
+    <string name="nekosan_nakigoe_type1">にゃん</string>
+    <string name="nekosan_nakigoe_type2">にゃお</string>
+    <string name="nekosan_nakigoe_type3">にゃー</string>
+    <string name="nekosan_nakigoe_type4">にゃ</string>
+    <string name="nekosan_nakigoe_type5">にゃーん</string>
+    <string name="nekosan_nakigoe_type6">にゃーお</string>
+    <string name="nekosan_nakigoe_type7">にゃおーん</string>
+    <string name="nekosan_nakigoe_type8">にゃーおん</string>
+    <string name="nekosan_nakigoe_type9">にゃあ</string>
+    <string name="nekosan_nakigoe_type99">ごろごろ</string>
 </resources>

@@ -11,4 +11,14 @@
     <string name="menu_hash_tag">Hash Tags</string>
     <string name="menu_sign_in">Sign in</string>
 
+    <string name="nekosan_nakigoe_type1">Meow</string>
+    <string name="nekosan_nakigoe_type2">Miaow</string>
+    <string name="nekosan_nakigoe_type3">Mew</string>
+    <string name="nekosan_nakigoe_type4">Meoow</string>
+    <string name="nekosan_nakigoe_type5">Meeow</string>
+    <string name="nekosan_nakigoe_type6">Miau</string>
+    <string name="nekosan_nakigoe_type7">Miaaaow</string>
+    <string name="nekosan_nakigoe_type8">Myau</string>
+    <string name="nekosan_nakigoe_type9">Nyan</string>
+    <string name="nekosan_nakigoe_type99">Purr</string>
 </resources>
