@@ -7,6 +7,7 @@ interface ITwitterRequestMetadata {
     val additionalParams: List<TwitterSignParam>
     val method: String
     val path: String
+    val appendAdditionalParamsToHead: Boolean
     val fullUrl: String
     val oneTimeParams: TwitterOneTimeParams
     fun getRequestParams(token: String = ""): List<String>
@@ -16,6 +17,7 @@ data class TwitterRequestMetadata(
     override val additionalParams: List<TwitterSignParam> = listOf(),
     override val method: String,
     override val path: String,
+    override val appendAdditionalParamsToHead: Boolean = false, // リクエストトークンAPI等、一部APIではtrueにしないと署名に失敗して401エラーとなってしまう。
     override val oneTimeParams: TwitterOneTimeParams = TwitterOneTimeParams(),
     private val twitterConfig: ITwitterConfig
 ) : ITwitterRequestMetadata {
@@ -44,7 +46,8 @@ data class TwitterRequestMetadata(
                 "oauth_version", "1.0"
             )
         )
-        return additionalParams.plus(baseParams)
-            .map { it.toUrlString() }
+        return if (appendAdditionalParamsToHead)
+            (additionalParams.plus(baseParams).map { it.toUrlString() }) else (
+                baseParams.plus(additionalParams).map { it.toUrlString() })
     }
 }

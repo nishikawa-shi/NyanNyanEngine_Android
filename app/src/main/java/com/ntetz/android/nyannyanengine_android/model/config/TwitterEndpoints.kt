@@ -9,15 +9,19 @@ object TwitterEndpoints {
     const val requestTokenPath: String = "oauth/request_token"
     const val accessTokenPath: String = "oauth/access_token"
     const val homeTimelinePath: String = "1.1/statuses/home_timeline.json"
+    const val postTweetPath: String = "1.1/statuses/update.json"
 
     const val requestTokenMethod: String = "POST"
     const val accessTokenMethod: String = "POST"
     const val homeTimelineMethod: String = "GET"
+    const val postTweetMethod: String = "POST"
 
     const val requestTokenOauthCallbackParamName: String = "oauth_callback"
     const val accessTokenOauthVerifierParamName: String = "oauth_verifier"
     const val accessTokenOauthTokenParamName: String = "oauth_token"
     const val homeTimelineCountParamName: String = "count"
     const val homeTimelineMaxIdParamName: String = "max_id"
+    const val postTweetStatusParamName: String = "status"
+
     const val homeTimelineCountParamDefaultValue: String = "200"
 }

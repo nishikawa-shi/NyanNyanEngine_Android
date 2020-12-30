@@ -34,6 +34,7 @@ class TwitterSignatureTests {
             ),
             method = "POST",
             path = "oauth/request_token",
+            appendAdditionalParamsToHead = true,
             oneTimeParams = mockOnetimeParams,
             twitterConfig = mockTwitterConfig
         )

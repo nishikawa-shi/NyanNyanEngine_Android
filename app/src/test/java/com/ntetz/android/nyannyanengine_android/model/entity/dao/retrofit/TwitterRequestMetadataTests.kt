@@ -73,13 +73,14 @@ class TwitterRequestMetadataTests {
     }
 
     @Test
-    fun requestParams_追加パラメータ指定時先頭に追加されること() {
+    fun requestParams_appendAdditionalParamsToHeadがtrueの時追加パラメータ指定時先頭に追加されること() {
         `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
         val testResponseMetadata = TwitterRequestMetadata(
             additionalParams = listOf(TwitterSignParam("testKey1", "testVal1")),
             method = "POST",
             path = "level1/level2",
+            appendAdditionalParamsToHead = true,
             oneTimeParams = mockOnetimeParams,
             twitterConfig = mockTwitterConfig
         )
@@ -96,7 +97,7 @@ class TwitterRequestMetadataTests {
     }
 
     @Test
-    fun requestParams_追加パラメータ複数指定時順番が維持されること() {
+    fun requestParams_appendAdditionalParamsToHeadがtruenの時追加パラメータ複数指定時順番が維持されること() {
         `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
         val testResponseMetadata = TwitterRequestMetadata(
@@ -106,6 +107,7 @@ class TwitterRequestMetadataTests {
             ),
             method = "POST",
             path = "level1/level2",
+            appendAdditionalParamsToHead = true,
             oneTimeParams = mockOnetimeParams,
             twitterConfig = mockTwitterConfig
         )
@@ -123,6 +125,30 @@ class TwitterRequestMetadataTests {
     }
 
     @Test
+    fun requestParams_appendAdditionalParamsToHeadがfalseの時追加パラメータが末尾に入ること() {
+        `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
+
+        val testResponseMetadata = TwitterRequestMetadata(
+            additionalParams = listOf(TwitterSignParam("testKey1", "testVal1")),
+            method = "POST",
+            path = "level1/level2",
+            appendAdditionalParamsToHead = false,
+            oneTimeParams = mockOnetimeParams,
+            twitterConfig = mockTwitterConfig
+        )
+        val exp = listOf(
+            "oauth_consumer_key=abc123GHI",
+            "oauth_nonce=12345",
+            "oauth_signature_method=HMAC-SHA1",
+            "oauth_timestamp=1600000000",
+            "oauth_token=",
+            "oauth_version=1.0",
+            "testKey1=testVal1"
+        )
+        Truth.assertThat(testResponseMetadata.getRequestParams(token = "")).isEqualTo(exp)
+    }
+
+    @Test
     fun requestParams_特殊文字つきパラメータがURLエンコードされること() {
         `when`(mockTwitterConfig.consumerKey).thenReturn("abc123GHI")
 
@@ -132,6 +158,7 @@ class TwitterRequestMetadataTests {
             ),
             method = "POST",
             path = "level1/level2",
+            appendAdditionalParamsToHead = true,
             oneTimeParams = mockOnetimeParams,
             twitterConfig = mockTwitterConfig
         )

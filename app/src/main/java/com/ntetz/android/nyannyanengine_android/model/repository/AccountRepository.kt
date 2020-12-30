@@ -40,6 +40,7 @@ class AccountRepository(
                 additionalParams = additionalHeaders,
                 method = TwitterEndpoints.requestTokenMethod,
                 path = TwitterEndpoints.requestTokenPath,
+                appendAdditionalParamsToHead = true,
                 twitterConfig = twitterConfig
             )
             val authorization = TwitterSignature(

@@ -20,6 +20,7 @@ import retrofit2.Response
 interface ITweetsRepository {
     suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
     suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
+    suspend fun postTweet(tweetBody: String, user: TwitterUserRecord, scope: CoroutineScope): Tweet
 }
 
 class TweetsRepository(
@@ -60,6 +61,7 @@ class TweetsRepository(
         val requestMetadata = TwitterRequestMetadata(
             additionalParams = additionalHeaders,
             method = TwitterEndpoints.homeTimelineMethod,
+            appendAdditionalParamsToHead = true,
             path = TwitterEndpoints.homeTimelinePath,
             twitterConfig = twitterConfig
         )
@@ -74,6 +76,35 @@ class TweetsRepository(
         val body = result.body()?.toSortedById()
         if (!result.isSuccessful || body == null) {
             return getErrorTweets(result)
+        }
+        return body
+    }
+
+    override suspend fun postTweet(tweetBody: String, user: TwitterUserRecord, scope: CoroutineScope): Tweet {
+        val additionalHeaders = listOf(
+            TwitterSignParam(
+                TwitterEndpoints.postTweetStatusParamName,
+                tweetBody
+            )
+        )
+
+        val requestMetadata = TwitterRequestMetadata(
+            additionalParams = additionalHeaders,
+            method = TwitterEndpoints.postTweetMethod,
+            path = TwitterEndpoints.postTweetPath,
+            twitterConfig = twitterConfig
+        )
+
+        val authorization = TwitterSignature(
+            requestMetadata = requestMetadata,
+            twitterConfig = twitterConfig,
+            base64Encoder = base64Encoder
+        ).getOAuthValue(user)
+
+        val result = postTweetToWeb(tweetBody, authorization, scope)
+        val body = result.body()
+        if (!result.isSuccessful || body == null) {
+            return getErrorTweet(result)
         }
         return body
     }
@@ -111,10 +142,34 @@ class TweetsRepository(
         }
     }
 
+    private suspend fun postTweetToWeb(
+        tweetBody: String,
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<Tweet> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.objectClient
+                    .postTweet(
+                        status = tweetBody,
+                        authorization = authorization
+                    )
+                    .execute()
+            }
+        }
+    }
+
     private fun getErrorTweets(result: Response<List<Tweet>>): List<Tweet> {
         return when (result.code()) {
             429 -> DefaultTweetConfig.tooManyRequestList
             else -> DefaultTweetConfig.undefinedErrorList
+        }
+    }
+
+    private fun getErrorTweet(result: Response<Tweet>): Tweet {
+        return when (result.code()) {
+            429 -> DefaultTweetConfig.tooManyRequestList[0]
+            else -> DefaultTweetConfig.undefinedErrorList[0]
         }
     }
 
