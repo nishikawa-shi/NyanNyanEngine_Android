@@ -171,4 +171,45 @@ class TweetsRepositoryTests {
                 )
         }
     }
+
+    @Test
+    fun postTweet_Retrofitのレスポンス由来の値が得られること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val mockEndpoints = TestUtil.mockNormalRetrofit
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse(
+                    Tweet(
+                        id = 2828,
+                        text = "postTestTweeter!",
+                        createdAt = "3 gatsu 2 nichi",
+                        user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                    )
+                )
+            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+
+            `when`(mockTwitterConfig.apiSecret).thenReturn("")
+            `when`(mockTwitterConfig.consumerKey).thenReturn("")
+            val testRepository =
+                TweetsRepository(
+                    twitterApi = mockTwitterApi,
+                    twitterConfig = mockTwitterConfig,
+                    base64Encoder = TestUtil.mockBase64Encoder
+                )
+            Truth.assertThat(
+                testRepository.postTweet(
+                    tweetBody = "dummy",
+                    user = TwitterUserRecord("", "", "", ""),
+                    scope = this
+                )
+            )
+                .isEqualTo(
+                    Tweet(
+                        id = 2828,
+                        text = "postTestTweeter!",
+                        createdAt = "3 gatsu 2 nichi",
+                        user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
+                    )
+                )
+        }
+    }
 }

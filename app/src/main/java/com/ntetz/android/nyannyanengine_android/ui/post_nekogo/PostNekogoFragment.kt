@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.PostNekogoFragmentBinding
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -23,12 +26,17 @@ class PostNekogoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = PostNekogoFragmentBinding.inflate(inflater, container, false)
-        binding.viewModel = viewModel
+        binding.inputText = context?.getString(R.string.post_input_original_text)
+        binding.testButton.setOnClickListener { viewModel.postNekogo(binding.nekogoResult.text.toString()) }
         binding.lifecycleOwner = this
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        viewModel.postTweetEvent.observe(viewLifecycleOwner, {
+            Toast.makeText(context, "${it?.text}${context?.getString(R.string.post_result)}", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
+        })
         super.onActivityCreated(savedInstanceState)
     }
 }

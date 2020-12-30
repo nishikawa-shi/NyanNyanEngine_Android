@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineScope
 interface ITweetsUsecase {
     suspend fun getLatestTweets(scope: CoroutineScope): List<Tweet>
     suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope): List<Tweet>
+    suspend fun postTweet(tweetBody: String, scope: CoroutineScope): Tweet
 }
 
 class TweetsUsecase(
@@ -23,5 +24,10 @@ class TweetsUsecase(
     override suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope): List<Tweet> {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
         return tweetsRepository.getPreviousTweets(maxId = maxId, user = user, scope = scope)
+    }
+
+    override suspend fun postTweet(tweetBody: String, scope: CoroutineScope): Tweet {
+        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist[0]
+        return tweetsRepository.postTweet(tweetBody, user, scope)
     }
 }

@@ -28,4 +28,10 @@ interface ITwitterApiEndpoints {
         @Query(TwitterEndpoints.homeTimelineCountParamName) count: String,
         @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
     ): Call<List<Tweet>>
+
+    @POST(TwitterEndpoints.postTweetPath)
+    fun postTweet(
+        @Query(TwitterEndpoints.postTweetStatusParamName) status: String,
+        @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
+    ): Call<Tweet>
 }

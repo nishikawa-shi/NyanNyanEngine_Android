@@ -24,7 +24,11 @@
     <fragment
         android:id="@+id/postNekogoFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
-        android:label="PostNekogoFragment" />
+        android:label="PostNekogoFragment" >
+        <action
+            android:id="@+id/action_postNekogoFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+    </fragment>
     <fragment
         android:id="@+id/hashtagSettingFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"

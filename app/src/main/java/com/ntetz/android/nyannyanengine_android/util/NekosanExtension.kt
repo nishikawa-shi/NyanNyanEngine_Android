@@ -4,7 +4,10 @@ import android.content.Context
 import com.ntetz.android.nyannyanengine_android.R
 import java.security.MessageDigest
 
-fun String.toNyanNyan(context: Context): String {
+fun String?.toNyanNyan(context: Context): String {
+    if (this == null) {
+        return context.getText(R.string.nekosan_nakigoe_type99).toString()
+    }
     if (this.isEmpty()) {
         return ""
     }
