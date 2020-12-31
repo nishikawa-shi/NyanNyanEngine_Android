@@ -48,7 +48,8 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
                 errorMessage = tokenApiResult.errorDescription
             )
         }
-        val twitterUserRecord = createTwitterUserRecord(tokenApiResult)
+        val verifyApiResult = accountRepository.verifyAccessToken(tokenApiResult, scope)
+        val twitterUserRecord = createTwitterUserRecord(tokenApiResult, verifyApiResult)
             ?: return SignInResultComponent(
                 isSucceeded = false,
                 errorMessage = "shortage response. code: 9997"
@@ -72,14 +73,14 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         return accountRepository.deleteTwitterUser(user, scope)
     }
 
-    private fun createTwitterUserRecord(tokenApiResponse: AccessToken): TwitterUserRecord? {
+    private fun createTwitterUserRecord(tokenApiResponse: AccessToken, verifyApiResult: User): TwitterUserRecord? {
         return TwitterUserRecord(
             id = tokenApiResponse.id ?: return null,
             oauthToken = tokenApiResponse.oauthToken,
             oauthTokenSecret = tokenApiResponse.oauthTokenSecret,
-            screenName = "TODO Scname",
-            name = "TODO name",
-            profileImageUrlHttps = "TODO Url"
+            screenName = tokenApiResponse.screenName ?: return null,
+            name = verifyApiResult.name,
+            profileImageUrlHttps = verifyApiResult.profileImageUrlHttps
         )
     }
 }
