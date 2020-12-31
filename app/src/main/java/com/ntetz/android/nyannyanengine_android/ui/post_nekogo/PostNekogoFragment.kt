@@ -37,6 +37,10 @@ class PostNekogoFragment : Fragment() {
             Toast.makeText(context, "${it?.text}${context?.getString(R.string.post_result)}", Toast.LENGTH_SHORT).show()
             findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
         })
+        viewModel.userInfoEvent.observe(viewLifecycleOwner, {
+            binding.testButton.isEnabled = (it != null)
+        })
+        viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)
     }
 }

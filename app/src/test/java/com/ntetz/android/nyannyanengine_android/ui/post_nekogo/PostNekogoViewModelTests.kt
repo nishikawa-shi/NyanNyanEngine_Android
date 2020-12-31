@@ -5,6 +5,8 @@ import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +26,9 @@ import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
 class PostNekogoViewModelTests {
+    @Mock
+    private lateinit var mockAccountUsecase: IAccountUsecase
+
     @Mock
     private lateinit var mockTweetsUsecase: ITweetsUsecase
 
@@ -46,9 +51,39 @@ class PostNekogoViewModelTests {
     }
 
     @Test
+    fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
+        delay(10) // これがないとCIでコケる
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase).loadUserInfo()
+
+        Mockito.verify(mockAccountUsecase, Mockito.times(1)).loadAccessToken(TestUtil.any())
+        return@runBlocking
+    }
+
+    @Test
+    fun loadUserInfo_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(
+            TwitterUserRecord(
+                "testId", "testToken", "testTokenSecret", "testScName", "testName", null
+            )
+        )
+
+        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase)
+        testViewModel.loadUserInfo()
+        delay(10) // これがないとCIでコケる
+
+        Truth.assertThat(testViewModel.userInfoEvent.value).isEqualTo(
+            TwitterUserRecord(
+                "testId", "testToken", "testTokenSecret", "testScName", "testName", null
+            )
+        )
+        return@runBlocking
+    }
+
+    @Test
     fun postNekogo_postTweetが呼ばれること() = runBlocking {
         `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any())).thenReturn(null)
-        PostNekogoViewModel(mockTweetsUsecase).postNekogo("testNekogo")
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase).postNekogo("testNekogo")
         delay(10) // これがないとCIでコケる
 
         Mockito.verify(mockTweetsUsecase, Mockito.times(1)).postTweet(TestUtil.any(), TestUtil.any())
@@ -66,7 +101,7 @@ class PostNekogoViewModelTests {
             )
         )
 
-        val testViewModel = PostNekogoViewModel(mockTweetsUsecase)
+        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase)
         testViewModel.postNekogo("dummyTTweeett")
         delay(10) // これがないとCIでコケる
 
