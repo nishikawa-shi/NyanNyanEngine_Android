@@ -16,6 +16,10 @@
     <string name="menu_sign_in">ログインする</string>
     <string name="menu_sign_out">ログアウトする</string>
 
+    <string name="logout_sheet_body">ログアウトしますか？</string>
+    <string name="logout_sheet_exec">ログアウトする</string>
+    <string name="logout_sheet_cancel">ログアウトしない</string>
+
     <string name="nekosan_nakigoe_type1">にゃん</string>
     <string name="nekosan_nakigoe_type2">にゃお</string>
     <string name="nekosan_nakigoe_type3">にゃー</string>

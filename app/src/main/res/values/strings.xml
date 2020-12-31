@@ -18,6 +18,10 @@
     <string name="menu_sign_in">Sign in</string>
     <string name="menu_sign_out">Sign out</string>
 
+    <string name="logout_sheet_body">want sign out?</string>
+    <string name="logout_sheet_exec">sign out</string>
+    <string name="logout_sheet_cancel">stay signed in</string>
+
     <string name="nekosan_nakigoe_type1">Meow</string>
     <string name="nekosan_nakigoe_type2">Miaow</string>
     <string name="nekosan_nakigoe_type3">Mew</string>

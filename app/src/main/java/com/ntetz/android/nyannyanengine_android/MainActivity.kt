@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -63,16 +64,36 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         main_drawer.closeDrawers()
         when (item.itemId) {
             R.id.nav_settings_hash_tag -> navController.navigate(R.id.action_mainFragment_to_hashtagSettingFragment)
-            R.id.nav_auth -> {
-                launch {
-                    val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this) ?: return@launch
-                    startActivity(Intent(Intent.ACTION_VIEW, authorizePageUri))
-                }
-            }
+            R.id.nav_auth -> openPageWithSignedInStatus(this)
         }
         return NavigationUI.onNavDestinationSelected(
             item,
             navController
         ) || super.onOptionsItemSelected(item)
+    }
+
+    private fun openPageWithSignedInStatus(scope: CoroutineScope) {
+        if (!isSignedIn) {
+            openAuthorizePage(scope)
+            return
+        }
+        openSignOutDialog()
+    }
+
+    private fun openAuthorizePage(scope: CoroutineScope) {
+        scope.launch {
+            val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this) ?: return@launch
+            startActivity(Intent(Intent.ACTION_VIEW, authorizePageUri))
+        }
+    }
+
+    private fun openSignOutDialog() {
+        AlertDialog.Builder(this)
+            .setMessage(getString(R.string.logout_sheet_body))
+            .setPositiveButton(getString(R.string.logout_sheet_exec)) { _, _ ->
+                navController.navigate(R.id.action_mainFragment_to_signOutFragment)
+            }
+            .setNegativeButton(getString(R.string.logout_sheet_cancel), null)
+            .show()
     }
 }
