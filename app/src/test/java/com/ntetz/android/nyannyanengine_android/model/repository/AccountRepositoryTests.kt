@@ -6,7 +6,9 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -74,6 +76,33 @@ class AccountRepositoryTests {
                 )
             Truth.assertThat(testRepository.getAccessToken("", "", this).errorDescription)
                 .isEqualTo("network error. code: 500")
+        }
+    }
+
+    @Test
+    fun verifyAccessToken_Retrofitのレスポンス由来の値が得られること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val mockEndpoints = TestUtil.mockNormalRetrofit
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse(User(name = "testUser", screenName = "testScName"))
+
+            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterConfig.apiSecret).thenReturn("")
+            `when`(mockTwitterConfig.consumerKey).thenReturn("")
+
+            val testRepository =
+                AccountRepository(
+                    twitterApi = mockTwitterApi,
+                    twitterConfig = mockTwitterConfig,
+                    base64Encoder = TestUtil.mockBase64Encoder,
+                    twitterUserDao = mockTwitterUserDao
+                )
+            Truth.assertThat(
+                testRepository.verifyAccessToken(
+                    AccessToken(true, null, null, "", "", null),
+                    this
+                )
+            ).isEqualTo(User(name = "testUser", screenName = "testScName"))
         }
     }
 

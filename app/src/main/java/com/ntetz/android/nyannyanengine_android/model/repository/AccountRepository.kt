@@ -1,6 +1,7 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
 import android.net.Uri
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
@@ -12,6 +13,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.IAcces
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignParam
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.util.Base64Encoder
 import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
@@ -23,6 +25,7 @@ import retrofit2.Response
 interface IAccountRepository {
     suspend fun getAuthorizationToken(scope: CoroutineScope): String?
     suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): AccessToken
+    suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope): User
     suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
     suspend fun deleteTwitterUser(token: IAccessToken, scope: CoroutineScope): AccessTokenInvalidation?
@@ -69,6 +72,26 @@ class AccountRepository(
             base64Encoder = base64Encoder
         ).getOAuthValue()
         return getAccessTokenFromWeb(oauthVerifier, oauthToken, authorization, scope).toAccessToken()
+    }
+
+    override suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope): User {
+        val requestMetadata = TwitterRequestMetadata(
+            method = TwitterEndpoints.verifyCredentialsMethod,
+            path = TwitterEndpoints.verifyCredentialsPath,
+            twitterConfig = twitterConfig
+        )
+        val authorization = TwitterSignature(
+            requestMetadata = requestMetadata,
+            twitterConfig = twitterConfig,
+            base64Encoder = base64Encoder
+        ).getOAuthValue(token)
+
+        val result = verifyAccessTokenToWeb(authorization, scope)
+        val body = result.body()
+        if (!result.isSuccessful || body == null) {
+            return getErrorUser()
+        }
+        return body
     }
 
     override suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord? {
@@ -146,6 +169,21 @@ class AccountRepository(
         }
     }
 
+    private suspend fun verifyAccessTokenToWeb(
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<User> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.objectClient
+                    .verifyCredentials(
+                        authorization = authorization
+                    )
+                    .execute()
+            }
+        }
+    }
+
     private suspend fun invalidateAccessTokenToWeb(
         authorization: String,
         scope: CoroutineScope
@@ -167,6 +205,10 @@ class AccountRepository(
                 twitterUserDao.deleteAll()
             }
         }
+    }
+
+    private fun getErrorUser(): User {
+        return DefaultUserConfig.notSignInUser
     }
 
     private fun Response<String>.toAccessToken(): AccessToken {
