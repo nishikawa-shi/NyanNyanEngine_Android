@@ -8,11 +8,13 @@ object TwitterEndpoints {
     const val authorizePagePath: String = "oauth/authorize"
     const val requestTokenPath: String = "oauth/request_token"
     const val accessTokenPath: String = "oauth/access_token"
+    const val invalidateTokenPath: String = "1.1/oauth/invalidate_token"
     const val homeTimelinePath: String = "1.1/statuses/home_timeline.json"
     const val postTweetPath: String = "1.1/statuses/update.json"
 
     const val requestTokenMethod: String = "POST"
     const val accessTokenMethod: String = "POST"
+    const val invalidateTokenMethod: String = "POST"
     const val homeTimelineMethod: String = "GET"
     const val postTweetMethod: String = "POST"
 

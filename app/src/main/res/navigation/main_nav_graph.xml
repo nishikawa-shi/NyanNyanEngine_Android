@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_mainFragment_to_hashtagSettingFragment"
             app:destination="@id/hashtagSettingFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_signOutFragment"
+            app:destination="@id/signOutFragment" />
     </fragment>
     <fragment
         android:id="@+id/postNekogoFragment"
@@ -59,5 +62,14 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="null" />
+    </fragment>
+    <fragment
+        android:id="@+id/signOutFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.sign_out.SignOutFragment"
+        android:label="sign_out_fragment"
+        tools:layout="@layout/sign_out_fragment" >
+        <action
+            android:id="@+id/action_signOutFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
     </fragment>
 </navigation>

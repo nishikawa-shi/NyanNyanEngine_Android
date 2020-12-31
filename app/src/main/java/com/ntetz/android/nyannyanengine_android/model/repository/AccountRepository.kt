@@ -7,6 +7,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignParam
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
@@ -23,6 +24,7 @@ interface IAccountRepository {
     suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): AccessToken
     suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
+    suspend fun deleteTwitterUser(user: TwitterUserRecord, scope: CoroutineScope): AccessTokenInvalidation?
 }
 
 class AccountRepository(
@@ -100,6 +102,56 @@ class AccountRepository(
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
                 twitterUserDao.upsert(record)
+            }
+        }
+    }
+
+    override suspend fun deleteTwitterUser(user: TwitterUserRecord, scope: CoroutineScope): AccessTokenInvalidation? {
+        deleteTwitterUserRecord(scope)
+        return invalidateAccessToken(user, scope)
+    }
+
+    private suspend fun invalidateAccessToken(
+        user: TwitterUserRecord,
+        scope: CoroutineScope
+    ): AccessTokenInvalidation? {
+        val requestMetadata = TwitterRequestMetadata(
+            method = TwitterEndpoints.invalidateTokenMethod,
+            path = TwitterEndpoints.invalidateTokenPath,
+            twitterConfig = twitterConfig
+        )
+        val authorization = TwitterSignature(
+            requestMetadata = requestMetadata,
+            twitterConfig = twitterConfig,
+            base64Encoder = base64Encoder
+        ).getOAuthValue(user)
+
+        val result = invalidateAccessTokenToWeb(authorization, scope)
+        if (!result.isSuccessful) {
+            return null
+        }
+        return result.body()
+    }
+
+    private suspend fun invalidateAccessTokenToWeb(
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<AccessTokenInvalidation> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.objectClient
+                    .invalidateToken(
+                        authorization = authorization
+                    )
+                    .execute()
+            }
+        }
+    }
+
+    private suspend fun deleteTwitterUserRecord(scope: CoroutineScope) {
+        withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterUserDao.deleteAll()
             }
         }
     }

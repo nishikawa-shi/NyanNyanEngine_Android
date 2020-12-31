@@ -1,6 +1,7 @@
 package com.ntetz.android.nyannyanengine_android.model.dao.retrofit
 
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import retrofit2.Call
 import retrofit2.http.GET
@@ -18,6 +19,11 @@ interface ITwitterApiEndpoints {
         @Query(TwitterEndpoints.accessTokenOauthTokenParamName) oauthToken: String,
         @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
     ): Call<String>
+
+    @POST(TwitterEndpoints.invalidateTokenPath)
+    fun invalidateToken(
+        @Header(TwitterEndpoints.authorizationHeaderName) authorization: String
+    ): Call<AccessTokenInvalidation>
 
     @GET(TwitterEndpoints.homeTimelinePath)
     fun getTweets(@Header(TwitterEndpoints.authorizationHeaderName) authorization: String): Call<List<Tweet>>

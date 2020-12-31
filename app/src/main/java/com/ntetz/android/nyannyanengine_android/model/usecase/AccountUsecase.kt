@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 import android.net.Uri
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
@@ -17,6 +18,7 @@ interface IAccountUsecase {
     ): SignInResultComponent?
 
     suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord?
+    suspend fun deleteAccessToken(scope: CoroutineScope): AccessTokenInvalidation?
 }
 
 class AccountUsecase(private val accountRepository: IAccountRepository) : IAccountUsecase {
@@ -62,6 +64,11 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
 
     override suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord? {
         return accountRepository.loadTwitterUser(scope)
+    }
+
+    override suspend fun deleteAccessToken(scope: CoroutineScope): AccessTokenInvalidation? {
+        val user = accountRepository.loadTwitterUser(scope) ?: return null
+        return accountRepository.deleteTwitterUser(user, scope)
     }
 
     private fun createTwitterUserRecord(tokenApiResponse: AccessToken): TwitterUserRecord? {
