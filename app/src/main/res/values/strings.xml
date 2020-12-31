@@ -2,7 +2,7 @@
     <string name="app_name">NyanNyanEngine_Android</string>
 
     <string name="default_twitter_name">Dr. Nyannya</string>
-    <string name="default_twitter_id">\@NNyansu</string>
+    <string name="default_twitter_id">NNyansu</string>
     <string name="nav_header_desc">Account info</string>
 
     <string name="home_timeline_description_post_nekogo">Post cat language</string>
