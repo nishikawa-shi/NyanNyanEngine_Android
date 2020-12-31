@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import com.ntetz.android.nyannyanengine_android.MainActivity
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.MainFragmentBinding
 import kotlinx.coroutines.Job
@@ -47,6 +48,11 @@ class MainFragment : Fragment() {
         binding.postNekogoFragmentOpenButton.setOnClickListener {
             findNavController().navigate(R.id.action_mainFragment_to_postNekogoFragment)
         }
+
+        viewModel.userInfoEvent.observe(viewLifecycleOwner, {
+            (activity as? MainActivity)?.updateUserInfo(it)
+        })
+        viewModel.loadUserInfo()
         setupAdapter()
     }
 
