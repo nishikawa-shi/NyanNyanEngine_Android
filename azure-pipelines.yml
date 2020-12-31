@@ -42,6 +42,22 @@ stages:
         mv app/build.gradle.versioned app/build.gradle
       displayName: 'build.gradleのVersionCode更新'
     - task: DownloadSecureFile@1
+      displayName: 'Firebase dev環境用の設定ファイルを取得'
+      name: FirebaseDevSettings
+      inputs:
+        secureFile: nyannyanengine-android-google-services-dev.json
+    - script: |
+        sudo ln -s $(FirebaseDevSettings.secureFilePath) app/src/dev/google-services.json
+      displayName: 'Firebase dev環境用設定ファイルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'Firebase prd環境用の設定ファイルを取得'
+      name: FirebasePrdSettings
+      inputs:
+        secureFile: nyannyanengine-android-google-services-prd.json
+    - script: |
+        sudo ln -s $(FirebasePrdSettings.secureFilePath) app/src/prd/google-services.json
+      displayName: 'Firebase prd環境用設定ファイルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
       displayName: 'App Distribution dev環境用のクレデンシャルを取得'
       name: deployUserDevCredential
       inputs:
