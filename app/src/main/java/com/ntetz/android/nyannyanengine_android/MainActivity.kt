@@ -50,10 +50,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
 
     fun updateUserInfo(userInfo: TwitterUserRecord?) {
         isSignedIn = (userInfo != null)
-        val userName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
+        val name = userInfo?.name ?: getString(R.string.default_twitter_name)
+        val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
         val authMenuTitle = if (isSignedIn) getString(R.string.menu_sign_out) else getString(R.string.menu_sign_in)
 
-        main_nav_view.getHeaderView(0).textView.text = userName
+        main_nav_view.getHeaderView(0).twitter_name.text = name
+        main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
         main_nav_view.menu.findItem(R.id.nav_auth).title = authMenuTitle
     }
 
