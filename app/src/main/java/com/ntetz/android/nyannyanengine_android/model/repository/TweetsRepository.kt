@@ -5,11 +5,11 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.IAccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignParam
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterSignature
-import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.util.Base64Encoder
 import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
 import kotlinx.coroutines.CoroutineScope
@@ -18,9 +18,9 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 interface ITweetsRepository {
-    suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
-    suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet>
-    suspend fun postTweet(tweetBody: String, user: TwitterUserRecord, scope: CoroutineScope): Tweet
+    suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope): List<Tweet>
+    suspend fun getPreviousTweets(maxId: Long, token: IAccessToken, scope: CoroutineScope): List<Tweet>
+    suspend fun postTweet(tweetBody: String, token: IAccessToken, scope: CoroutineScope): Tweet
 }
 
 class TweetsRepository(
@@ -28,7 +28,7 @@ class TweetsRepository(
     private val twitterConfig: ITwitterConfig = TwitterConfig(),
     private val base64Encoder: IBase64Encoder = Base64Encoder()
 ) : ITweetsRepository {
-    override suspend fun getLatestTweets(user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
+    override suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope): List<Tweet> {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.homeTimelineMethod,
             path = TwitterEndpoints.homeTimelinePath,
@@ -39,7 +39,7 @@ class TweetsRepository(
             requestMetadata = requestMetadata,
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
-        ).getOAuthValue(user)
+        ).getOAuthValue(token)
 
         val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope)
         val body = result.body()?.toSortedById()
@@ -49,7 +49,7 @@ class TweetsRepository(
         return body
     }
 
-    override suspend fun getPreviousTweets(maxId: Long, user: TwitterUserRecord, scope: CoroutineScope): List<Tweet> {
+    override suspend fun getPreviousTweets(maxId: Long, token: IAccessToken, scope: CoroutineScope): List<Tweet> {
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.homeTimelineCountParamName,
@@ -70,7 +70,7 @@ class TweetsRepository(
             requestMetadata = requestMetadata,
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
-        ).getOAuthValue(user)
+        ).getOAuthValue(token)
 
         val result = getPreviousTweetsFromWeb(maxId = maxId.toString(), authorization = authorization, scope = scope)
         val body = result.body()?.toSortedById()
@@ -80,7 +80,7 @@ class TweetsRepository(
         return body
     }
 
-    override suspend fun postTweet(tweetBody: String, user: TwitterUserRecord, scope: CoroutineScope): Tweet {
+    override suspend fun postTweet(tweetBody: String, token: IAccessToken, scope: CoroutineScope): Tweet {
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.postTweetStatusParamName,
@@ -99,7 +99,7 @@ class TweetsRepository(
             requestMetadata = requestMetadata,
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
-        ).getOAuthValue(user)
+        ).getOAuthValue(token)
 
         val result = postTweetToWeb(tweetBody, authorization, scope)
         val body = result.body()

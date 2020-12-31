@@ -18,12 +18,12 @@ class TweetsUsecase(
 ) : ITweetsUsecase {
     override suspend fun getLatestTweets(scope: CoroutineScope): List<Tweet> {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
-        return tweetsRepository.getLatestTweets(user = user, scope = scope)
+        return tweetsRepository.getLatestTweets(token = user, scope = scope)
     }
 
     override suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope): List<Tweet> {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
-        return tweetsRepository.getPreviousTweets(maxId = maxId, user = user, scope = scope)
+        return tweetsRepository.getPreviousTweets(maxId = maxId, token = user, scope = scope)
     }
 
     override suspend fun postTweet(tweetBody: String, scope: CoroutineScope): Tweet {

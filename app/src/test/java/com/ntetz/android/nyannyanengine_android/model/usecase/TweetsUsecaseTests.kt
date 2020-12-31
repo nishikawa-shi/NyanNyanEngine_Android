@@ -56,7 +56,7 @@ class TweetsUsecaseTests {
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
             )
-            `when`(mockTweetsRepository.getLatestTweets(user = testUser, scope = this)).thenReturn(
+            `when`(mockTweetsRepository.getLatestTweets(token = testUser, scope = this)).thenReturn(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -93,7 +93,7 @@ class TweetsUsecaseTests {
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
             )
-            `when`(mockTweetsRepository.getLatestTweets(user = testUser, scope = this)).thenReturn(
+            `when`(mockTweetsRepository.getLatestTweets(token = testUser, scope = this)).thenReturn(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -133,7 +133,7 @@ class TweetsUsecaseTests {
             `when`(
                 mockTweetsRepository.getPreviousTweets(
                     maxId = 1234567890123456789,
-                    user = testUser,
+                    token = testUser,
                     scope = this
                 )
             ).thenReturn(
@@ -176,7 +176,7 @@ class TweetsUsecaseTests {
             `when`(
                 mockTweetsRepository.postTweet(
                     tweetBody = "testtweeeetBody",
-                    user = testUser,
+                    token = testUser,
                     scope = this
                 )
             ).thenReturn(

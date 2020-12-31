@@ -73,9 +73,9 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
 
     private fun createTwitterUserRecord(tokenApiResponse: AccessToken): TwitterUserRecord? {
         return TwitterUserRecord(
-            id = tokenApiResponse.userId ?: return null,
-            oauthToken = tokenApiResponse.oauthToken ?: return null,
-            oauthTokenSecret = tokenApiResponse.oauthTokenSecret ?: return null,
+            id = tokenApiResponse.id ?: return null,
+            oauthToken = tokenApiResponse.oauthToken,
+            oauthTokenSecret = tokenApiResponse.oauthTokenSecret,
             screenName = tokenApiResponse.screenName ?: return null
         )
     }

@@ -155,7 +155,7 @@ class TweetsRepositoryTests {
             Truth.assertThat(
                 testRepository.getPreviousTweets(
                     maxId = 1234567890123456789,
-                    user = TwitterUserRecord("", "", "", ""),
+                    token = TwitterUserRecord("", "", "", ""),
                     this
                 )
             )
@@ -198,7 +198,7 @@ class TweetsRepositoryTests {
             Truth.assertThat(
                 testRepository.postTweet(
                     tweetBody = "dummy",
-                    user = TwitterUserRecord("", "", "", ""),
+                    token = TwitterUserRecord("", "", "", ""),
                     scope = this
                 )
             )
