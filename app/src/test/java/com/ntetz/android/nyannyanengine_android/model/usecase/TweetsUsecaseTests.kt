@@ -51,7 +51,9 @@ class TweetsUsecaseTests {
                 id = "getTweetsResChId",
                 oauthToken = "getTweetsResChToken",
                 oauthTokenSecret = "getTweetsResChSecret",
-                screenName = "getTweetsResChSNm"
+                screenName = "getTweetsResChSNm",
+                name = "testName",
+                profileImageUrlHttps = null
             )
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
@@ -88,7 +90,9 @@ class TweetsUsecaseTests {
                 id = "getTweetsResChId",
                 oauthToken = "getTweetsResChToken",
                 oauthTokenSecret = "getTweetsResChSecret",
-                screenName = "getTweetsResChSNm"
+                screenName = "getTweetsResChSNm",
+                name = "testName",
+                profileImageUrlHttps = null
             )
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
@@ -125,7 +129,9 @@ class TweetsUsecaseTests {
                 id = "getTweetsResChId",
                 oauthToken = "getTweetsResChToken",
                 oauthTokenSecret = "getTweetsResChSecret",
-                screenName = "getTweetsResChSNm"
+                screenName = "getTweetsResChSNm",
+                name = "testName",
+                profileImageUrlHttps = null
             )
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
@@ -168,7 +174,9 @@ class TweetsUsecaseTests {
                 id = "getTweetsResChId",
                 oauthToken = "getTweetsResChToken",
                 oauthTokenSecret = "getTweetsResChSecret",
-                screenName = "getTweetsResChSNm"
+                screenName = "getTweetsResChSNm",
+                name = "testName",
+                profileImageUrlHttps = null
             )
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser

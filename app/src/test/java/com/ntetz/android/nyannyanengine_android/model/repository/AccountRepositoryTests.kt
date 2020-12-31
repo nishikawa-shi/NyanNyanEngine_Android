@@ -114,7 +114,9 @@ class AccountRepositoryTests {
                     "iDdum1",
                     oauthToken = "tokDum1",
                     oauthTokenSecret = "secDum1",
-                    screenName = "scDum1"
+                    screenName = "scDum1",
+                    name = "testName",
+                    profileImageUrlHttps = null
                 )
             )
         )
@@ -132,7 +134,9 @@ class AccountRepositoryTests {
                     "iDdum1",
                     oauthToken = "tokDum1",
                     oauthTokenSecret = "secDum1",
-                    screenName = "scDum1"
+                    screenName = "scDum1",
+                    name = "testName",
+                    profileImageUrlHttps = null
                 )
             )
     }
@@ -143,7 +147,9 @@ class AccountRepositoryTests {
             "iDdum2",
             oauthToken = "tokDum2",
             oauthTokenSecret = "secDum2",
-            screenName = "scDum2"
+            screenName = "scDum2",
+            name = "testName",
+            profileImageUrlHttps = null
         )
         Mockito.doNothing().`when`(mockTwitterUserDao).upsert(testTwitterUserRecord)
 
@@ -180,7 +186,9 @@ class AccountRepositoryTests {
                     "du",
                     "testToken",
                     "testSecret",
-                    "testScNm"
+                    "testScNm",
+                    name = "testName",
+                    profileImageUrlHttps = null
                 ), this
             )
         ).isEqualTo(AccessTokenInvalidation("dummyToken"))
@@ -205,7 +213,9 @@ class AccountRepositoryTests {
                 "du",
                 "testToken",
                 "testSecret",
-                "testScNm"
+                "testScNm",
+                name = "testName",
+                profileImageUrlHttps = null
             ), this
         )
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間

@@ -4,6 +4,7 @@ import android.net.Uri
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
@@ -76,7 +77,9 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
             id = tokenApiResponse.id ?: return null,
             oauthToken = tokenApiResponse.oauthToken,
             oauthTokenSecret = tokenApiResponse.oauthTokenSecret,
-            screenName = tokenApiResponse.screenName ?: return null
+            screenName = "TODO Scname",
+            name = "TODO name",
+            profileImageUrlHttps = "TODO Url"
         )
     }
 }

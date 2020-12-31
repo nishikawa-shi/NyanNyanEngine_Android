@@ -10,5 +10,7 @@ data class TwitterUserRecord(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
     @ColumnInfo(name = "oauth_token") override val oauthToken: String,
     @ColumnInfo(name = "oauth_token_secret") override val oauthTokenSecret: String,
-    @ColumnInfo(name = "screen_name") val screenName: String
+    @ColumnInfo(name = "screen_name") val screenName: String,
+    @ColumnInfo(name = "name") val name: String,
+    @ColumnInfo(name = "profile_image_url_https") val profileImageUrlHttps: String?
 ) : IAccessToken

@@ -50,7 +50,13 @@ class TweetsRepositoryTests {
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder
                 )
-            Truth.assertThat(testRepository.getLatestTweets(TwitterUserRecord("", "", "", ""), this))
+            Truth.assertThat(
+                testRepository.getLatestTweets(
+                    TwitterUserRecord(
+                        "", "", "", "", "testName", null
+                    ), this
+                )
+            )
                 .isEqualTo(
                     listOf(
                         Tweet(
@@ -101,7 +107,13 @@ class TweetsRepositoryTests {
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder
                 )
-            Truth.assertThat(testRepository.getLatestTweets(TwitterUserRecord("", "", "", ""), this))
+            Truth.assertThat(
+                testRepository.getLatestTweets(
+                    TwitterUserRecord(
+                        "", "", "", "", "testName", null
+                    ), this
+                )
+            )
                 .isEqualTo(
                     listOf(
                         Tweet(
@@ -155,7 +167,9 @@ class TweetsRepositoryTests {
             Truth.assertThat(
                 testRepository.getPreviousTweets(
                     maxId = 1234567890123456789,
-                    token = TwitterUserRecord("", "", "", ""),
+                    token = TwitterUserRecord(
+                        "", "", "", "", "testName", null
+                    ),
                     this
                 )
             )
@@ -198,7 +212,9 @@ class TweetsRepositoryTests {
             Truth.assertThat(
                 testRepository.postTweet(
                     tweetBody = "dummy",
-                    token = TwitterUserRecord("", "", "", ""),
+                    token = TwitterUserRecord(
+                        "", "", "", "", "testName", null
+                    ),
                     scope = this
                 )
             )

@@ -85,7 +85,9 @@ class AccountUsecaseTests {
             "mockTu",
             "testToken",
             "testSecret",
-            "testScNm"
+            "testScNm",
+            "testName",
+            null
         )
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
             mockUser

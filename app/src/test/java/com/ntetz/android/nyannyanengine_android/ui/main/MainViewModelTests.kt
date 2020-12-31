@@ -62,7 +62,9 @@ class MainViewModelTests {
     @Test
     fun loadUserInfo_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(
-            TwitterUserRecord("testId", "testToken", "testTokenSecret", "testScName")
+            TwitterUserRecord(
+                "testId", "testToken", "testTokenSecret", "testScName", "testName", null
+            )
         )
 
         val testViewModel = MainViewModel(mockAccountUsecase, mockTweetUsecase)
@@ -70,7 +72,9 @@ class MainViewModelTests {
         delay(10) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.userInfoEvent.value).isEqualTo(
-            TwitterUserRecord("testId", "testToken", "testTokenSecret", "testScName")
+            TwitterUserRecord(
+                "testId", "testToken", "testTokenSecret", "testScName", "testName", null
+            )
         )
         return@runBlocking
     }
