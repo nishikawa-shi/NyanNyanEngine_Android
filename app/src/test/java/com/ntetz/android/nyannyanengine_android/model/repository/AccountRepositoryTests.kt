@@ -156,4 +156,31 @@ class AccountRepositoryTests {
             )
         ).isEqualTo(AccessTokenInvalidation("dummyToken"))
     }
+
+    @Test
+    fun deleteTwitterUser_twitterUserDaoのdeleteAllが1度実行されること() = runBlocking {
+        val mockEndpoints = TestUtil.mockNormalRetrofit
+            .create(ITwitterApiEndpoints::class.java)
+            .returningResponse(AccessTokenInvalidation("dummyToken"))
+        `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+        `when`(mockTwitterConfig.apiSecret).thenReturn("")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("")
+
+        AccountRepository(
+            twitterApi = mockTwitterApi,
+            twitterConfig = mockTwitterConfig,
+            base64Encoder = TestUtil.mockBase64Encoder,
+            twitterUserDao = mockTwitterUserDao
+        ).deleteTwitterUser(
+            TwitterUserRecord(
+                "du",
+                "testToken",
+                "testSecret",
+                "testScNm"
+            ), this
+        )
+        delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+
+        Mockito.verify(mockTwitterUserDao, Mockito.times(1)).deleteAll()
+    }
 }

@@ -107,6 +107,7 @@ class AccountRepository(
     }
 
     override suspend fun deleteTwitterUser(user: TwitterUserRecord, scope: CoroutineScope): AccessTokenInvalidation? {
+        deleteTwitterUserRecord(scope)
         return invalidateAccessToken(user, scope)
     }
 
@@ -143,6 +144,14 @@ class AccountRepository(
                         authorization = authorization
                     )
                     .execute()
+            }
+        }
+    }
+
+    private suspend fun deleteTwitterUserRecord(scope: CoroutineScope) {
+        withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterUserDao.deleteAll()
             }
         }
     }

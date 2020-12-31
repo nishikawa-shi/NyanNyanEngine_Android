@@ -13,4 +13,7 @@ interface ITwitterUserDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun upsert(twitterUserRecord: TwitterUserRecord)
+
+    @Query("DELETE FROM twitter_users")
+    fun deleteAll()
 }
