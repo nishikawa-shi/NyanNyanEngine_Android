@@ -37,27 +37,19 @@ class AccountRepository(
         val additionalHeaders = listOf(
             TwitterSignParam(TwitterEndpoints.requestTokenOauthCallbackParamName, twitterConfig.callbackUrl)
         )
-        return withContext(scope.coroutineContext) {
-            val requestMetadata = TwitterRequestMetadata(
-                additionalParams = additionalHeaders,
-                method = TwitterEndpoints.requestTokenMethod,
-                path = TwitterEndpoints.requestTokenPath,
-                appendAdditionalParamsToHead = true,
-                twitterConfig = twitterConfig
-            )
-            val authorization = TwitterSignature(
-                requestMetadata = requestMetadata,
-                twitterConfig = twitterConfig,
-                base64Encoder = base64Encoder
-            ).getOAuthValue()
-
-            withContext(Dispatchers.IO) {
-                twitterApi.scalarClient
-                    .requestToken(authorization)
-                    .execute()
-                    .body()
-            }
-        }
+        val requestMetadata = TwitterRequestMetadata(
+            additionalParams = additionalHeaders,
+            method = TwitterEndpoints.requestTokenMethod,
+            path = TwitterEndpoints.requestTokenPath,
+            appendAdditionalParamsToHead = true,
+            twitterConfig = twitterConfig
+        )
+        val authorization = TwitterSignature(
+            requestMetadata = requestMetadata,
+            twitterConfig = twitterConfig,
+            base64Encoder = base64Encoder
+        ).getOAuthValue()
+        return getRequestTokenFromWeb(authorization, scope).body()
     }
 
     override suspend fun getAccessToken(
@@ -65,29 +57,17 @@ class AccountRepository(
         oauthToken: String,
         scope: CoroutineScope
     ): AccessToken {
-        return withContext(scope.coroutineContext) {
-            val requestMetadata = TwitterRequestMetadata(
-                method = TwitterEndpoints.accessTokenMethod,
-                path = TwitterEndpoints.accessTokenPath,
-                twitterConfig = twitterConfig
-            )
-            val authorization = TwitterSignature(
-                requestMetadata = requestMetadata,
-                twitterConfig = twitterConfig,
-                base64Encoder = base64Encoder
-            ).getOAuthValue()
-
-            withContext(Dispatchers.IO) {
-                twitterApi.scalarClient
-                    .accessToken(
-                        oauthVerifier = oauthVerifier,
-                        oauthToken = oauthToken,
-                        authorization = authorization
-                    )
-                    .execute()
-                    .toAccessToken()
-            }
-        }
+        val requestMetadata = TwitterRequestMetadata(
+            method = TwitterEndpoints.accessTokenMethod,
+            path = TwitterEndpoints.accessTokenPath,
+            twitterConfig = twitterConfig
+        )
+        val authorization = TwitterSignature(
+            requestMetadata = requestMetadata,
+            twitterConfig = twitterConfig,
+            base64Encoder = base64Encoder
+        ).getOAuthValue()
+        return getAccessTokenFromWeb(oauthVerifier, oauthToken, authorization, scope).toAccessToken()
     }
 
     override suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord? {
@@ -131,6 +111,38 @@ class AccountRepository(
             return null
         }
         return result.body()
+    }
+
+    private suspend fun getRequestTokenFromWeb(
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<String> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.scalarClient
+                    .requestToken(authorization)
+                    .execute()
+            }
+        }
+    }
+
+    private suspend fun getAccessTokenFromWeb(
+        oauthVerifier: String,
+        oauthToken: String,
+        authorization: String,
+        scope: CoroutineScope
+    ): Response<String> {
+        return withContext(scope.coroutineContext) {
+            withContext(Dispatchers.IO) {
+                twitterApi.scalarClient
+                    .accessToken(
+                        oauthVerifier = oauthVerifier,
+                        oauthToken = oauthToken,
+                        authorization = authorization
+                    )
+                    .execute()
+            }
+        }
     }
 
     private suspend fun invalidateAccessTokenToWeb(
