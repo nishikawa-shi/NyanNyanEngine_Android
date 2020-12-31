@@ -4,6 +4,8 @@ import android.net.Uri
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
 import kotlinx.coroutines.Dispatchers
@@ -75,5 +77,24 @@ class AccountUsecaseTests {
             verify(mockAccountRepository, times(1)).getAccessToken("dummyVeri", "dummyTok", this)
             return@withContext
         }
+    }
+
+    @Test
+    fun deleteAccessToken_レポジトリと共通設定に基づいた値が取得できること() = runBlocking {
+        val mockUser = TwitterUserRecord(
+            "mockTu",
+            "testToken",
+            "testSecret",
+            "testScNm"
+        )
+        `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
+            mockUser
+        )
+        `when`(mockAccountRepository.deleteTwitterUser(mockUser, this)).thenReturn(
+            AccessTokenInvalidation("dummyTokenIsDeleted")
+        )
+
+        Truth.assertThat(AccountUsecase(mockAccountRepository).deleteAccessToken(this))
+            .isEqualTo(AccessTokenInvalidation("dummyTokenIsDeleted"))
     }
 }
