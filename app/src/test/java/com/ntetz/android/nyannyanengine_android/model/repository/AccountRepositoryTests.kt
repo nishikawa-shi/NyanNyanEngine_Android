@@ -6,6 +6,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -126,5 +127,33 @@ class AccountRepositoryTests {
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 
         Mockito.verify(mockTwitterUserDao, Mockito.times(1)).upsert(testTwitterUserRecord)
+    }
+
+    @Test
+    fun deleteTwitterUser_Retrofitのレスポンス由来の値が得られること() = runBlocking {
+        val mockEndpoints = TestUtil.mockNormalRetrofit
+            .create(ITwitterApiEndpoints::class.java)
+            .returningResponse(AccessTokenInvalidation("dummyToken"))
+        `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+        `when`(mockTwitterConfig.apiSecret).thenReturn("")
+        `when`(mockTwitterConfig.consumerKey).thenReturn("")
+
+        val testRepository =
+            AccountRepository(
+                twitterApi = mockTwitterApi,
+                twitterConfig = mockTwitterConfig,
+                base64Encoder = TestUtil.mockBase64Encoder,
+                twitterUserDao = mockTwitterUserDao
+            )
+        Truth.assertThat(
+            testRepository.deleteTwitterUser(
+                TwitterUserRecord(
+                    "du",
+                    "testToken",
+                    "testSecret",
+                    "testScNm"
+                ), this
+            )
+        ).isEqualTo(AccessTokenInvalidation("dummyToken"))
     }
 }
