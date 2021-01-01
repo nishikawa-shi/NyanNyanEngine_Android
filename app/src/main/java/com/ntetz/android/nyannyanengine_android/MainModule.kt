@@ -37,7 +37,7 @@ private val viewModelModule = module {
     single<IDefaultHashtagConfig> { DefaultHashtagConfig() }
     single<IFirebaseClient> { FirebaseClient() }
 
-    single { ApplicationUsecase(getUserProfileDatabase(androidContext())) }
+    single { ApplicationUsecase(getUserProfileDatabase(androidContext()), get()) }
     single<IAccountUsecase> {
         val repository = AccountRepository(
             twitterApi = TwitterApi,
