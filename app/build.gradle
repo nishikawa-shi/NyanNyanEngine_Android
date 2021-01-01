@@ -133,6 +133,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-firestore:22.0.1'
 
     def koin_version = "2.0.1"
     implementation "org.koin:koin-core:$koin_version"
