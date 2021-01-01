@@ -5,6 +5,7 @@ import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
@@ -80,12 +81,33 @@ class AccountUsecaseTests {
     }
 
     @Test
+    fun fetchAccessToken_verifyCredentialsAPIがレポジトリを通して1度呼ばれること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val mockToken = AccessToken(isValid = true)
+            `when`(mockAccountRepository.getAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
+                mockToken
+            )
+            `when`(mockAccountRepository.verifyAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(
+                User(name = "testUser", screenName = "testScName")
+            )
+
+            AccountUsecase(mockAccountRepository).fetchAccessToken("dummyVeri", "dummyTok", this)
+            verify(mockAccountRepository, times(1)).verifyAccessToken(
+                mockToken, this
+            )
+            return@withContext
+        }
+    }
+
+    @Test
     fun deleteAccessToken_レポジトリと共通設定に基づいた値が取得できること() = runBlocking {
         val mockUser = TwitterUserRecord(
             "mockTu",
             "testToken",
             "testSecret",
-            "testScNm"
+            "testScNm",
+            "testName",
+            null
         )
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
             mockUser

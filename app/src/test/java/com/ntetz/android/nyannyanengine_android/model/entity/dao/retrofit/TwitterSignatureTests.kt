@@ -91,7 +91,9 @@ class TwitterSignatureTests {
             id = "oauthVTestId",
             oauthToken = "oauthVTestToken",
             oauthTokenSecret = "oauthVTestSecret",
-            screenName = "oauthVTestSNm"
+            screenName = "oauthVTestSNm",
+            name = "testName",
+            profileImageUrlHttps = null
         )
         Truth.assertThat(testSignature.getOAuthValue(testUser))
             .isEqualTo("OAuth key1=value1,oauth_signature=BJw5r3yoEMMGBIjV5VCKXgOh4uc%3D")

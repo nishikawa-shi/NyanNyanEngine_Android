@@ -1,7 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit
 
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
-import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.util.Base64Encoder
 import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
 import java.net.URLEncoder
@@ -9,7 +8,7 @@ import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 interface ITwitterSignature {
-    fun getOAuthValue(user: TwitterUserRecord? = null): String
+    fun getOAuthValue(token: IAccessToken? = null): String
 }
 
 class TwitterSignature(
@@ -17,12 +16,12 @@ class TwitterSignature(
     private val twitterConfig: ITwitterConfig,
     private val base64Encoder: IBase64Encoder = Base64Encoder()
 ) : ITwitterSignature {
-    override fun getOAuthValue(user: TwitterUserRecord?): String =
+    override fun getOAuthValue(token: IAccessToken?): String =
         listOf(
             "OAuth",
             getOAuthBody(
-                tokenSecret = user?.oauthTokenSecret ?: "",
-                token = user?.oauthToken ?: ""
+                tokenSecret = token?.oauthTokenSecret ?: "",
+                token = token?.oauthToken ?: ""
             )
         ).joinToString(" ")
 

@@ -6,7 +6,9 @@ import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -78,6 +80,33 @@ class AccountRepositoryTests {
     }
 
     @Test
+    fun verifyAccessToken_Retrofitのレスポンス由来の値が得られること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val mockEndpoints = TestUtil.mockNormalRetrofit
+                .create(ITwitterApiEndpoints::class.java)
+                .returningResponse(User(name = "testUser", screenName = "testScName"))
+
+            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterConfig.apiSecret).thenReturn("")
+            `when`(mockTwitterConfig.consumerKey).thenReturn("")
+
+            val testRepository =
+                AccountRepository(
+                    twitterApi = mockTwitterApi,
+                    twitterConfig = mockTwitterConfig,
+                    base64Encoder = TestUtil.mockBase64Encoder,
+                    twitterUserDao = mockTwitterUserDao
+                )
+            Truth.assertThat(
+                testRepository.verifyAccessToken(
+                    AccessToken(true, null, null, "", "", null),
+                    this
+                )
+            ).isEqualTo(User(name = "testUser", screenName = "testScName"))
+        }
+    }
+
+    @Test
     fun loadTwitterUser_daoのgetAll由来の値が取得できること() = runBlocking {
         `when`(mockTwitterUserDao.getAll()).thenReturn(
             listOf(
@@ -85,7 +114,9 @@ class AccountRepositoryTests {
                     "iDdum1",
                     oauthToken = "tokDum1",
                     oauthTokenSecret = "secDum1",
-                    screenName = "scDum1"
+                    screenName = "scDum1",
+                    name = "testName",
+                    profileImageUrlHttps = null
                 )
             )
         )
@@ -103,7 +134,9 @@ class AccountRepositoryTests {
                     "iDdum1",
                     oauthToken = "tokDum1",
                     oauthTokenSecret = "secDum1",
-                    screenName = "scDum1"
+                    screenName = "scDum1",
+                    name = "testName",
+                    profileImageUrlHttps = null
                 )
             )
     }
@@ -114,7 +147,9 @@ class AccountRepositoryTests {
             "iDdum2",
             oauthToken = "tokDum2",
             oauthTokenSecret = "secDum2",
-            screenName = "scDum2"
+            screenName = "scDum2",
+            name = "testName",
+            profileImageUrlHttps = null
         )
         Mockito.doNothing().`when`(mockTwitterUserDao).upsert(testTwitterUserRecord)
 
@@ -151,7 +186,9 @@ class AccountRepositoryTests {
                     "du",
                     "testToken",
                     "testSecret",
-                    "testScNm"
+                    "testScNm",
+                    name = "testName",
+                    profileImageUrlHttps = null
                 ), this
             )
         ).isEqualTo(AccessTokenInvalidation("dummyToken"))
@@ -176,7 +213,9 @@ class AccountRepositoryTests {
                 "du",
                 "testToken",
                 "testSecret",
-                "testScNm"
+                "testScNm",
+                name = "testName",
+                profileImageUrlHttps = null
             ), this
         )
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間

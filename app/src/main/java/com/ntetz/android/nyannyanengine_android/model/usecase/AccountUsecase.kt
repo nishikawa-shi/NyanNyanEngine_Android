@@ -4,6 +4,7 @@ import android.net.Uri
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
@@ -47,7 +48,8 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
                 errorMessage = tokenApiResult.errorDescription
             )
         }
-        val twitterUserRecord = createTwitterUserRecord(tokenApiResult)
+        val verifyApiResult = accountRepository.verifyAccessToken(tokenApiResult, scope)
+        val twitterUserRecord = createTwitterUserRecord(tokenApiResult, verifyApiResult)
             ?: return SignInResultComponent(
                 isSucceeded = false,
                 errorMessage = "shortage response. code: 9997"
@@ -71,12 +73,14 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         return accountRepository.deleteTwitterUser(user, scope)
     }
 
-    private fun createTwitterUserRecord(tokenApiResponse: AccessToken): TwitterUserRecord? {
+    private fun createTwitterUserRecord(tokenApiResponse: AccessToken, verifyApiResult: User): TwitterUserRecord? {
         return TwitterUserRecord(
-            id = tokenApiResponse.userId ?: return null,
-            oauthToken = tokenApiResponse.oauthToken ?: return null,
-            oauthTokenSecret = tokenApiResponse.oauthTokenSecret ?: return null,
-            screenName = tokenApiResponse.screenName ?: return null
+            id = tokenApiResponse.id ?: return null,
+            oauthToken = tokenApiResponse.oauthToken,
+            oauthTokenSecret = tokenApiResponse.oauthTokenSecret,
+            screenName = tokenApiResponse.screenName ?: return null,
+            name = verifyApiResult.name,
+            profileImageUrlHttps = verifyApiResult.profileImageUrlHttps
         )
     }
 }
