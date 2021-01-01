@@ -274,4 +274,52 @@ class AccountRepositoryTests {
 
         Mockito.verify(mockFirebaseClient, Mockito.times(1)).fetchNyanNyanUser(mockTwitterUserRecord)
     }
+
+    @Test
+    fun incrementNekosanPoint_firebaseClientのincrementNyanNyanUserが1度実行されること() = runBlocking {
+        val mockTwitterUserRecord = TwitterUserRecord(
+            "id",
+            "testToken",
+            "testTokenSecret",
+            "testScName",
+            "testName",
+            "https://ntetz.com/test.jpg"
+        )
+        doNothing().`when`(mockFirebaseClient).incrementNyanNyanUser("np", 3, mockTwitterUserRecord)
+
+        AccountRepository(
+            twitterApi = mockTwitterApi,
+            twitterConfig = mockTwitterConfig,
+            base64Encoder = TestUtil.mockBase64Encoder,
+            twitterUserDao = mockTwitterUserDao,
+            firebaseClient = mockFirebaseClient
+        ).incrementNekosanPoint(3, mockTwitterUserRecord)
+        delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+
+        Mockito.verify(mockFirebaseClient, Mockito.times(1)).incrementNyanNyanUser("np", 3, mockTwitterUserRecord)
+    }
+
+    @Test
+    fun incrementTweetCount_firebaseClientのincrementNyanNyanUserが1度実行されること() = runBlocking {
+        val mockTwitterUserRecord = TwitterUserRecord(
+            "id",
+            "testToken",
+            "testTokenSecret",
+            "testScName",
+            "testName",
+            "https://ntetz.com/test.jpg"
+        )
+        doNothing().`when`(mockFirebaseClient).incrementNyanNyanUser("tc", 1, mockTwitterUserRecord)
+
+        AccountRepository(
+            twitterApi = mockTwitterApi,
+            twitterConfig = mockTwitterConfig,
+            base64Encoder = TestUtil.mockBase64Encoder,
+            twitterUserDao = mockTwitterUserDao,
+            firebaseClient = mockFirebaseClient
+        ).incrementTweetCount(mockTwitterUserRecord)
+        delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+
+        Mockito.verify(mockFirebaseClient, Mockito.times(1)).incrementNyanNyanUser("tc", 1, mockTwitterUserRecord)
+    }
 }

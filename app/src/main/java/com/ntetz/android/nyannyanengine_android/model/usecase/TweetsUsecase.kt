@@ -28,6 +28,8 @@ class TweetsUsecase(
 
     override suspend fun postTweet(tweetBody: String, scope: CoroutineScope): Tweet {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist[0]
+        accountRepository.incrementNekosanPoint(30, user)
+        accountRepository.incrementTweetCount(user)
         return tweetsRepository.postTweet(tweetBody, user, scope)
     }
 }

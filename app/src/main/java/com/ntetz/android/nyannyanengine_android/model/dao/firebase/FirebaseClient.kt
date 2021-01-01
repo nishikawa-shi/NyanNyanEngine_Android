@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.analytics.ktx.analytics
 import com.google.firebase.analytics.ktx.logEvent
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
@@ -23,6 +24,7 @@ interface IFirebaseClient {
     fun initialize()
     fun logEvent(type: AnalyticsEvent, textParams: Map<String, String>?, numParams: Map<String, Int>?)
     fun fetchNyanNyanUser(twitterUserRecord: TwitterUserRecord?)
+    fun incrementNyanNyanUser(key: String, value: Int, twitterUserRecord: TwitterUserRecord)
     fun fetchNyanNyanConfig()
 }
 
@@ -71,6 +73,11 @@ class FirebaseClient : IFirebaseClient {
                     NyanNyanUser(id = it.id, nekosanPoint = nekosanPoint, tweetCount = tweetCount)
                 )
             }
+    }
+
+    override fun incrementNyanNyanUser(key: String, value: Int, twitterUserRecord: TwitterUserRecord) {
+        db.collection(usersCollectionName).document(twitterUserRecord.sealedUserId)
+            .update(key, FieldValue.increment(value.toLong()))
     }
 
     override fun fetchNyanNyanConfig() {
