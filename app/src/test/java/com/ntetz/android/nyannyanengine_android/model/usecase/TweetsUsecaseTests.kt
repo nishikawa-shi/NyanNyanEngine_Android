@@ -1,6 +1,8 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
+import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
@@ -195,6 +197,9 @@ class TweetsUsecaseTests {
                     user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
                 )
             )
+            `when`(
+                mockAccountRepository.nyanNyanConfigEvent
+            ).thenReturn(MutableLiveData<NyanNyanConfig?>())
 
             val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
             Truth.assertThat(testUsecase.postTweet(tweetBody = "testtweeeetBody", scope = this))

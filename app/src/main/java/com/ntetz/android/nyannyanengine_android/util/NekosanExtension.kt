@@ -45,6 +45,10 @@ fun String.isNekogo(context: Context): Boolean {
     return Regex(pattern).matches(this)
 }
 
+fun String.nekosanPoint(): Int {
+    return getNekosanPrefixPoint(this)
+}
+
 private fun getMD5(text: String): String {
     val digest = MessageDigest.getInstance("MD5").also { it.update(text.toByteArray()) }
     val messageDigest = digest.digest()
@@ -97,4 +101,35 @@ private fun getNekogoSuffixFragment(char: Char): String {
         'f' -> "XD"
         else -> "(^o^)"
     }
+}
+
+private fun getNekosanPrefixPoint(nekogoStr: String): Int {
+    if (nekogoStr.contains("🌈")) {
+        return 80
+    }
+    if (nekogoStr.contains("🐟")) {
+        return 80
+    }
+    if (nekogoStr.contains("😊")) {
+        return 80
+    }
+    if (nekogoStr.contains("🏆")) {
+        return 50
+    }
+    if (nekogoStr.contains("🎊")) {
+        return 50
+    }
+    if (nekogoStr.contains(":)")) {
+        return 30
+    }
+    if (nekogoStr.contains("XD")) {
+        return 30
+    }
+    if (nekogoStr.contains("🐤")) {
+        return 20
+    }
+    if (nekogoStr.contains("🙁")) {
+        return 20
+    }
+    return 10
 }

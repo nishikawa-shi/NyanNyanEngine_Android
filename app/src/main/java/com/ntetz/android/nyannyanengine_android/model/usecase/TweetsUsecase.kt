@@ -4,6 +4,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.DefaultTweetConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
+import com.ntetz.android.nyannyanengine_android.util.nekosanPoint
 import kotlinx.coroutines.CoroutineScope
 
 interface ITweetsUsecase {
@@ -28,7 +29,10 @@ class TweetsUsecase(
 
     override suspend fun postTweet(tweetBody: String, scope: CoroutineScope): Tweet {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist[0]
-        accountRepository.incrementNekosanPoint(30, user)
+
+        val multipliter = accountRepository.nyanNyanConfigEvent.value?.nekosanPointMultiplier ?: 1
+        val rawPoint = tweetBody.nekosanPoint()
+        accountRepository.incrementNekosanPoint(rawPoint * multipliter, user)
         accountRepository.incrementTweetCount(user)
         return tweetsRepository.postTweet(tweetBody, user, scope)
     }
