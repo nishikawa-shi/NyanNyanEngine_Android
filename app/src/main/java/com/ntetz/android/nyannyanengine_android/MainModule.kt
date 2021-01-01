@@ -41,7 +41,8 @@ private val viewModelModule = module {
     single<IAccountUsecase> {
         val repository = AccountRepository(
             twitterApi = TwitterApi,
-            twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao()
+            twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao(),
+            firebaseClient = get()
         )
         AccountUsecase(repository)
     }
@@ -55,7 +56,8 @@ private val viewModelModule = module {
         )
         val accountRepository = AccountRepository(
             twitterApi = TwitterApi,
-            twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao()
+            twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao(),
+            firebaseClient = get()
         )
         TweetsUsecase(tweetsRepository = tweetRepository, accountRepository = accountRepository)
     }

@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.repository
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
+import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doNothing
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -31,6 +33,9 @@ class AccountRepositoryTests {
 
     @Mock
     private lateinit var mockTwitterUserDao: ITwitterUserDao
+
+    @Mock
+    private lateinit var mockFirebaseClient: IFirebaseClient
 
     @Test
     fun getAuthorizationToken_Retrofitのレスポンス由来の値が得られること() = runBlocking {
@@ -48,7 +53,8 @@ class AccountRepositoryTests {
                     twitterApi = mockTwitterApi,
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder,
-                    twitterUserDao = mockTwitterUserDao
+                    twitterUserDao = mockTwitterUserDao,
+                    firebaseClient = mockFirebaseClient
                 )
             Truth.assertThat(testRepository.getAuthorizationToken(this))
                 .isEqualTo("mockResponseString")
@@ -72,7 +78,8 @@ class AccountRepositoryTests {
                     twitterApi = mockTwitterApi,
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder,
-                    twitterUserDao = mockTwitterUserDao
+                    twitterUserDao = mockTwitterUserDao,
+                    firebaseClient = mockFirebaseClient
                 )
             Truth.assertThat(testRepository.getAccessToken("", "", this).errorDescription)
                 .isEqualTo("network error. code: 500")
@@ -95,7 +102,8 @@ class AccountRepositoryTests {
                     twitterApi = mockTwitterApi,
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder,
-                    twitterUserDao = mockTwitterUserDao
+                    twitterUserDao = mockTwitterUserDao,
+                    firebaseClient = mockFirebaseClient
                 )
             Truth.assertThat(
                 testRepository.verifyAccessToken(
@@ -126,7 +134,8 @@ class AccountRepositoryTests {
                 twitterApi = mockTwitterApi,
                 twitterConfig = mockTwitterConfig,
                 base64Encoder = TestUtil.mockBase64Encoder,
-                twitterUserDao = mockTwitterUserDao
+                twitterUserDao = mockTwitterUserDao,
+                firebaseClient = mockFirebaseClient
             ).loadTwitterUser(this)
         )
             .isEqualTo(
@@ -157,7 +166,8 @@ class AccountRepositoryTests {
             twitterApi = mockTwitterApi,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
-            twitterUserDao = mockTwitterUserDao
+            twitterUserDao = mockTwitterUserDao,
+            firebaseClient = mockFirebaseClient
         ).saveTwitterUser(testTwitterUserRecord, this)
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 
@@ -178,7 +188,8 @@ class AccountRepositoryTests {
                 twitterApi = mockTwitterApi,
                 twitterConfig = mockTwitterConfig,
                 base64Encoder = TestUtil.mockBase64Encoder,
-                twitterUserDao = mockTwitterUserDao
+                twitterUserDao = mockTwitterUserDao,
+                firebaseClient = mockFirebaseClient
             )
         Truth.assertThat(
             testRepository.deleteTwitterUser(
@@ -207,7 +218,8 @@ class AccountRepositoryTests {
             twitterApi = mockTwitterApi,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
-            twitterUserDao = mockTwitterUserDao
+            twitterUserDao = mockTwitterUserDao,
+            firebaseClient = mockFirebaseClient
         ).deleteTwitterUser(
             TwitterUserRecord(
                 "du",
@@ -221,5 +233,45 @@ class AccountRepositoryTests {
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 
         Mockito.verify(mockTwitterUserDao, Mockito.times(1)).deleteAll()
+    }
+
+    @Test
+    fun fetchNyanNyanConfig_firebaseClientのfetchNyanNyanConfigが1度実行されること() = runBlocking {
+        doNothing().`when`(mockFirebaseClient).fetchNyanNyanConfig()
+
+        AccountRepository(
+            twitterApi = mockTwitterApi,
+            twitterConfig = mockTwitterConfig,
+            base64Encoder = TestUtil.mockBase64Encoder,
+            twitterUserDao = mockTwitterUserDao,
+            firebaseClient = mockFirebaseClient
+        ).fetchNyanNyanConfig()
+        delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+
+        Mockito.verify(mockFirebaseClient, Mockito.times(1)).fetchNyanNyanConfig()
+    }
+
+    @Test
+    fun fetchNyanNyanUser_firebaseClientのfetchNyanNyanUserが1度実行されること() = runBlocking {
+        val mockTwitterUserRecord = TwitterUserRecord(
+            "id",
+            "testToken",
+            "testTokenSecret",
+            "testScName",
+            "testName",
+            "https://ntetz.com/test.jpg"
+        )
+        doNothing().`when`(mockFirebaseClient).fetchNyanNyanUser(mockTwitterUserRecord)
+
+        AccountRepository(
+            twitterApi = mockTwitterApi,
+            twitterConfig = mockTwitterConfig,
+            base64Encoder = TestUtil.mockBase64Encoder,
+            twitterUserDao = mockTwitterUserDao,
+            firebaseClient = mockFirebaseClient
+        ).fetchNyanNyanUser(mockTwitterUserRecord)
+        delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+
+        Mockito.verify(mockFirebaseClient, Mockito.times(1)).fetchNyanNyanUser(mockTwitterUserRecord)
     }
 }
