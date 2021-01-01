@@ -23,7 +23,7 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by viewModel()
     private lateinit var binding: MainFragmentBinding
-    private val adapter: MainAdapter by lazy { MainAdapter(this.context, this) }
+    private val adapter: MainAdapter by lazy { MainAdapter(viewModel, this.context, this) }
     private var searchJob: Job? = null
 
     override fun onCreateView(
@@ -46,6 +46,7 @@ class MainFragment : Fragment() {
             binding.tweetListFrame.isRefreshing = false
         }
         binding.postNekogoFragmentOpenButton.setOnClickListener {
+            viewModel.logOpenPostNekogoScreen()
             findNavController().navigate(R.id.action_mainFragment_to_postNekogoFragment)
         }
 

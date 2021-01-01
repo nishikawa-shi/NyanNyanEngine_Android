@@ -6,6 +6,7 @@ import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -31,6 +32,9 @@ class MainViewModelTests {
     @Mock
     private lateinit var mockTweetUsecase: ITweetsUsecase
 
+    @Mock
+    private lateinit var mockUserActionUsecase: IUserActionUsecase
+
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -52,8 +56,8 @@ class MainViewModelTests {
     @Test
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
-        delay(10) // これがないとCIでコケる
-        MainViewModel(mockAccountUsecase, mockTweetUsecase).loadUserInfo()
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
+        delay(50) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).loadAccessToken(TestUtil.any())
         return@runBlocking
@@ -67,7 +71,7 @@ class MainViewModelTests {
             )
         )
 
-        val testViewModel = MainViewModel(mockAccountUsecase, mockTweetUsecase)
+        val testViewModel = MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase)
         testViewModel.loadUserInfo()
         delay(10) // これがないとCIでコケる
 
@@ -77,5 +81,37 @@ class MainViewModelTests {
             )
         )
         return@runBlocking
+    }
+
+    @Test
+    fun logOpenPostNekogoScreen_UserActionUsecaseのtapが呼ばれること() = runBlocking {
+        `when`(
+            mockUserActionUsecase.tap(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
+        ).thenReturn(null)
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).logOpenPostNekogoScreen()
+        delay(10) // これがないとCIでコケる
+
+        verify(mockUserActionUsecase, times(1)).tap(
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any()
+        )
+    }
+
+    @Test
+    fun logToggleTweet_UserActionUsecaseのtapが呼ばれること() = runBlocking {
+        `when`(
+            mockUserActionUsecase.tap(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
+        ).thenReturn(null)
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).logToggleTweet(3, true)
+
+        delay(10) // これがないとCIでコケる
+        verify(mockUserActionUsecase, times(1)).tap(
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any()
+        )
     }
 }

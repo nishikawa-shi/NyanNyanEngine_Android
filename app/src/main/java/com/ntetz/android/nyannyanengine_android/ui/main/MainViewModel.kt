@@ -11,14 +11,17 @@ import androidx.paging.cachedIn
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     private val accountUsecase: IAccountUsecase,
-    private val tweetsUsecase: ITweetsUsecase
+    private val tweetsUsecase: ITweetsUsecase,
+    private val userActionUsecase: IUserActionUsecase
 ) : ViewModel() {
     private val _userInfoEvent: MutableLiveData<TwitterUserRecord?> = MutableLiveData()
     val userInfoEvent: LiveData<TwitterUserRecord?>
@@ -35,6 +38,30 @@ class MainViewModel(
     fun loadUserInfo() {
         viewModelScope.launch {
             _userInfoEvent.postValue(accountUsecase.loadAccessToken(this))
+        }
+    }
+
+    fun logOpenPostNekogoScreen() {
+        viewModelScope.launch {
+            userActionUsecase.tap(
+                userAction = UserAction.POST_NEKOGO,
+                textParams = mapOf("is_signed_in" to (_userInfoEvent.value != null).toString()),
+                scope = this
+            )
+        }
+    }
+
+    fun logToggleTweet(position: Int, toNekogo: Boolean) {
+        viewModelScope.launch {
+            userActionUsecase.tap(
+                userAction = UserAction.TWEET,
+                textParams = mapOf(
+                    "is_signed_in" to (_userInfoEvent.value != null).toString(),
+                    "to_nekogo" to toNekogo.toString()
+                ),
+                numParams = mapOf("position" to position),
+                scope = this
+            )
         }
     }
 }

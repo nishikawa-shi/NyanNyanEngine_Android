@@ -8,6 +8,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -32,6 +33,9 @@ class PostNekogoViewModelTests {
     @Mock
     private lateinit var mockTweetsUsecase: ITweetsUsecase
 
+    @Mock
+    private lateinit var mockUserActionUsecase: IUserActionUsecase
+
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -53,8 +57,8 @@ class PostNekogoViewModelTests {
     @Test
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
-        delay(10) // これがないとCIでコケる
-        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase).loadUserInfo()
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).loadUserInfo()
+        delay(50) // これがないとCIでコケる
 
         Mockito.verify(mockAccountUsecase, Mockito.times(1)).loadAccessToken(TestUtil.any())
         return@runBlocking
@@ -68,7 +72,7 @@ class PostNekogoViewModelTests {
             )
         )
 
-        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase)
+        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
         testViewModel.loadUserInfo()
         delay(10) // これがないとCIでコケる
 
@@ -83,7 +87,7 @@ class PostNekogoViewModelTests {
     @Test
     fun postNekogo_postTweetが呼ばれること() = runBlocking {
         `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any())).thenReturn(null)
-        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase).postNekogo("testNekogo")
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).postNekogo("testNekogo")
         delay(10) // これがないとCIでコケる
 
         Mockito.verify(mockTweetsUsecase, Mockito.times(1)).postTweet(TestUtil.any(), TestUtil.any())
@@ -101,7 +105,7 @@ class PostNekogoViewModelTests {
             )
         )
 
-        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase)
+        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
         testViewModel.postNekogo("dummyTTweeett")
         delay(10) // これがないとCIでコケる
 
@@ -114,5 +118,33 @@ class PostNekogoViewModelTests {
             )
         )
         return@runBlocking
+    }
+
+    @Test
+    fun postNekogo_UserActionUsecaseのcompleteが呼ばれること() = runBlocking {
+        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any())).thenReturn(
+            Tweet(
+                id = 2828,
+                text = "dummyUsCsNomPrev",
+                createdAt = "3 gatsu 2 nichi",
+                user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
+            )
+        )
+        `when`(
+            mockUserActionUsecase.complete(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
+        ).thenReturn(null)
+        PostNekogoViewModel(
+            mockAccountUsecase,
+            mockTweetsUsecase,
+            mockUserActionUsecase
+        ).postNekogo("dummyInputText")
+        delay(10) // これがないとCIでコケる
+
+        Mockito.verify(mockUserActionUsecase, Mockito.times(1)).complete(
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any()
+        )
     }
 }

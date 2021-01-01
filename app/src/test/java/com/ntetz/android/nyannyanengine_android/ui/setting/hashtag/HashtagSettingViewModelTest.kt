@@ -5,6 +5,7 @@ import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 import com.ntetz.android.nyannyanengine_android.model.usecase.IHashtagUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -18,6 +19,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
@@ -26,6 +28,9 @@ import org.mockito.junit.MockitoJUnitRunner
 class HashtagSettingViewModelTest {
     @Mock
     private lateinit var mockHashtagUsecase: IHashtagUsecase
+
+    @Mock
+    private lateinit var mockUserActionUsecase: IUserActionUsecase
 
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
@@ -48,7 +53,7 @@ class HashtagSettingViewModelTest {
     @Test
     fun initialize_getDefaultHashtagsが呼ばれること() = runBlocking {
         `when`(mockHashtagUsecase.getDefaultHashtags(TestUtil.any())).thenReturn(listOf())
-        HashtagSettingViewModel(mockHashtagUsecase).initialize()
+        HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase).initialize()
         delay(10) // これがないとCIでコケる
 
         verify(mockHashtagUsecase, times(1)).getDefaultHashtags(TestUtil.any())
@@ -67,7 +72,7 @@ class HashtagSettingViewModelTest {
             )
         )
 
-        val testViewModel = HashtagSettingViewModel(mockHashtagUsecase)
+        val testViewModel = HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase)
         testViewModel.initialize()
         delay(10) // イベント反映までの待ち時間
 
@@ -80,5 +85,33 @@ class HashtagSettingViewModelTest {
                 )
             )
         )
+    }
+
+    @Test
+    fun updateDefaultHashtagComponent_updateDefaultHashtagが呼ばれること() = runBlocking {
+        val mockTag = DefaultHashTagComponent(5, "testtaaag", true)
+        doNothing().`when`(mockHashtagUsecase).updateDefaultHashtag(TestUtil.any(), TestUtil.any())
+
+        HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase).updateDefaultHashtagComponent(mockTag)
+        delay(20) // これがないと、内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+        verify(mockHashtagUsecase, times(1)).updateDefaultHashtag(TestUtil.any(), TestUtil.any())
+    }
+
+    @Test
+    fun updateDefaultHashtagComponent_userActionUsecaseのcompleteが呼ばれること() = runBlocking {
+        val mockTag = DefaultHashTagComponent(5, "testtaaag", true)
+        doNothing().`when`(mockHashtagUsecase).updateDefaultHashtag(TestUtil.any(), TestUtil.any())
+        `when`(
+            mockUserActionUsecase.complete(
+                TestUtil.any(),
+                TestUtil.any(),
+                TestUtil.any(),
+                TestUtil.any()
+            )
+        ).thenReturn(null)
+
+        HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase).updateDefaultHashtagComponent(mockTag)
+        delay(20) // これがないと、内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
+        verify(mockUserActionUsecase, times(1)).complete(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
     }
 }

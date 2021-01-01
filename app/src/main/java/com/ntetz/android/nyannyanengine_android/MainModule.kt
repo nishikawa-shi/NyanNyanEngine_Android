@@ -3,18 +3,23 @@ package com.ntetz.android.nyannyanengine_android
 import android.content.Context
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
+import com.ntetz.android.nyannyanengine_android.model.dao.firebase.FirebaseClient
+import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.TwitterApi
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.repository.AccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsRepository
+import com.ntetz.android.nyannyanengine_android.model.repository.MetricsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.TweetsRepository
 import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.HashtagUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.TweetsUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.UserActionUsecase
 import com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel
 import com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoViewModel
 import com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingViewModel
@@ -30,6 +35,7 @@ object MainModule {
 
 private val viewModelModule = module {
     single<IDefaultHashtagConfig> { DefaultHashtagConfig() }
+    single<IFirebaseClient> { FirebaseClient() }
 
     single { ApplicationUsecase(getUserProfileDatabase(androidContext())) }
     single<IAccountUsecase> {
@@ -38,6 +44,10 @@ private val viewModelModule = module {
             twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao()
         )
         AccountUsecase(repository)
+    }
+    single<IUserActionUsecase> {
+        val metricsRepository = MetricsRepository(get())
+        UserActionUsecase(metricsRepository)
     }
     single<ITweetsUsecase> {
         val tweetRepository = TweetsRepository(
@@ -54,12 +64,12 @@ private val viewModelModule = module {
         val dao = getUserProfileDatabase(androidContext()).defaultHashtagsDao()
         val repository = HashtagsRepository(dao)
         val usecase = HashtagUsecase(repository, get(), androidContext())
-        HashtagSettingViewModel(usecase)
+        HashtagSettingViewModel(usecase, get())
     }
-    viewModel { MainViewModel(get(), get()) }
-    viewModel { SignInViewModel(get()) }
-    viewModel { SignOutViewModel(get()) }
-    viewModel { PostNekogoViewModel(get(), get()) }
+    viewModel { MainViewModel(get(), get(), get()) }
+    viewModel { SignInViewModel(get(), get()) }
+    viewModel { SignOutViewModel(get(), get()) }
+    viewModel { PostNekogoViewModel(get(), get(), get()) }
 }
 
 private fun getUserProfileDatabase(context: Context): IUserProfileDatabase = UserProfileDatabase.getDatabase(context)

@@ -13,7 +13,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlin.coroutines.CoroutineContext
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -32,6 +34,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
     private val accountUsecase: IAccountUsecase by inject()
+    private val userActionUsecase: IUserActionUsecase by inject()
 
     private var isSignedIn: Boolean = false
 
@@ -65,7 +68,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         main_drawer.closeDrawers()
         when (item.itemId) {
-            R.id.nav_settings_hash_tag -> navController.navigate(R.id.action_mainFragment_to_hashtagSettingFragment)
+            R.id.nav_settings_hash_tag -> openHashtagSettingScreen()
             R.id.nav_auth -> openPageWithSignedInStatus(this)
         }
         return NavigationUI.onNavDestinationSelected(
@@ -74,22 +77,33 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         ) || super.onOptionsItemSelected(item)
     }
 
+    private fun openHashtagSettingScreen() {
+        navController.navigate(R.id.action_mainFragment_to_hashtagSettingFragment)
+        launch {
+            userActionUsecase.tap(userAction = UserAction.SETTING_HASH_TAG, scope = this)
+        }
+    }
+
     private fun openPageWithSignedInStatus(scope: CoroutineScope) {
         if (!isSignedIn) {
             openAuthorizePage(scope)
             return
         }
-        openSignOutDialog()
+        openSignOutDialog(scope)
     }
 
     private fun openAuthorizePage(scope: CoroutineScope) {
         scope.launch {
             val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this) ?: return@launch
             startActivity(Intent(Intent.ACTION_VIEW, authorizePageUri))
+            userActionUsecase.tap(userAction = UserAction.SIGN_IN, scope = this)
         }
     }
 
-    private fun openSignOutDialog() {
+    private fun openSignOutDialog(scope: CoroutineScope) {
+        scope.launch {
+            userActionUsecase.tap(userAction = UserAction.SIGN_OUT, scope = this)
+        }
         AlertDialog.Builder(this)
             .setMessage(getString(R.string.logout_sheet_body))
             .setPositiveButton(getString(R.string.logout_sheet_exec)) { _, _ ->
