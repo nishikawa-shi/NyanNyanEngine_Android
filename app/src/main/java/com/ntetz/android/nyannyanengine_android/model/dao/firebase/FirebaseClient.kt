@@ -63,8 +63,10 @@ class FirebaseClient : IFirebaseClient {
         db.collection(usersCollectionName).document(twitterUserRecord.sealedUserId)
             .get()
             .addOnSuccessListener {
-                val nekosanPoint = (it.data?.get("np") as? Long)?.toInt() ?: return@addOnSuccessListener
-                val tweetCount = (it.data?.get("tc") as? Long)?.toInt() ?: return@addOnSuccessListener
+                val data = it.data ?: return@addOnSuccessListener createNyanNyanUser(twitterUserRecord)
+
+                val nekosanPoint = (data["np"] as? Long)?.toInt() ?: return@addOnSuccessListener
+                val tweetCount = (data["tc"] as? Long)?.toInt() ?: return@addOnSuccessListener
                 _nyanNyanUserEvent.postValue(
                     NyanNyanUser(id = it.id, nekosanPoint = nekosanPoint, tweetCount = tweetCount)
                 )
@@ -89,6 +91,19 @@ class FirebaseClient : IFirebaseClient {
                         ranks[key] = value
                     }
                 _nyanNyanConfigEvent.postValue(NyanNyanConfig(nekosanPointMultiplier, ranks))
+            }
+    }
+
+    private fun createNyanNyanUser(user: TwitterUserRecord) {
+        val userDocument = hashMapOf("np" to 0, "tc" to 0)
+        db.collection(usersCollectionName)
+            .document(user.sealedUserId)
+            .set(userDocument)
+            .addOnCompleteListener {
+                println("nyaoo--n ${NyanNyanUser(id = user.sealedUserId, nekosanPoint = 0, tweetCount = 0)}")
+                _nyanNyanUserEvent.postValue(
+                    NyanNyanUser(id = user.sealedUserId, nekosanPoint = 0, tweetCount = 0)
+                )
             }
     }
 }
