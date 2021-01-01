@@ -34,4 +34,17 @@
         android:text="@string/default_twitter_id"
         android:textAppearance="@style/TextAppearance.SelfTwitterId" />
 
+    <TextView
+        android:id="@+id/current_rank"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_teacher_rank"
+        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+
+    <TextView
+        android:id="@+id/current_extends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/settings_teacher_extends"
+        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
 </LinearLayout>

@@ -64,6 +64,16 @@ class MainViewModelTests {
     }
 
     @Test
+    fun loadUserInfo_fetchNyanNyanConfigが呼ばれること() = runBlocking {
+        `when`(mockAccountUsecase.fetchNyanNyanConfig()).thenReturn(null)
+        delay(10) // これがないとCIでコケる
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
+
+        verify(mockAccountUsecase, times(1)).fetchNyanNyanConfig()
+        return@runBlocking
+    }
+
+    @Test
     fun loadUserInfo_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(
             TwitterUserRecord(
@@ -80,6 +90,25 @@ class MainViewModelTests {
                 "testId", "testToken", "testTokenSecret", "testScName", "testName", null
             )
         )
+        return@runBlocking
+    }
+
+    @Test
+    fun loadNyanNyanUserInfo_fetchNyanNyanUserが呼ばれること() = runBlocking {
+        val mockUser = TwitterUserRecord(
+            "mockTu",
+            "testToken",
+            "testSecret",
+            "testScNm",
+            "testName",
+            null
+        )
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(mockUser)
+        `when`(mockAccountUsecase.fetchNyanNyanUser(mockUser)).thenReturn(null)
+        delay(10) // これがないとCIでコケる
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadNyanNyanUserInfo()
+
+        verify(mockAccountUsecase, times(1)).fetchNyanNyanUser(mockUser)
         return@runBlocking
     }
 

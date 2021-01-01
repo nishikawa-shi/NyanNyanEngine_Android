@@ -14,6 +14,8 @@
     <string name="settings_title_hashtag_engine">#MeowMeowEngine</string>
     <string name="settings_title_hashtag_nadenade">#PetMeMeeow🧶</string>
     <string name="settings_lowest_rank">Baby Nyan-nya</string>
+    <string name="settings_teacher_rank">Angel Nyan-nya</string>
+    <string name="settings_teacher_extends">0</string>
 
     <string name="menu_hash_tag">Hash Tags</string>
     <string name="menu_sign_in">Sign in</string>

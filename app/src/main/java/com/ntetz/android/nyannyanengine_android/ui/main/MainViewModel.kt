@@ -9,8 +9,10 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.NyanNyanUserComponent
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
@@ -27,6 +29,10 @@ class MainViewModel(
     val userInfoEvent: LiveData<TwitterUserRecord?>
         get() = _userInfoEvent
 
+    val nyanNyanUserEvent: LiveData<NyanNyanUserComponent?> =
+        accountUsecase.nyanNyanUserEvent
+    val nyanNyanConfigEvent: LiveData<NyanNyanConfig?> = accountUsecase.nyanNyanConfigEvent
+
     val tweetStream: Flow<PagingData<Tweet>> = Pager(
         config = PagingConfig(
             pageSize = TwitterEndpoints.homeTimelineCountParamDefaultValue.toInt(),
@@ -38,6 +44,13 @@ class MainViewModel(
     fun loadUserInfo() {
         viewModelScope.launch {
             _userInfoEvent.postValue(accountUsecase.loadAccessToken(this))
+            accountUsecase.fetchNyanNyanConfig()
+        }
+    }
+
+    fun loadNyanNyanUserInfo() {
+        viewModelScope.launch {
+            accountUsecase.fetchNyanNyanUser(accountUsecase.loadAccessToken(this))
         }
     }
 

@@ -13,6 +13,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.NyanNyanUserComponent
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
@@ -60,6 +61,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         main_nav_view.getHeaderView(0).twitter_name.text = name
         main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
         main_nav_view.menu.findItem(R.id.nav_auth).title = authMenuTitle
+    }
+
+    fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {
+        main_nav_view.getHeaderView(0).current_rank.text = userInfo?.getCurrentRank(this)
+        main_nav_view.getHeaderView(0).current_extends.text = userInfo?.currentExtends?.toString()
     }
 
     override fun onSupportNavigateUp() = (
