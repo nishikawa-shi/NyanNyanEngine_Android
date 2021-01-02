@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.ntetz.android.nyannyanengine_android.MainActivity
 import com.ntetz.android.nyannyanengine_android.R
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -29,7 +30,8 @@ class SignOutFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.signOutEvent.observe(viewLifecycleOwner, {
-            findNavController().navigate(R.id.action_signOutFragment_to_mainFragment)
+            (activity as? MainActivity)?.updateTweetList()
+            findNavController().popBackStack()
         })
         viewModel.executeSignOut()
     }

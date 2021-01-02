@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.ntetz.android.nyannyanengine_android.MainActivity
 import com.ntetz.android.nyannyanengine_android.R
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -33,8 +34,8 @@ class SignInFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.signInEvent.observe(viewLifecycleOwner, Observer {
-            println("sign in finished! $it")
-            findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
+            (activity as? MainActivity)?.updateTweetList()
+            findNavController().popBackStack()
         })
         viewModel.executeSignIn(
             oauthVerifier = this.args.oauthVerifier,
