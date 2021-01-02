@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         main_nav_view.getHeaderView(0).twitter_name.text = name
         main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
         main_nav_view.menu.findItem(R.id.nav_auth).title = authMenuTitle
-        main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.profileImageUrlHttps)
+        main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.fineImageUrl)
     }
 
     fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {
