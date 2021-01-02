@@ -16,6 +16,8 @@
     <string name="settings_teacher_rank">エンジェルにゃんにゃ</string>
     <string name="settings_teacher_extends">0</string>
 
+    <string name="menu_nekosan_rank">ネコさんランク</string>
+    <string name="menu_nekosan_next">次のランクまで</string>
     <string name="menu_hash_tag">はっしゅたぐ</string>
     <string name="menu_sign_in">ログインする</string>
     <string name="menu_sign_out">ログアウトする</string>

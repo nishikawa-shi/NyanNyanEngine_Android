@@ -16,6 +16,8 @@
     <string name="settings_teacher_rank">Angel Nyan-nya</string>
     <string name="settings_teacher_extends">0</string>
 
+    <string name="menu_nekosan_rank">Meow rank</string>
+    <string name="menu_nekosan_next">To next rank</string>
     <string name="menu_hash_tag">Hash Tags</string>
     <string name="menu_sign_in">Sign in</string>
     <string name="menu_sign_out">Sign out</string>
