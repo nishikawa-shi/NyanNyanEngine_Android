@@ -57,7 +57,7 @@ class MainViewModelTests {
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
-        delay(50) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).loadAccessToken(TestUtil.any())
         return@runBlocking
@@ -67,7 +67,7 @@ class MainViewModelTests {
     fun loadUserInfo_fetchNyanNyanConfigが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.fetchNyanNyanConfig()).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
-        delay(50) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchNyanNyanConfig()
         return@runBlocking
@@ -83,7 +83,7 @@ class MainViewModelTests {
 
         val testViewModel = MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase)
         testViewModel.loadUserInfo()
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.userInfoEvent.value).isEqualTo(
             TwitterUserRecord(
@@ -106,7 +106,7 @@ class MainViewModelTests {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(mockUser)
         `when`(mockAccountUsecase.fetchNyanNyanUser(mockUser)).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadNyanNyanUserInfo()
-        delay(50) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchNyanNyanUser(mockUser)
         return@runBlocking
@@ -118,7 +118,7 @@ class MainViewModelTests {
             mockUserActionUsecase.tap(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
         ).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).logOpenPostNekogoScreen()
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockUserActionUsecase, times(1)).tap(
             TestUtil.any(),
@@ -135,7 +135,7 @@ class MainViewModelTests {
         ).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).logToggleTweet(3, true)
 
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
         verify(mockUserActionUsecase, times(1)).tap(
             TestUtil.any(),
             TestUtil.any(),

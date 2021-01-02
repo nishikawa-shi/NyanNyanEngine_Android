@@ -62,7 +62,7 @@ class PostNekogoViewModelTests {
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
         PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).loadUserInfo()
-        delay(50) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Mockito.verify(mockAccountUsecase, Mockito.times(1)).loadAccessToken(TestUtil.any())
         return@runBlocking
@@ -78,7 +78,7 @@ class PostNekogoViewModelTests {
 
         val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
         testViewModel.loadUserInfo()
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.userInfoEvent.value).isEqualTo(
             TwitterUserRecord(
@@ -95,7 +95,7 @@ class PostNekogoViewModelTests {
             "testNekogo",
             mockContext
         )
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Mockito.verify(mockTweetsUsecase, Mockito.times(1)).postTweet(TestUtil.any(), TestUtil.any(), TestUtil.any())
         return@runBlocking
@@ -114,7 +114,7 @@ class PostNekogoViewModelTests {
 
         val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
         testViewModel.postNekogo("dummyTTweeett", mockContext)
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.postTweetEvent.value).isEqualTo(
             Tweet(
@@ -145,7 +145,7 @@ class PostNekogoViewModelTests {
             mockTweetsUsecase,
             mockUserActionUsecase
         ).postNekogo("dummyInputText", mockContext)
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Mockito.verify(mockUserActionUsecase, Mockito.times(1)).complete(
             TestUtil.any(),

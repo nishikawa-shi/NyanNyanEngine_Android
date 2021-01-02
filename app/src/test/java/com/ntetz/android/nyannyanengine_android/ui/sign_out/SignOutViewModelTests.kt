@@ -53,7 +53,7 @@ class SignOutViewModelTests {
     fun executeSignOut_deleteAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.deleteAccessToken(TestUtil.any())).thenReturn(null)
         SignOutViewModel(mockAccountUsecase, mockUserActionUsecase).executeSignOut()
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).deleteAccessToken(TestUtil.any())
         return@runBlocking
@@ -67,7 +67,7 @@ class SignOutViewModelTests {
 
         val testViewModel = SignOutViewModel(mockAccountUsecase, mockUserActionUsecase)
         testViewModel.executeSignOut()
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.signOutEvent.value).isEqualTo(
             AccessTokenInvalidation("viewModelTestInvalidation!")
@@ -84,7 +84,7 @@ class SignOutViewModelTests {
             mockUserActionUsecase.complete(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
         ).thenReturn(null)
         SignOutViewModel(mockAccountUsecase, mockUserActionUsecase).executeSignOut()
-        delay(50) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockUserActionUsecase, times(1)).complete(
             TestUtil.any(),

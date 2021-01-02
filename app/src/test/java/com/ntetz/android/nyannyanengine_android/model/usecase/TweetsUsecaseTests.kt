@@ -266,7 +266,7 @@ class TweetsUsecaseTests {
                 this,
                 mockContext
             )
-            delay(10) // これがないとCIでコケる
+            delay(20) // これがないとCIでコケる
 
             verify(mockTweetsRepository, times(1)).postTweet("testTweetBody\ntestTagBody", 10, testUser, this)
             return@withContext

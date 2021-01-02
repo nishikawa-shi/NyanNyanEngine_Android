@@ -54,7 +54,7 @@ class HashtagSettingViewModelTest {
     fun initialize_getDefaultHashtagsが呼ばれること() = runBlocking {
         `when`(mockHashtagUsecase.getDefaultHashtags(TestUtil.any())).thenReturn(listOf())
         HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase).initialize()
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         verify(mockHashtagUsecase, times(1)).getDefaultHashtags(TestUtil.any())
         return@runBlocking
@@ -75,7 +75,7 @@ class HashtagSettingViewModelTest {
 
         val testViewModel = HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase)
         testViewModel.initialize()
-        delay(10) // イベント反映までの待ち時間
+        delay(20) // イベント反映までの待ち時間
 
         Truth.assertThat(testViewModel.defaultHashtagComponents.value).isEqualTo(
             listOf(
