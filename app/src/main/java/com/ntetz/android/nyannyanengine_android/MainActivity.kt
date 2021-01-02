@@ -13,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import coil.api.load
 import com.google.android.material.navigation.NavigationView
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.NyanNyanUserComponent
@@ -67,6 +68,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         main_nav_view.getHeaderView(0).twitter_name.text = name
         main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
         main_nav_view.menu.findItem(R.id.nav_auth).title = authMenuTitle
+        main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.profileImageUrlHttps)
     }
 
     fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {
