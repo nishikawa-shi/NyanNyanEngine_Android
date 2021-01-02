@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.post_nekogo
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,9 +32,9 @@ class PostNekogoViewModel(
         }
     }
 
-    fun postNekogo(inputText: String) {
+    fun postNekogo(inputText: String, context: Context) {
         viewModelScope.launch {
-            _postTweetEvent.postValue(tweetsUsecase.postTweet(inputText, this))
+            _postTweetEvent.postValue(tweetsUsecase.postTweet(inputText, this, context))
             userActionUsecase.complete(
                 userAction = UserAction.POST_NEKOGO,
                 textParams = mapOf("is_signed_in" to (_userInfoEvent.value != null).toString()),

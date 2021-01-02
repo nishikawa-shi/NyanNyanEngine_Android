@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
@@ -7,6 +8,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
+import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -25,11 +27,17 @@ class TweetsUsecaseTests {
     @Mock
     private lateinit var mockTweetsRepository: ITweetsRepository
 
+    @Mock
+    private lateinit var mockHashtagRepository: IHashtagsRepository
+
+    @Mock
+    private lateinit var mockContext: Context
+
     @Test
     fun getTweets_認証情報がない時未ログインの値を返すこと() = runBlocking {
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(null)
 
-        val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+        val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
         Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
             listOf(
                 Tweet(
@@ -71,7 +79,7 @@ class TweetsUsecaseTests {
                 )
             )
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
             Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
                 listOf(
                     Tweet(
@@ -110,7 +118,7 @@ class TweetsUsecaseTests {
                 )
             )
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
             Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
                 listOf(
                     Tweet(
@@ -155,7 +163,7 @@ class TweetsUsecaseTests {
                 )
             )
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
             Truth.assertThat(testUsecase.getPreviousTweets(maxId = 1234567890123456789, this)).isEqualTo(
                 listOf(
                     Tweet(
@@ -200,9 +208,12 @@ class TweetsUsecaseTests {
             `when`(
                 mockAccountRepository.nyanNyanConfigEvent
             ).thenReturn(MutableLiveData<NyanNyanConfig?>())
+            `when`(
+                mockHashtagRepository.getDefaultHashtags(this, mockContext)
+            ).thenReturn(listOf())
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
-            Truth.assertThat(testUsecase.postTweet(tweetBody = "testtweeeetBody", scope = this))
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
+            Truth.assertThat(testUsecase.postTweet(tweetBody = "testtweeeetBody", scope = this, mockContext))
                 .isEqualTo(
                     Tweet(
                         id = 2828,

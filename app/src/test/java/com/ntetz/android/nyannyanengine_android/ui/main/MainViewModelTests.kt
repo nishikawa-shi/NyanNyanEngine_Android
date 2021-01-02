@@ -66,8 +66,8 @@ class MainViewModelTests {
     @Test
     fun loadUserInfo_fetchNyanNyanConfigが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.fetchNyanNyanConfig()).thenReturn(null)
-        delay(10) // これがないとCIでコケる
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
+        delay(50) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchNyanNyanConfig()
         return@runBlocking
@@ -105,8 +105,8 @@ class MainViewModelTests {
         )
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(mockUser)
         `when`(mockAccountUsecase.fetchNyanNyanUser(mockUser)).thenReturn(null)
-        delay(10) // これがないとCIでコケる
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadNyanNyanUserInfo()
+        delay(50) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchNyanNyanUser(mockUser)
         return@runBlocking

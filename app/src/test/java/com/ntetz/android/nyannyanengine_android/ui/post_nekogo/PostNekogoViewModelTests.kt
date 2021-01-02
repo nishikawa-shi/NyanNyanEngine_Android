@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.post_nekogo
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
@@ -35,6 +36,9 @@ class PostNekogoViewModelTests {
 
     @Mock
     private lateinit var mockUserActionUsecase: IUserActionUsecase
+
+    @Mock
+    private lateinit var mockContext: Context
 
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
@@ -86,17 +90,20 @@ class PostNekogoViewModelTests {
 
     @Test
     fun postNekogo_postTweetが呼ばれること() = runBlocking {
-        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any())).thenReturn(null)
-        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).postNekogo("testNekogo")
+        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(null)
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).postNekogo(
+            "testNekogo",
+            mockContext
+        )
         delay(10) // これがないとCIでコケる
 
-        Mockito.verify(mockTweetsUsecase, Mockito.times(1)).postTweet(TestUtil.any(), TestUtil.any())
+        Mockito.verify(mockTweetsUsecase, Mockito.times(1)).postTweet(TestUtil.any(), TestUtil.any(), TestUtil.any())
         return@runBlocking
     }
 
     @Test
     fun postNekogo_対応するツイート取得結果liveDataが更新されること() = runBlocking {
-        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any())).thenReturn(
+        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
             Tweet(
                 id = 2828,
                 text = "dummyUsCsNomPrev",
@@ -106,7 +113,7 @@ class PostNekogoViewModelTests {
         )
 
         val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
-        testViewModel.postNekogo("dummyTTweeett")
+        testViewModel.postNekogo("dummyTTweeett", mockContext)
         delay(10) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.postTweetEvent.value).isEqualTo(
@@ -122,7 +129,7 @@ class PostNekogoViewModelTests {
 
     @Test
     fun postNekogo_UserActionUsecaseのcompleteが呼ばれること() = runBlocking {
-        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any())).thenReturn(
+        `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
             Tweet(
                 id = 2828,
                 text = "dummyUsCsNomPrev",
@@ -137,7 +144,7 @@ class PostNekogoViewModelTests {
             mockAccountUsecase,
             mockTweetsUsecase,
             mockUserActionUsecase
-        ).postNekogo("dummyInputText")
+        ).postNekogo("dummyInputText", mockContext)
         delay(10) // これがないとCIでコケる
 
         Mockito.verify(mockUserActionUsecase, Mockito.times(1)).complete(

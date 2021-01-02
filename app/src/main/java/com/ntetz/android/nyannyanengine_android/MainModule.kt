@@ -59,7 +59,13 @@ private val viewModelModule = module {
             twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao(),
             firebaseClient = get()
         )
-        TweetsUsecase(tweetsRepository = tweetRepository, accountRepository = accountRepository)
+        val hashtagsRepository =
+            HashtagsRepository(get(), getUserProfileDatabase(androidContext()).defaultHashtagsDao())
+        TweetsUsecase(
+            tweetsRepository = tweetRepository,
+            accountRepository = accountRepository,
+            hashtagsRepository = hashtagsRepository
+        )
     }
 
     viewModel {

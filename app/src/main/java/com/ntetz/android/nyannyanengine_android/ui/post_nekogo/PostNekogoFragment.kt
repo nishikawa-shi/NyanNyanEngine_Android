@@ -27,7 +27,12 @@ class PostNekogoFragment : Fragment() {
     ): View? {
         binding = PostNekogoFragmentBinding.inflate(inflater, container, false)
         binding.inputText = context?.getString(R.string.post_input_original_text)
-        binding.testButton.setOnClickListener { viewModel.postNekogo(binding.nekogoResult.text.toString()) }
+        binding.testButton.setOnClickListener {
+            viewModel.postNekogo(
+                binding.nekogoResult.text.toString(),
+                context ?: return@setOnClickListener
+            )
+        }
         binding.lifecycleOwner = this
         return binding.root
     }
