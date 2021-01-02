@@ -1,8 +1,11 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import android.content.Context
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -17,16 +20,28 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class HashtagsRepositoryTests {
     @Mock
+    private lateinit var defaultHashtagConfig: IDefaultHashtagConfig
+
+    @Mock
     private lateinit var mockDefaultHashtagsDao: IDefaultHashtagsDao
 
+    @Mock
+    private lateinit var mockContext: Context
+
     @Test
-    fun getDefaultHashtagRecords_daoのgetAll由来の値が取得できること() = runBlocking {
+    fun getDefaultHashtags_daoのgetAll由来の値が取得できること() = runBlocking {
         `when`(mockDefaultHashtagsDao.getAll()).thenReturn(
             listOf(DefaultHashtagRecord(9999, true))
         )
+        `when`(defaultHashtagConfig.getTextBodyId(9999)).thenReturn(99919)
+        `when`(mockContext.getString(99919)).thenReturn("testHashTaaag")
 
-        Truth.assertThat(HashtagsRepository(mockDefaultHashtagsDao).getDefaultHashtagRecords(this))
-            .isEqualTo(listOf(DefaultHashtagRecord(9999, true)))
+        Truth.assertThat(
+            HashtagsRepository(defaultHashtagConfig, mockDefaultHashtagsDao).getDefaultHashtags(
+                this,
+                mockContext
+            )
+        ).isEqualTo(listOf(DefaultHashTagComponent(9999, "testHashTaaag", true)))
     }
 
     @Test
@@ -34,7 +49,10 @@ class HashtagsRepositoryTests {
         val testDefaultHashtagRecord = DefaultHashtagRecord(9999, true)
         doNothing().`when`(mockDefaultHashtagsDao).updateOne(testDefaultHashtagRecord)
 
-        HashtagsRepository(mockDefaultHashtagsDao).updateDefaultHashtagRecord(testDefaultHashtagRecord, this)
+        HashtagsRepository(defaultHashtagConfig, mockDefaultHashtagsDao).updateDefaultHashtagRecord(
+            testDefaultHashtagRecord,
+            this
+        )
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 
         verify(mockDefaultHashtagsDao, times(1)).updateOne(testDefaultHashtagRecord)
