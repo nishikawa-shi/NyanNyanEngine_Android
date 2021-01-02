@@ -38,4 +38,9 @@
     <string name="nekosan_nakigoe_type8">Myau</string>
     <string name="nekosan_nakigoe_type9">Nyan</string>
     <string name="nekosan_nakigoe_type99">Purr</string>
+
+    <string name="time_suffix_sec">s ago</string>
+    <string name="time_suffix_min">m ago</string>
+    <string name="time_suffix_hour">h ago</string>
+    <string name="time_suffix_day">d ago</string>
 </resources>

@@ -38,4 +38,9 @@
     <string name="nekosan_nakigoe_type8">にゃーおん</string>
     <string name="nekosan_nakigoe_type9">にゃあ</string>
     <string name="nekosan_nakigoe_type99">ごろごろ</string>
+
+    <string name="time_suffix_sec">秒前</string>
+    <string name="time_suffix_min">分前</string>
+    <string name="time_suffix_hour">時間前</string>
+    <string name="time_suffix_day">日前</string>
 </resources>

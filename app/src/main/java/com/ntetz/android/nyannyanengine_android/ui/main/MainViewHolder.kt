@@ -24,7 +24,7 @@ class MainViewHolder(
         }
         binding.isNyanNyan = !item.isError
         binding.nyanNyanTweetTextBody = item.text.toNyanNyan(context)
-        binding.tweetTextBody = item.createdAt + item.text
+        binding.tweetTextBody = item.tweetedAt(context) + item.text
         binding.lifecycleOwner = lifecycleOwner
     }
 

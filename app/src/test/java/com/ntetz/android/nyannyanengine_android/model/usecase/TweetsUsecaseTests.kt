@@ -47,7 +47,7 @@ class TweetsUsecaseTests {
                 Tweet(
                     id = 28,
                     text = "左上のボタンからログインするにゃあ♪\nあなたのTwitterをネコ語化だにゃ",
-                    createdAt = "2828/2/8",
+                    createdAt = "Sat Jan 01 00:00:00 +0000 2021",
                     user = User(
                         name = "にゃんにゃ先生",
                         screenName = "NNyansu",

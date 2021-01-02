@@ -7,7 +7,7 @@ object DefaultTweetConfig {
     val notSignInlist = listOf(
         Tweet(
             id = 28,
-            createdAt = "2828/2/8",
+            createdAt = "Sat Jan 01 00:00:00 +0000 2021",
             text = "左上のボタンからログインするにゃあ♪\nあなたのTwitterをネコ語化だにゃ",
             user = User(
                 name = "にゃんにゃ先生",
@@ -33,7 +33,7 @@ object DefaultTweetConfig {
     val tooManyRequestList = listOf(
         Tweet(
             id = 28,
-            createdAt = "2828/2/8",
+            createdAt = "Sat Jan 01 00:00:00 +0000 2021",
             text = "いっぱい使ってくれてありがとにゃ🎊 \n猫さん休憩中だから、数十分後にもう一回試して欲しいにゃ",
             user = User(
                 name = "にゃんにゃ先生",
@@ -46,7 +46,7 @@ object DefaultTweetConfig {
     val undefinedErrorList = listOf(
         Tweet(
             id = 28,
-            createdAt = "2828/2/8",
+            createdAt = "Sat Jan 01 00:00:00 +0000 2021",
             text = "にゃーん。。。なんか調子が悪いにゃ。。。もうしばらくしてから遊んで欲しいにゃ。。。",
             user = User(
                 name = "にゃんにゃ先生",
