@@ -20,7 +20,7 @@ import retrofit2.Response
 interface ITweetsRepository {
     suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope): List<Tweet>
     suspend fun getPreviousTweets(maxId: Long, token: IAccessToken, scope: CoroutineScope): List<Tweet>
-    suspend fun postTweet(tweetBody: String, token: IAccessToken, scope: CoroutineScope): Tweet
+    suspend fun postTweet(tweetBody: String, point: Int, token: IAccessToken, scope: CoroutineScope): Tweet
 }
 
 class TweetsRepository(
@@ -80,7 +80,7 @@ class TweetsRepository(
         return body
     }
 
-    override suspend fun postTweet(tweetBody: String, token: IAccessToken, scope: CoroutineScope): Tweet {
+    override suspend fun postTweet(tweetBody: String, point: Int, token: IAccessToken, scope: CoroutineScope): Tweet {
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.postTweetStatusParamName,
@@ -106,7 +106,7 @@ class TweetsRepository(
         if (!result.isSuccessful || body == null) {
             return getErrorTweet(result)
         }
-        return body
+        return body.also { it.point = point }
     }
 
     private suspend fun getLatestTweetsFromWeb(

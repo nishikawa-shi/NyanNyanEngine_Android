@@ -7,6 +7,7 @@
 
     <string name="post_input_original_text">ここに文章を書くと、下でネコ語表示されるにゃ!</string>
     <string name="post_button_name">ネコ語でツイートする</string>
+    <string name="post_point"> ぽいんと😺💰 \n\n</string>
     <string name="post_result">\nってツイートしたにゃ</string>
 
     <string name="settings_title_hashtag_engine">#にゃんにゃんエンジン</string>

@@ -198,6 +198,7 @@ class TweetsUsecaseTests {
             `when`(
                 mockTweetsRepository.postTweet(
                     tweetBody = "testtweeeetBody",
+                    point = 10,
                     token = testUser,
                     scope = this
                 )

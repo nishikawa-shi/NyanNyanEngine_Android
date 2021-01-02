@@ -38,7 +38,7 @@ class TweetsUsecase(
 
         accountRepository.incrementNekosanPoint(totalPoint, user)
         accountRepository.incrementTweetCount(user)
-        return tweetsRepository.postTweet(getTweetBodyWithHashtags(tweetBody, hashtags), user, scope)
+        return tweetsRepository.postTweet(getTweetBodyWithHashtags(tweetBody, hashtags), totalPoint, user, scope)
     }
 
     private fun getTweetBodyWithHashtags(tweetBody: String, hashtags: List<DefaultHashTagComponent>): String {
