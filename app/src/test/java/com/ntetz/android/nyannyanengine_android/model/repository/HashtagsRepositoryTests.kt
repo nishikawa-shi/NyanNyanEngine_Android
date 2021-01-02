@@ -41,7 +41,7 @@ class HashtagsRepositoryTests {
                 this,
                 mockContext
             )
-        ).isEqualTo(listOf(DefaultHashTagComponent(9999, "testHashTaaag", true)))
+        ).isEqualTo(listOf(DefaultHashTagComponent(9999, "testHashTaaag", 0, true)))
     }
 
     @Test

@@ -7,19 +7,22 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHas
 interface IDefaultHashtagConfig {
     fun getInitializationRecords(): List<DefaultHashtagRecord>
     fun getTextBodyId(hashtagId: Int): Int?
+    fun getNekosanPoint(hashtagId: Int): Int?
     suspend fun populate(defaultHashtagsDao: IDefaultHashtagsDao)
 }
 
 class DefaultHashtagConfig : IDefaultHashtagConfig {
     private val entries = mapOf(
-        1 to DefaultHashtag(R.string.settings_title_hashtag_engine, true),
-        2 to DefaultHashtag(R.string.settings_title_hashtag_nadenade, false)
+        1 to DefaultHashtag(R.string.settings_title_hashtag_engine, true, 30),
+        2 to DefaultHashtag(R.string.settings_title_hashtag_nadenade, false, 50)
     )
 
     override fun getInitializationRecords(): List<DefaultHashtagRecord> =
         entries.map { DefaultHashtagRecord(it.key, it.value.defaultEnabled) }
 
     override fun getTextBodyId(hashtagId: Int): Int? = entries[hashtagId]?.textBodyId
+
+    override fun getNekosanPoint(hashtagId: Int): Int? = entries[hashtagId]?.nekosanPoint
 
     override suspend fun populate(defaultHashtagsDao: IDefaultHashtagsDao) {
         val registeredHashtagIds = defaultHashtagsDao.getAll().map { it.id }
@@ -33,5 +36,6 @@ class DefaultHashtagConfig : IDefaultHashtagConfig {
 
 private data class DefaultHashtag(
     val textBodyId: Int,
-    val defaultEnabled: Boolean
+    val defaultEnabled: Boolean,
+    val nekosanPoint: Int
 )

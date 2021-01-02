@@ -26,7 +26,7 @@ class HashtagUsecaseTests {
     @Test
     fun getDefaultHashtags_レポジトリ由来の値が得られること() = runBlocking {
         `when`(mockHashtagRepository.getDefaultHashtags(this, mockContext)).thenReturn(
-            listOf(DefaultHashTagComponent(99999, "testHashtaaag", true))
+            listOf(DefaultHashTagComponent(99999, "testHashtaaag", 30, true))
         )
 
         Truth.assertThat(
@@ -34,12 +34,12 @@ class HashtagUsecaseTests {
                 mockHashtagRepository,
                 mockContext
             ).getDefaultHashtags(this)
-        ).isEqualTo(listOf(DefaultHashTagComponent(99999, "testHashtaaag", true)))
+        ).isEqualTo(listOf(DefaultHashTagComponent(99999, "testHashtaaag", 30, true)))
     }
 
     @Test
     fun updateDefaultHashtag_レポジトリのupdate用メソッドが1度呼ばれること() = runBlocking {
-        val testDefaultHashTagComponent = DefaultHashTagComponent(3, "", true)
+        val testDefaultHashTagComponent = DefaultHashTagComponent(3, "", 30, true)
         val expectedRecord = DefaultHashtagRecord(3, true)
         doNothing().`when`(mockHashtagRepository).updateDefaultHashtagRecord(expectedRecord, this)
 

@@ -67,6 +67,7 @@ class HashtagSettingViewModelTest {
                 DefaultHashTagComponent(
                     9999,
                     "#testHashtaaaagVM",
+                    30,
                     true
                 )
             )
@@ -81,6 +82,7 @@ class HashtagSettingViewModelTest {
                 DefaultHashTagComponent(
                     9999,
                     "#testHashtaaaagVM",
+                    30,
                     true
                 )
             )
@@ -89,7 +91,7 @@ class HashtagSettingViewModelTest {
 
     @Test
     fun updateDefaultHashtagComponent_updateDefaultHashtagが呼ばれること() = runBlocking {
-        val mockTag = DefaultHashTagComponent(5, "testtaaag", true)
+        val mockTag = DefaultHashTagComponent(5, "testtaaag", 30, true)
         doNothing().`when`(mockHashtagUsecase).updateDefaultHashtag(TestUtil.any(), TestUtil.any())
 
         HashtagSettingViewModel(mockHashtagUsecase, mockUserActionUsecase).updateDefaultHashtagComponent(mockTag)
@@ -99,7 +101,7 @@ class HashtagSettingViewModelTest {
 
     @Test
     fun updateDefaultHashtagComponent_userActionUsecaseのcompleteが呼ばれること() = runBlocking {
-        val mockTag = DefaultHashTagComponent(5, "testtaaag", true)
+        val mockTag = DefaultHashTagComponent(5, "testtaaag", 30, true)
         doNothing().`when`(mockHashtagUsecase).updateDefaultHashtag(TestUtil.any(), TestUtil.any())
         `when`(
             mockUserActionUsecase.complete(

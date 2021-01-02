@@ -34,10 +34,9 @@ class TweetsUsecase(
     override suspend fun postTweet(tweetBody: String, scope: CoroutineScope, context: Context): Tweet {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist[0]
         val hashtags = hashtagsRepository.getDefaultHashtags(scope, context)
+        val totalPoint = getTweetNekosanPoint(tweetBody, hashtags)
 
-        val multipliter = accountRepository.nyanNyanConfigEvent.value?.nekosanPointMultiplier ?: 1
-        val rawPoint = tweetBody.nekosanPoint()
-        accountRepository.incrementNekosanPoint(rawPoint * multipliter, user)
+        accountRepository.incrementNekosanPoint(totalPoint, user)
         accountRepository.incrementTweetCount(user)
         return tweetsRepository.postTweet(getTweetBodyWithHashtags(tweetBody, hashtags), user, scope)
     }
@@ -46,5 +45,11 @@ class TweetsUsecase(
         return hashtags.filter { it.isEnabled }.fold(tweetBody) { result, current ->
             listOf(result, current.textBody).joinToString("\n")
         }
+    }
+
+    private fun getTweetNekosanPoint(tweetBody: String, hashtags: List<DefaultHashTagComponent>): Int {
+        val multipliter = accountRepository.nyanNyanConfigEvent.value?.nekosanPointMultiplier ?: 1
+        val rawPoint = tweetBody.nekosanPoint() + hashtags.fold(0) { result, current -> result + current.nekosanPoint }
+        return rawPoint * multipliter
     }
 }

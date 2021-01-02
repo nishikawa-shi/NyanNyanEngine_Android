@@ -34,6 +34,16 @@ class DefaultHashtagConfigTests {
     }
 
     @Test
+    fun getNekosanPoint_組み込まれたidに対して組み込まれた設定由来の値が取得できること() {
+        Truth.assertThat(DefaultHashtagConfig().getNekosanPoint(1)).isEqualTo(30)
+    }
+
+    @Test
+    fun getNekosanPoint_組み込まれていないidに対してnullが取得できること() {
+        Truth.assertThat(DefaultHashtagConfig().getNekosanPoint(-1)).isNull()
+    }
+
+    @Test
     fun populate_データベースが空の時登録処理が走ること() = runBlocking {
         val config = DefaultHashtagConfig()
         val firstEmbeddedRecord = config.getInitializationRecords()[0]

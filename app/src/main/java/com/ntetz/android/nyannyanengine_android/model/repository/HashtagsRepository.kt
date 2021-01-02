@@ -25,6 +25,7 @@ class HashtagsRepository(
             DefaultHashTagComponent(
                 it.id,
                 context.getString(defaultHashtagConfig.getTextBodyId(it.id) ?: return emptyList()),
+                defaultHashtagConfig.getNekosanPoint(it.id) ?: 0,
                 it.enabled
             )
         }

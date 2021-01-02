@@ -7,16 +7,20 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNy
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -222,6 +226,49 @@ class TweetsUsecaseTests {
                         user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
                     )
                 )
+        }
+    }
+
+    @Test
+    fun postTweet_はっしゅたぐとねこさんポイントが反映されること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val testUser = TwitterUserRecord(
+                id = "getTweetsResChId",
+                oauthToken = "getTweetsResChToken",
+                oauthTokenSecret = "getTweetsResChSecret",
+                screenName = "getTweetsResChSNm",
+                name = "testName",
+                profileImageUrlHttps = null
+            )
+            `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
+                testUser
+            )
+            `when`(mockAccountRepository.nyanNyanConfigEvent).thenReturn(
+                MutableLiveData<NyanNyanConfig?>(
+                    NyanNyanConfig(
+                        1,
+                        mapOf()
+                    )
+                )
+            )
+
+            `when`(mockAccountRepository.incrementTweetCount(testUser)).thenReturn(null)
+            `when`(mockAccountRepository.incrementNekosanPoint(10, testUser)).thenReturn(null)
+
+            val defaultHashtagRecord = DefaultHashTagComponent(id = 28, textBody = "testTagBody", isEnabled = true)
+            `when`(mockHashtagRepository.getDefaultHashtags(this, mockContext)).thenReturn(
+                listOf(defaultHashtagRecord)
+            )
+
+            TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository).postTweet(
+                "testTweetBody",
+                this,
+                mockContext
+            )
+            delay(10) // これがないとCIでコケる
+
+            verify(mockTweetsRepository, times(1)).postTweet("testTweetBody\ntestTagBody", 10, testUser, this)
+            return@withContext
         }
     }
 }
