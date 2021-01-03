@@ -12,6 +12,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.util.toNyanNyan
 
 class MainViewHolder(
+    private val viewModel: MainViewModel,
     private val context: Context?,
     private val binding: MainCellBinding
 ) : RecyclerView.ViewHolder(binding.root) {
@@ -19,6 +20,7 @@ class MainViewHolder(
         val context = context ?: return
         binding.root.setOnClickListener {
             binding.isNyanNyan = !(binding.isNyanNyan as Boolean)
+            viewModel.logToggleTweet(bindingAdapterPosition, (binding.isNyanNyan as Boolean))
         }
         binding.isNyanNyan = !item.isError
         binding.nyanNyanTweetTextBody = item.text.toNyanNyan(context)
@@ -27,7 +29,8 @@ class MainViewHolder(
     }
 
     companion object {
-        fun create(context: Context?, parent: ViewGroup) = MainViewHolder(
+        fun create(viewModel: MainViewModel, context: Context?, parent: ViewGroup) = MainViewHolder(
+            viewModel,
             context,
             DataBindingUtil.inflate<MainCellBinding>(
                 LayoutInflater.from(parent.context),

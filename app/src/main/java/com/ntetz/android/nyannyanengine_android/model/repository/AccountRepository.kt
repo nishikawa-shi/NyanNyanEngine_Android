@@ -1,12 +1,16 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
 import android.net.Uri
+import androidx.lifecycle.LiveData
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
+import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanUser
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.IAccessToken
@@ -23,20 +27,32 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 interface IAccountRepository {
+    val nyanNyanConfigEvent: LiveData<NyanNyanConfig?>
+    val nyanNyanUserEvent: LiveData<NyanNyanUser?>
+
     suspend fun getAuthorizationToken(scope: CoroutineScope): String?
     suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): AccessToken
     suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope): User
     suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
     suspend fun deleteTwitterUser(token: IAccessToken, scope: CoroutineScope): AccessTokenInvalidation?
+
+    suspend fun fetchNyanNyanConfig()
+    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?)
+    suspend fun incrementNekosanPoint(value: Int, twitterUser: TwitterUserRecord)
+    suspend fun incrementTweetCount(twitterUser: TwitterUserRecord)
 }
 
 class AccountRepository(
     private val twitterApi: ITwitterApi,
     private val twitterConfig: ITwitterConfig = TwitterConfig(),
     private val base64Encoder: IBase64Encoder = Base64Encoder(),
-    private val twitterUserDao: ITwitterUserDao
+    private val twitterUserDao: ITwitterUserDao,
+    private val firebaseClient: IFirebaseClient
 ) : IAccountRepository {
+    override val nyanNyanConfigEvent = firebaseClient.nyanNyanConfigEvent
+    override val nyanNyanUserEvent = firebaseClient.nyanNyanUserEvent
+
     override suspend fun getAuthorizationToken(scope: CoroutineScope): String? {
         val additionalHeaders = listOf(
             TwitterSignParam(TwitterEndpoints.requestTokenOauthCallbackParamName, twitterConfig.callbackUrl)
@@ -113,6 +129,22 @@ class AccountRepository(
     override suspend fun deleteTwitterUser(token: IAccessToken, scope: CoroutineScope): AccessTokenInvalidation? {
         deleteTwitterUserRecord(scope)
         return invalidateAccessToken(token, scope)
+    }
+
+    override suspend fun fetchNyanNyanConfig() {
+        firebaseClient.fetchNyanNyanConfig()
+    }
+
+    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?) {
+        firebaseClient.fetchNyanNyanUser(twitterUser)
+    }
+
+    override suspend fun incrementNekosanPoint(value: Int, twitterUser: TwitterUserRecord) {
+        firebaseClient.incrementNyanNyanUser("np", value, twitterUser)
+    }
+
+    override suspend fun incrementTweetCount(twitterUser: TwitterUserRecord) {
+        firebaseClient.incrementNyanNyanUser("tc", 1, twitterUser)
     }
 
     private suspend fun invalidateAccessToken(

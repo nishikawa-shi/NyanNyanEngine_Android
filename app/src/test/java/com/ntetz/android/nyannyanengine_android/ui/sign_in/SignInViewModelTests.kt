@@ -5,6 +5,7 @@ import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -27,6 +28,9 @@ class SignInViewModelTests {
     @Mock
     private lateinit var mockAccountUsecase: IAccountUsecase
 
+    @Mock
+    private lateinit var mockUserActionUsecase: IUserActionUsecase
+
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -48,8 +52,8 @@ class SignInViewModelTests {
     @Test
     fun executeSignIn_fetchAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(null)
-        SignInViewModel(mockAccountUsecase).executeSignIn("authVerifierDummy", "oauthTokenDummy")
-        delay(10) // これがないとCIでコケる
+        SignInViewModel(mockAccountUsecase, mockUserActionUsecase).executeSignIn("authVerifierDummy", "oauthTokenDummy")
+        delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())
         return@runBlocking
@@ -64,9 +68,9 @@ class SignInViewModelTests {
             )
         )
 
-        val testViewModel = SignInViewModel(mockAccountUsecase)
+        val testViewModel = SignInViewModel(mockAccountUsecase, mockUserActionUsecase)
         testViewModel.executeSignIn("authVerifierDummy", "oauthTokenDummy")
-        delay(10) // これがないとCIでコケる
+        delay(20) // これがないとCIでコケる
 
         Truth.assertThat(testViewModel.signInEvent.value).isEqualTo(
             SignInResultComponent(

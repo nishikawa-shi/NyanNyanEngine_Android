@@ -7,10 +7,14 @@
 
     <string name="post_input_original_text">ここに文章を書くと、下でネコ語表示されるにゃ!</string>
     <string name="post_button_name">ネコ語でツイートする</string>
+    <string name="post_point"> ぽいんと😺💰 \n\n</string>
     <string name="post_result">\nってツイートしたにゃ</string>
 
     <string name="settings_title_hashtag_engine">#にゃんにゃんエンジン</string>
     <string name="settings_title_hashtag_nadenade">#なでてほしいにゃ🧶</string>
+    <string name="settings_lowest_rank">幼にゃんにゃ</string>
+    <string name="settings_teacher_rank">エンジェルにゃんにゃ</string>
+    <string name="settings_teacher_extends">0</string>
 
     <string name="menu_hash_tag">はっしゅたぐ</string>
     <string name="menu_sign_in">ログインする</string>

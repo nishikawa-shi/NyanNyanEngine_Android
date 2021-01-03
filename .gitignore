@@ -26,3 +26,8 @@ app/android-deploy-user-prd.json
 # Bundle secrets
 
 secure-config-master-lib.cpp
+
+# Firebase secrets
+
+app/src/dev/google-services.json
+app/src/prd/google-services.json

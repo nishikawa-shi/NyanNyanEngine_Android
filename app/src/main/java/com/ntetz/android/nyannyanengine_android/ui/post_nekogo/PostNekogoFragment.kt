@@ -27,16 +27,35 @@ class PostNekogoFragment : Fragment() {
     ): View? {
         binding = PostNekogoFragmentBinding.inflate(inflater, container, false)
         binding.inputText = context?.getString(R.string.post_input_original_text)
-        binding.testButton.setOnClickListener { viewModel.postNekogo(binding.nekogoResult.text.toString()) }
+        binding.testButton.setOnClickListener {
+            viewModel.postNekogo(
+                binding.nekogoResult.text.toString(),
+                context ?: return@setOnClickListener
+            )
+        }
         binding.lifecycleOwner = this
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         viewModel.postTweetEvent.observe(viewLifecycleOwner, {
-            Toast.makeText(context, "${it?.text}${context?.getString(R.string.post_result)}", Toast.LENGTH_SHORT).show()
+            val textBody = listOf(
+                it?.point,
+                context?.getString(R.string.post_point),
+                it?.text?.splitToSequence("\n")?.first(),
+                context?.getString(R.string.post_result)
+            ).joinToString("")
+            Toast.makeText(
+                context,
+                textBody,
+                Toast.LENGTH_SHORT
+            ).show()
             findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
         })
+        viewModel.userInfoEvent.observe(viewLifecycleOwner, {
+            binding.testButton.isEnabled = (it != null)
+        })
+        viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)
     }
 }

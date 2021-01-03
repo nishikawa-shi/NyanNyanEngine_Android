@@ -5,10 +5,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.launch
 
-class SignInViewModel(private val accountUsecase: IAccountUsecase) : ViewModel() {
+class SignInViewModel(
+    private val accountUsecase: IAccountUsecase,
+    private val userActionUsecase: IUserActionUsecase
+) : ViewModel() {
     private val _signInEvent: MutableLiveData<SignInResultComponent?> = MutableLiveData()
     val signInEvent: LiveData<SignInResultComponent?>
         get() = _signInEvent
@@ -28,6 +33,7 @@ class SignInViewModel(private val accountUsecase: IAccountUsecase) : ViewModel()
                     scope = this
                 )
             )
+            userActionUsecase.complete(userAction = UserAction.SIGN_IN, scope = this)
         }
     }
 }

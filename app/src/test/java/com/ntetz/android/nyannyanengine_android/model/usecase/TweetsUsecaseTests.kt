@@ -1,18 +1,26 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
+import android.content.Context
+import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
+import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
+import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.`when`
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 
 @RunWith(MockitoJUnitRunner::class)
@@ -23,11 +31,17 @@ class TweetsUsecaseTests {
     @Mock
     private lateinit var mockTweetsRepository: ITweetsRepository
 
+    @Mock
+    private lateinit var mockHashtagRepository: IHashtagsRepository
+
+    @Mock
+    private lateinit var mockContext: Context
+
     @Test
     fun getTweets_認証情報がない時未ログインの値を返すこと() = runBlocking {
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(null)
 
-        val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+        val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
         Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
             listOf(
                 Tweet(
@@ -69,7 +83,7 @@ class TweetsUsecaseTests {
                 )
             )
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
             Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
                 listOf(
                     Tweet(
@@ -108,7 +122,7 @@ class TweetsUsecaseTests {
                 )
             )
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
             Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
                 listOf(
                     Tweet(
@@ -153,7 +167,7 @@ class TweetsUsecaseTests {
                 )
             )
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
             Truth.assertThat(testUsecase.getPreviousTweets(maxId = 1234567890123456789, this)).isEqualTo(
                 listOf(
                     Tweet(
@@ -184,6 +198,7 @@ class TweetsUsecaseTests {
             `when`(
                 mockTweetsRepository.postTweet(
                     tweetBody = "testtweeeetBody",
+                    point = 10,
                     token = testUser,
                     scope = this
                 )
@@ -195,9 +210,15 @@ class TweetsUsecaseTests {
                     user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
                 )
             )
+            `when`(
+                mockAccountRepository.nyanNyanConfigEvent
+            ).thenReturn(MutableLiveData<NyanNyanConfig?>())
+            `when`(
+                mockHashtagRepository.getDefaultHashtags(this, mockContext)
+            ).thenReturn(listOf())
 
-            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository)
-            Truth.assertThat(testUsecase.postTweet(tweetBody = "testtweeeetBody", scope = this))
+            val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
+            Truth.assertThat(testUsecase.postTweet(tweetBody = "testtweeeetBody", scope = this, mockContext))
                 .isEqualTo(
                     Tweet(
                         id = 2828,
@@ -206,6 +227,49 @@ class TweetsUsecaseTests {
                         user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
                     )
                 )
+        }
+    }
+
+    @Test
+    fun postTweet_はっしゅたぐとねこさんポイントが反映されること() = runBlocking {
+        withContext(Dispatchers.IO) {
+            val testUser = TwitterUserRecord(
+                id = "getTweetsResChId",
+                oauthToken = "getTweetsResChToken",
+                oauthTokenSecret = "getTweetsResChSecret",
+                screenName = "getTweetsResChSNm",
+                name = "testName",
+                profileImageUrlHttps = null
+            )
+            `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
+                testUser
+            )
+            `when`(mockAccountRepository.nyanNyanConfigEvent).thenReturn(
+                MutableLiveData<NyanNyanConfig?>(
+                    NyanNyanConfig(
+                        1,
+                        mapOf()
+                    )
+                )
+            )
+
+            `when`(mockAccountRepository.incrementTweetCount(testUser)).thenReturn(null)
+            `when`(mockAccountRepository.incrementNekosanPoint(10, testUser)).thenReturn(null)
+
+            val defaultHashtagRecord = DefaultHashTagComponent(id = 28, textBody = "testTagBody", isEnabled = true)
+            `when`(mockHashtagRepository.getDefaultHashtags(this, mockContext)).thenReturn(
+                listOf(defaultHashtagRecord)
+            )
+
+            TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository).postTweet(
+                "testTweetBody",
+                this,
+                mockContext
+            )
+            delay(20) // これがないとCIでコケる
+
+            verify(mockTweetsRepository, times(1)).postTweet("testTweetBody\ntestTagBody", 10, testUser, this)
+            return@withContext
         }
     }
 }

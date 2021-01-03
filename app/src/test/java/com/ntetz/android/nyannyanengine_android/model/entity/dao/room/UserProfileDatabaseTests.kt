@@ -46,7 +46,7 @@ class UserProfileDatabaseTests {
         `when`(mockDefaultHashtagConfig.populate(database.defaultHashtagsDao())).thenReturn(Unit)
 
         database.initialize()
-        delay(100) // これがないと、initialize内部のCoroutineの起動を見届けられない模様
+        delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様
         verify(mockDefaultHashtagConfig, times(1)).populate(database.defaultHashtagsDao())
     }
 }

@@ -80,4 +80,14 @@ class NekosanExtensionTests {
     fun isNekogo_type1単体と未登録はっしゅたぐ1つがfalse() {
         Truth.assertThat("にゃ1 #にゃんにゃんのエンジン".isNekogo(mockContext)).isFalse()
     }
+
+    @Test
+    fun nekosanPoint_登録済み絵文字に対して高い点数を返す() {
+        Truth.assertThat("にゃ🌈".nekosanPoint()).isEqualTo(80)
+    }
+
+    @Test
+    fun nekosanPoint_未登録絵文字に対してデフォルトの点数を返す() {
+        Truth.assertThat("にゃ🖨".nekosanPoint()).isEqualTo(10)
+    }
 }

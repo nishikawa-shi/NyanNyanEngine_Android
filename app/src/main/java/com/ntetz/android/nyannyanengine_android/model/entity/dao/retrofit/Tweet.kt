@@ -14,4 +14,6 @@ data class Tweet(
 ) {
     val isError: Boolean
         get() = id.toInt() == 28
+
+    var point: Int = 0
 }
