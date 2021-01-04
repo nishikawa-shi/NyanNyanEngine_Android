@@ -3,7 +3,9 @@
 
     <string name="default_twitter_name">Dr. Nyannya</string>
     <string name="default_twitter_id">NNyansu</string>
+    <string name="default_tweeted_at">28 min ago</string>
     <string name="nav_header_desc">Account info</string>
+    <string name="tweet_list_desc">Tweet account info</string>
 
     <string name="home_timeline_description_post_nekogo">Post cat language</string>
 

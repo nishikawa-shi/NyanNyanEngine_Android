@@ -1,7 +1,9 @@
 <resources>
     <string name="default_twitter_name">にゃんにゃ先生</string>
     <string name="default_twitter_id">NNyansu</string>
+    <string name="default_tweeted_at">28分前</string>
     <string name="nav_header_desc">アカウント情報</string>
+    <string name="tweet_list_desc">ツイートアカウント情報</string>
 
     <string name="home_timeline_description_post_nekogo">ねこ語をツイート</string>
 
