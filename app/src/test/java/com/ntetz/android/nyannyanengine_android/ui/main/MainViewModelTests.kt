@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.main
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
@@ -35,6 +36,9 @@ class MainViewModelTests {
     @Mock
     private lateinit var mockUserActionUsecase: IUserActionUsecase
 
+    @Mock
+    private lateinit var mockContext: Context
+
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -56,7 +60,7 @@ class MainViewModelTests {
     @Test
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
-        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext).loadUserInfo()
         delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).loadAccessToken(TestUtil.any())
@@ -66,7 +70,7 @@ class MainViewModelTests {
     @Test
     fun loadUserInfo_fetchNyanNyanConfigが呼ばれること() = runBlocking {
         `when`(mockAccountUsecase.fetchNyanNyanConfig()).thenReturn(null)
-        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadUserInfo()
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext).loadUserInfo()
         delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchNyanNyanConfig()
@@ -81,7 +85,7 @@ class MainViewModelTests {
             )
         )
 
-        val testViewModel = MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase)
+        val testViewModel = MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext)
         testViewModel.loadUserInfo()
         delay(20) // これがないとCIでコケる
 
@@ -105,7 +109,7 @@ class MainViewModelTests {
         )
         `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(mockUser)
         `when`(mockAccountUsecase.fetchNyanNyanUser(mockUser)).thenReturn(null)
-        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).loadNyanNyanUserInfo()
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext).loadNyanNyanUserInfo()
         delay(20) // これがないとCIでコケる
 
         verify(mockAccountUsecase, times(1)).fetchNyanNyanUser(mockUser)
@@ -117,7 +121,12 @@ class MainViewModelTests {
         `when`(
             mockUserActionUsecase.tap(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
         ).thenReturn(null)
-        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).logOpenPostNekogoScreen()
+        MainViewModel(
+            mockAccountUsecase,
+            mockTweetUsecase,
+            mockUserActionUsecase,
+            mockContext
+        ).logOpenPostNekogoScreen()
         delay(20) // これがないとCIでコケる
 
         verify(mockUserActionUsecase, times(1)).tap(
@@ -133,7 +142,7 @@ class MainViewModelTests {
         `when`(
             mockUserActionUsecase.tap(TestUtil.any(), TestUtil.any(), TestUtil.any(), TestUtil.any())
         ).thenReturn(null)
-        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase).logToggleTweet(3, true)
+        MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext).logToggleTweet(3, true)
 
         delay(20) // これがないとCIでコケる
         verify(mockUserActionUsecase, times(1)).tap(

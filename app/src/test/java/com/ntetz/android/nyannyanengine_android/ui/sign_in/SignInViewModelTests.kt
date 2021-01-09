@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.sign_in
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
@@ -31,6 +32,9 @@ class SignInViewModelTests {
     @Mock
     private lateinit var mockUserActionUsecase: IUserActionUsecase
 
+    @Mock
+    private lateinit var mockContext: Context
+
     // この記述がないとviewModelScopeのlaunchがランタイムエラーする
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -51,24 +55,46 @@ class SignInViewModelTests {
 
     @Test
     fun executeSignIn_fetchAccessTokenが呼ばれること() = runBlocking {
-        `when`(mockAccountUsecase.fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(null)
-        SignInViewModel(mockAccountUsecase, mockUserActionUsecase).executeSignIn("authVerifierDummy", "oauthTokenDummy")
+        `when`(
+            mockAccountUsecase.fetchAccessToken(
+                TestUtil.any(),
+                TestUtil.any(),
+                TestUtil.any(),
+                TestUtil.any()
+            )
+        ).thenReturn(null)
+        SignInViewModel(mockAccountUsecase, mockUserActionUsecase, mockContext).executeSignIn(
+            "authVerifierDummy",
+            "oauthTokenDummy"
+        )
         delay(20) // これがないとCIでコケる
 
-        verify(mockAccountUsecase, times(1)).fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())
+        verify(mockAccountUsecase, times(1)).fetchAccessToken(
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any(),
+            TestUtil.any()
+        )
         return@runBlocking
     }
 
     @Test
     fun executeSignIn_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
-        `when`(mockAccountUsecase.fetchAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
+        `when`(
+            mockAccountUsecase.fetchAccessToken(
+                TestUtil.any(),
+                TestUtil.any(),
+                TestUtil.any(),
+                TestUtil.any()
+            )
+        ).thenReturn(
             SignInResultComponent(
                 isSucceeded = true,
                 errorMessage = "testTokenEventTest"
             )
         )
 
-        val testViewModel = SignInViewModel(mockAccountUsecase, mockUserActionUsecase)
+        val testViewModel = SignInViewModel(mockAccountUsecase, mockUserActionUsecase, mockContext)
         testViewModel.executeSignIn("authVerifierDummy", "oauthTokenDummy")
         delay(20) // これがないとCIでコケる
 

@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import android.content.Context
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
@@ -25,6 +26,9 @@ class TweetsRepositoryTests {
     @Mock
     private lateinit var mockTwitterConfig: ITwitterConfig
 
+    @Mock
+    private lateinit var mockContext: Context
+
     @Test
     fun getLatestTweets_Retrofitのレスポンス由来の値が得られること() = runBlocking {
         withContext(Dispatchers.IO) {
@@ -40,7 +44,7 @@ class TweetsRepositoryTests {
                         )
                     )
                 )
-            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -54,7 +58,9 @@ class TweetsRepositoryTests {
                 testRepository.getLatestTweets(
                     TwitterUserRecord(
                         "", "", "", "", "testName", null
-                    ), this
+                    ),
+                    this,
+                    mockContext
                 )
             )
                 .isEqualTo(
@@ -97,7 +103,7 @@ class TweetsRepositoryTests {
                         )
                     )
                 )
-            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -111,7 +117,9 @@ class TweetsRepositoryTests {
                 testRepository.getLatestTweets(
                     TwitterUserRecord(
                         "", "", "", "", "testName", null
-                    ), this
+                    ),
+                    this,
+                    mockContext
                 )
             )
                 .isEqualTo(
@@ -154,7 +162,7 @@ class TweetsRepositoryTests {
                         )
                     )
                 )
-            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -170,7 +178,8 @@ class TweetsRepositoryTests {
                     token = TwitterUserRecord(
                         "", "", "", "", "testName", null
                     ),
-                    this
+                    this,
+                    mockContext
                 )
             )
                 .isEqualTo(
@@ -199,7 +208,7 @@ class TweetsRepositoryTests {
                         user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
                     )
                 )
-            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -216,7 +225,8 @@ class TweetsRepositoryTests {
                     token = TwitterUserRecord(
                         "", "", "", "", "testName", null
                     ),
-                    scope = this
+                    scope = this,
+                    mockContext
                 )
             )
                 .isEqualTo(
@@ -243,7 +253,7 @@ class TweetsRepositoryTests {
                         user = User("dummyTextRepoName", "dummyTextRepoScNm", "https://ntetz.com/dummyTextRepo.jpg")
                     )
                 )
-            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -260,7 +270,8 @@ class TweetsRepositoryTests {
                     token = TwitterUserRecord(
                         "", "", "", "", "testName", null
                     ),
-                    scope = this
+                    scope = this,
+                    context = mockContext
                 ).point
             ).isEqualTo(300)
         }

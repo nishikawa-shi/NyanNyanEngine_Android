@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
 
     private fun openAuthorizePage(scope: CoroutineScope) {
         scope.launch {
-            val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this) ?: return@launch
+            val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this, this@MainActivity) ?: return@launch
             startActivity(Intent(Intent.ACTION_VIEW, authorizePageUri))
             userActionUsecase.tap(userAction = UserAction.SIGN_IN, scope = this)
         }

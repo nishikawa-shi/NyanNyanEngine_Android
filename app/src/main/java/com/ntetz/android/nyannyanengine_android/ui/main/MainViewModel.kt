@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.main
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -23,7 +24,8 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val accountUsecase: IAccountUsecase,
     private val tweetsUsecase: ITweetsUsecase,
-    private val userActionUsecase: IUserActionUsecase
+    private val userActionUsecase: IUserActionUsecase,
+    private val context: Context
 ) : ViewModel() {
     private val _userInfoEvent: MutableLiveData<TwitterUserRecord?> = MutableLiveData()
     val userInfoEvent: LiveData<TwitterUserRecord?>
@@ -38,7 +40,13 @@ class MainViewModel(
             pageSize = TwitterEndpoints.homeTimelineCountParamDefaultValue.toInt(),
             enablePlaceholders = false
         ),
-        pagingSourceFactory = { TweetsPagingSource(scope = viewModelScope, tweetsUsecase = tweetsUsecase) }
+        pagingSourceFactory = {
+            TweetsPagingSource(
+                scope = viewModelScope,
+                context = context,
+                tweetsUsecase = tweetsUsecase
+            )
+        }
     ).flow.cachedIn(viewModelScope)
 
     fun loadUserInfo() {

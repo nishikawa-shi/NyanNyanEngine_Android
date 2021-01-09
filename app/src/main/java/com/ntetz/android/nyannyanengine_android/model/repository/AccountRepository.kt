@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
@@ -8,6 +9,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
+import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.NoConnectivityException
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanUser
@@ -30,12 +32,22 @@ interface IAccountRepository {
     val nyanNyanConfigEvent: LiveData<NyanNyanConfig?>
     val nyanNyanUserEvent: LiveData<NyanNyanUser?>
 
-    suspend fun getAuthorizationToken(scope: CoroutineScope): String?
-    suspend fun getAccessToken(oauthVerifier: String, oauthToken: String, scope: CoroutineScope): AccessToken
-    suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope): User
+    suspend fun getAuthorizationToken(scope: CoroutineScope, context: Context): String?
+    suspend fun getAccessToken(
+        oauthVerifier: String,
+        oauthToken: String,
+        scope: CoroutineScope,
+        context: Context
+    ): AccessToken
+
+    suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope, context: Context): User
     suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
-    suspend fun deleteTwitterUser(token: IAccessToken, scope: CoroutineScope): AccessTokenInvalidation?
+    suspend fun deleteTwitterUser(
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): AccessTokenInvalidation?
 
     suspend fun fetchNyanNyanConfig()
     suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?)
@@ -53,7 +65,7 @@ class AccountRepository(
     override val nyanNyanConfigEvent = firebaseClient.nyanNyanConfigEvent
     override val nyanNyanUserEvent = firebaseClient.nyanNyanUserEvent
 
-    override suspend fun getAuthorizationToken(scope: CoroutineScope): String? {
+    override suspend fun getAuthorizationToken(scope: CoroutineScope, context: Context): String? {
         val additionalHeaders = listOf(
             TwitterSignParam(TwitterEndpoints.requestTokenOauthCallbackParamName, twitterConfig.callbackUrl)
         )
@@ -69,13 +81,21 @@ class AccountRepository(
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
         ).getOAuthValue()
-        return getRequestTokenFromWeb(authorization, scope).body()
+
+        return try {
+            getRequestTokenFromWeb(authorization, scope, context).body()
+        } catch (e: NoConnectivityException) {
+            null
+        } catch (e: Exception) {
+            null
+        }
     }
 
     override suspend fun getAccessToken(
         oauthVerifier: String,
         oauthToken: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): AccessToken {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.accessTokenMethod,
@@ -87,10 +107,20 @@ class AccountRepository(
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
         ).getOAuthValue()
-        return getAccessTokenFromWeb(oauthVerifier, oauthToken, authorization, scope).toAccessToken()
+        return try {
+            getAccessTokenFromWeb(oauthVerifier, oauthToken, authorization, scope, context).toAccessToken()
+        } catch (e: NoConnectivityException) {
+            AccessToken(isValid = false, errorDescription = "オフラインだにゃ・・・")
+        } catch (e: Exception) {
+            AccessToken(isValid = false, errorDescription = "謎エラーだにゃ")
+        }
     }
 
-    override suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope): User {
+    override suspend fun verifyAccessToken(
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): User {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.verifyCredentialsMethod,
             path = TwitterEndpoints.verifyCredentialsPath,
@@ -101,13 +131,18 @@ class AccountRepository(
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
         ).getOAuthValue(token)
-
-        val result = verifyAccessTokenToWeb(authorization, scope)
-        val body = result.body()
-        if (!result.isSuccessful || body == null) {
-            return getErrorUser()
+        return try {
+            val result = verifyAccessTokenToWeb(authorization, scope, context)
+            val body = result.body()
+            if (!result.isSuccessful || body == null) {
+                return getErrorUser()
+            }
+            body
+        } catch (e: NoConnectivityException) {
+            getErrorUser()
+        } catch (e: Exception) {
+            getErrorUser()
         }
-        return body
     }
 
     override suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord? {
@@ -126,9 +161,13 @@ class AccountRepository(
         }
     }
 
-    override suspend fun deleteTwitterUser(token: IAccessToken, scope: CoroutineScope): AccessTokenInvalidation? {
+    override suspend fun deleteTwitterUser(
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): AccessTokenInvalidation? {
         deleteTwitterUserRecord(scope)
-        return invalidateAccessToken(token, scope)
+        return invalidateAccessToken(token, scope, context)
     }
 
     override suspend fun fetchNyanNyanConfig() {
@@ -149,7 +188,8 @@ class AccountRepository(
 
     private suspend fun invalidateAccessToken(
         token: IAccessToken,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): AccessTokenInvalidation? {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.invalidateTokenMethod,
@@ -161,21 +201,27 @@ class AccountRepository(
             twitterConfig = twitterConfig,
             base64Encoder = base64Encoder
         ).getOAuthValue(token)
-
-        val result = invalidateAccessTokenToWeb(authorization, scope)
-        if (!result.isSuccessful) {
-            return null
+        return try {
+            val result = invalidateAccessTokenToWeb(authorization, scope, context)
+            if (!result.isSuccessful) {
+                return null
+            }
+            return result.body()
+        } catch (e: NoConnectivityException) {
+            null
+        } catch (e: Exception) {
+            null
         }
-        return result.body()
     }
 
     private suspend fun getRequestTokenFromWeb(
         authorization: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): Response<String> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.scalarClient
+                twitterApi.getScalarClient(context)
                     .requestToken(authorization)
                     .execute()
             }
@@ -186,11 +232,12 @@ class AccountRepository(
         oauthVerifier: String,
         oauthToken: String,
         authorization: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): Response<String> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.scalarClient
+                twitterApi.getScalarClient(context)
                     .accessToken(
                         oauthVerifier = oauthVerifier,
                         oauthToken = oauthToken,
@@ -203,11 +250,12 @@ class AccountRepository(
 
     private suspend fun verifyAccessTokenToWeb(
         authorization: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): Response<User> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.objectClient
+                twitterApi.getObjectClient(context)
                     .verifyCredentials(
                         authorization = authorization
                     )
@@ -218,11 +266,12 @@ class AccountRepository(
 
     private suspend fun invalidateAccessTokenToWeb(
         authorization: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): Response<AccessTokenInvalidation> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.objectClient
+                twitterApi.getObjectClient(context)
                     .invalidateToken(
                         authorization = authorization
                     )

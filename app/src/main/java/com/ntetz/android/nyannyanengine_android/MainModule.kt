@@ -74,9 +74,9 @@ private val viewModelModule = module {
         val usecase = HashtagUsecase(repository, androidContext())
         HashtagSettingViewModel(usecase, get())
     }
-    viewModel { MainViewModel(get(), get(), get()) }
-    viewModel { SignInViewModel(get(), get()) }
-    viewModel { SignOutViewModel(get(), get()) }
+    viewModel { MainViewModel(get(), get(), get(), androidContext()) }
+    viewModel { SignInViewModel(get(), get(), androidContext()) }
+    viewModel { SignOutViewModel(get(), get(), androidContext()) }
     viewModel { PostNekogoViewModel(get(), get(), get()) }
 }
 
