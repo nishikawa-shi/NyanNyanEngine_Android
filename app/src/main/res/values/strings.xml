@@ -16,9 +16,11 @@
     <string name="settings_title_hashtag_nadenade">#PetMeMeeow🧶</string>
     <string name="settings_lowest_rank">Baby Nyan-nya</string>
     <string name="settings_teacher_rank">Angel Nyan-nya</string>
+    <string name="settings_teacher_point">99999</string>
     <string name="settings_teacher_extends">0</string>
 
     <string name="menu_nekosan_rank">Meow rank</string>
+    <string name="menu_nekosan_point">Meow point</string>
     <string name="menu_nekosan_next">To next rank</string>
     <string name="menu_hash_tag">Hash Tags</string>
     <string name="menu_sign_in">Sign in</string>
