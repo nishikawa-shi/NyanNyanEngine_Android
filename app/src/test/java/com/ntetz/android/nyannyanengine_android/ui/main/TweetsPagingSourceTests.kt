@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.main
 
+import android.content.Context
 import androidx.paging.PagingSource
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
@@ -17,6 +18,9 @@ class TweetsPagingSourceTests {
     @Mock
     private lateinit var mockTweetUsecase: ITweetsUsecase
 
+    @Mock
+    private lateinit var mockContext: Context
+
     @Test
     fun load_初読み込みかつレスポンスありの時レスポンスを返す() = runBlocking {
         val mockTweets = listOf(
@@ -27,11 +31,11 @@ class TweetsPagingSourceTests {
                 user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
             )
         )
-        `when`(mockTweetUsecase.getLatestTweets(this)).thenReturn(mockTweets)
+        `when`(mockTweetUsecase.getLatestTweets(this, mockContext)).thenReturn(mockTweets)
         val testLoadParam =
             PagingSource.LoadParams.Refresh<Long>(key = null, loadSize = 99, placeholdersEnabled = false)
 
-        val testSource = TweetsPagingSource(mockTweetUsecase, this)
+        val testSource = TweetsPagingSource(mockTweetUsecase, this, mockContext)
         Truth.assertThat(testSource.load(testLoadParam))
             .isEqualTo(
                 PagingSource.LoadResult.Page<Long, Tweet>(
@@ -53,11 +57,11 @@ class TweetsPagingSourceTests {
                 user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
             )
         )
-        `when`(mockTweetUsecase.getLatestTweets(this)).thenReturn(mockTweets)
+        `when`(mockTweetUsecase.getLatestTweets(this, mockContext)).thenReturn(mockTweets)
         val testLoadParam =
             PagingSource.LoadParams.Refresh<Long>(key = null, loadSize = 99, placeholdersEnabled = false)
 
-        val testSource = TweetsPagingSource(mockTweetUsecase, this)
+        val testSource = TweetsPagingSource(mockTweetUsecase, this, mockContext)
         Truth.assertThat(testSource.load(testLoadParam))
             .isEqualTo(
                 PagingSource.LoadResult.Page<Long, Tweet>(
@@ -85,11 +89,11 @@ class TweetsPagingSourceTests {
                 user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
             )
         )
-        `when`(mockTweetUsecase.getPreviousTweets(2828, this)).thenReturn(mockTweets)
+        `when`(mockTweetUsecase.getPreviousTweets(2828, this, mockContext)).thenReturn(mockTweets)
         val testLoadParam =
             PagingSource.LoadParams.Refresh<Long>(key = 2828, loadSize = 99, placeholdersEnabled = false)
 
-        val testSource = TweetsPagingSource(mockTweetUsecase, this)
+        val testSource = TweetsPagingSource(mockTweetUsecase, this, mockContext)
         Truth.assertThat(testSource.load(testLoadParam))
             .isEqualTo(
                 PagingSource.LoadResult.Page<Long, Tweet>(
@@ -111,11 +115,11 @@ class TweetsPagingSourceTests {
                 user = User("dummyUsCsNomName", "dummyUsCsNomScNm", "https://ntetz.com/dummyUsCsNom.jpg")
             )
         )
-        `when`(mockTweetUsecase.getPreviousTweets(2828, this)).thenReturn(mockTweets)
+        `when`(mockTweetUsecase.getPreviousTweets(2828, this, mockContext)).thenReturn(mockTweets)
         val testLoadParam =
             PagingSource.LoadParams.Refresh<Long>(key = 2828, loadSize = 99, placeholdersEnabled = false)
 
-        val testSource = TweetsPagingSource(mockTweetUsecase, this)
+        val testSource = TweetsPagingSource(mockTweetUsecase, this, mockContext)
         Truth.assertThat(testSource.load(testLoadParam))
             .isEqualTo(
                 PagingSource.LoadResult.Page<Long, Tweet>(

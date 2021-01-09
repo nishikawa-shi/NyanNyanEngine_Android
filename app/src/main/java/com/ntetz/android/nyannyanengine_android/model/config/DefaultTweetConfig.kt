@@ -17,6 +17,19 @@ object DefaultTweetConfig {
         )
     )
 
+    val noConnectionRequestList = listOf(
+        Tweet(
+            id = 28,
+            createdAt = "Sat Jan 01 00:00:00 +0000 2021",
+            text = "にゃーん！回線状況を確認して、もう一回ひっぱり更新して欲しいにゃん😊",
+            user = User(
+                name = "にゃんにゃ先生",
+                screenName = "NNyansu",
+                profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
+            )
+        )
+    )
+
     val tooManyRequestList = listOf(
         Tweet(
             id = 28,

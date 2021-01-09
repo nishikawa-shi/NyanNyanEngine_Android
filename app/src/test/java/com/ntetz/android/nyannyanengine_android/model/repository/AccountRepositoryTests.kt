@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import android.content.Context
 import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
@@ -37,13 +38,16 @@ class AccountRepositoryTests {
     @Mock
     private lateinit var mockFirebaseClient: IFirebaseClient
 
+    @Mock
+    private lateinit var mockContext: Context
+
     @Test
     fun getAuthorizationToken_Retrofitのレスポンス由来の値が得られること() = runBlocking {
         withContext(Dispatchers.IO) {
             val mockEndpoints = TestUtil.mockNormalRetrofit
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse("mockResponseString")
-            `when`(mockTwitterApi.scalarClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getScalarClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
@@ -56,7 +60,7 @@ class AccountRepositoryTests {
                     twitterUserDao = mockTwitterUserDao,
                     firebaseClient = mockFirebaseClient
                 )
-            Truth.assertThat(testRepository.getAuthorizationToken(this))
+            Truth.assertThat(testRepository.getAuthorizationToken(this, mockContext))
                 .isEqualTo("mockResponseString")
         }
     }
@@ -69,7 +73,7 @@ class AccountRepositoryTests {
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse("error!")
 
-            `when`(mockTwitterApi.scalarClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getScalarClient(mockContext)).thenReturn(mockEndpoints)
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
@@ -81,7 +85,7 @@ class AccountRepositoryTests {
                     twitterUserDao = mockTwitterUserDao,
                     firebaseClient = mockFirebaseClient
                 )
-            Truth.assertThat(testRepository.getAccessToken("", "", this).errorDescription)
+            Truth.assertThat(testRepository.getAccessToken("", "", this, mockContext).errorDescription)
                 .isEqualTo("network error. code: 500")
         }
     }
@@ -93,7 +97,7 @@ class AccountRepositoryTests {
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse(User(name = "testUser", screenName = "testScName"))
 
-            `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
@@ -108,7 +112,8 @@ class AccountRepositoryTests {
             Truth.assertThat(
                 testRepository.verifyAccessToken(
                     AccessToken(true, null, null, "", "", null),
-                    this
+                    this,
+                    mockContext
                 )
             ).isEqualTo(User(name = "testUser", screenName = "testScName"))
         }
@@ -179,7 +184,7 @@ class AccountRepositoryTests {
         val mockEndpoints = TestUtil.mockNormalRetrofit
             .create(ITwitterApiEndpoints::class.java)
             .returningResponse(AccessTokenInvalidation("dummyToken"))
-        `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+        `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
         `when`(mockTwitterConfig.apiSecret).thenReturn("")
         `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
@@ -200,7 +205,9 @@ class AccountRepositoryTests {
                     "testScNm",
                     name = "testName",
                     profileImageUrlHttps = null
-                ), this
+                ),
+                this,
+                mockContext
             )
         ).isEqualTo(AccessTokenInvalidation("dummyToken"))
     }
@@ -210,7 +217,7 @@ class AccountRepositoryTests {
         val mockEndpoints = TestUtil.mockNormalRetrofit
             .create(ITwitterApiEndpoints::class.java)
             .returningResponse(AccessTokenInvalidation("dummyToken"))
-        `when`(mockTwitterApi.objectClient).thenReturn(mockEndpoints)
+        `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
         `when`(mockTwitterConfig.apiSecret).thenReturn("")
         `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
@@ -228,7 +235,9 @@ class AccountRepositoryTests {
                 "testScNm",
                 name = "testName",
                 profileImageUrlHttps = null
-            ), this
+            ),
+            this,
+            mockContext
         )
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 

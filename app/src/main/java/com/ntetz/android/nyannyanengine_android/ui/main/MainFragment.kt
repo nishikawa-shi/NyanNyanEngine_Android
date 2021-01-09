@@ -60,6 +60,10 @@ class MainFragment : Fragment() {
             // Firestoreからいい感じで同期的に取得できる処理があれば、configとuserの取得処理に2つのLiveDataを使わなくてすみそう。
             (activity as? MainActivity)?.updateNyanNyanUserInfo(it)
         })
+        (activity as? MainActivity)?.refreshTweetListEvent?.observe(viewLifecycleOwner, {
+            viewModel.loadUserInfo()
+            adapter.refresh()
+        })
         viewModel.loadUserInfo()
         setupAdapter()
     }

@@ -1,10 +1,12 @@
 package com.ntetz.android.nyannyanengine_android.model.repository
 
+import android.content.Context
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultTweetConfig
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
+import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.NoConnectivityException
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.IAccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.TwitterRequestMetadata
@@ -18,9 +20,21 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 interface ITweetsRepository {
-    suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope): List<Tweet>
-    suspend fun getPreviousTweets(maxId: Long, token: IAccessToken, scope: CoroutineScope): List<Tweet>
-    suspend fun postTweet(tweetBody: String, point: Int, token: IAccessToken, scope: CoroutineScope): Tweet
+    suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope, context: Context): List<Tweet>
+    suspend fun getPreviousTweets(
+        maxId: Long,
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): List<Tweet>
+
+    suspend fun postTweet(
+        tweetBody: String,
+        point: Int,
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): Tweet
 }
 
 class TweetsRepository(
@@ -28,7 +42,7 @@ class TweetsRepository(
     private val twitterConfig: ITwitterConfig = TwitterConfig(),
     private val base64Encoder: IBase64Encoder = Base64Encoder()
 ) : ITweetsRepository {
-    override suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope): List<Tweet> {
+    override suspend fun getLatestTweets(token: IAccessToken, scope: CoroutineScope, context: Context): List<Tweet> {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.homeTimelineMethod,
             path = TwitterEndpoints.homeTimelinePath,
@@ -41,15 +55,27 @@ class TweetsRepository(
             base64Encoder = base64Encoder
         ).getOAuthValue(token)
 
-        val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope)
-        val body = result.body()?.toSortedById()
-        if (!result.isSuccessful || body == null) {
-            return getErrorTweets(result)
+        try {
+            val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope, context = context)
+            val body = result?.body()?.toSortedById()
+            if (result?.isSuccessful != true || body == null) {
+                return getErrorTweets(result)
+            }
+            return body
+        } catch (e: NoConnectivityException) {
+            return DefaultTweetConfig.noConnectionRequestList
+        } catch (e: Exception) {
+            return DefaultTweetConfig.undefinedErrorList
         }
-        return body
     }
 
-    override suspend fun getPreviousTweets(maxId: Long, token: IAccessToken, scope: CoroutineScope): List<Tweet> {
+    override suspend fun getPreviousTweets(
+        maxId: Long,
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): List<Tweet> {
+        println("nya-n previous")
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.homeTimelineCountParamName,
@@ -72,15 +98,32 @@ class TweetsRepository(
             base64Encoder = base64Encoder
         ).getOAuthValue(token)
 
-        val result = getPreviousTweetsFromWeb(maxId = maxId.toString(), authorization = authorization, scope = scope)
-        val body = result.body()?.toSortedById()
-        if (!result.isSuccessful || body == null) {
-            return getErrorTweets(result)
+        try {
+            val result = getPreviousTweetsFromWeb(
+                maxId = maxId.toString(),
+                authorization = authorization,
+                scope = scope,
+                context = context
+            )
+            val body = result.body()?.toSortedById()
+            if (!result.isSuccessful || body == null) {
+                return getErrorTweets(result)
+            }
+            return body
+        } catch (e: NoConnectivityException) {
+            return DefaultTweetConfig.noConnectionRequestList
+        } catch (e: Exception) {
+            return DefaultTweetConfig.undefinedErrorList
         }
-        return body
     }
 
-    override suspend fun postTweet(tweetBody: String, point: Int, token: IAccessToken, scope: CoroutineScope): Tweet {
+    override suspend fun postTweet(
+        tweetBody: String,
+        point: Int,
+        token: IAccessToken,
+        scope: CoroutineScope,
+        context: Context
+    ): Tweet {
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.postTweetStatusParamName,
@@ -101,25 +144,31 @@ class TweetsRepository(
             base64Encoder = base64Encoder
         ).getOAuthValue(token)
 
-        val result = postTweetToWeb(tweetBody, authorization, scope)
-        val body = result.body()
-        if (!result.isSuccessful || body == null) {
-            return getErrorTweet(result)
+        try {
+            val result = postTweetToWeb(tweetBody, authorization, scope, context)
+            val body = result.body()
+            if (!result.isSuccessful || body == null) {
+                return getErrorTweet(result)
+            }
+            return body.also { it.point = point }
+        } catch (e: NoConnectivityException) {
+            return DefaultTweetConfig.noConnectionRequestList[0]
+        } catch (e: Exception) {
+            return DefaultTweetConfig.undefinedErrorList[0]
         }
-        return body.also { it.point = point }
     }
 
     private suspend fun getLatestTweetsFromWeb(
         authorization: String,
-        scope: CoroutineScope
-    ): Response<List<Tweet>> {
+        scope: CoroutineScope,
+        context: Context
+    ): Response<List<Tweet>>? {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.objectClient
+                twitterApi.getObjectClient(context)
                     .getTweets(
                         authorization = authorization
-                    )
-                    .execute()
+                    ).execute()
             }
         }
     }
@@ -127,11 +176,12 @@ class TweetsRepository(
     private suspend fun getPreviousTweetsFromWeb(
         maxId: String,
         authorization: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): Response<List<Tweet>> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.objectClient
+                twitterApi.getObjectClient(context)
                     .getTweetsWithPage(
                         authorization = authorization,
                         count = TwitterEndpoints.homeTimelineCountParamDefaultValue,
@@ -145,11 +195,12 @@ class TweetsRepository(
     private suspend fun postTweetToWeb(
         tweetBody: String,
         authorization: String,
-        scope: CoroutineScope
+        scope: CoroutineScope,
+        context: Context
     ): Response<Tweet> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.objectClient
+                twitterApi.getObjectClient(context)
                     .postTweet(
                         status = tweetBody,
                         authorization = authorization
@@ -159,8 +210,8 @@ class TweetsRepository(
         }
     }
 
-    private fun getErrorTweets(result: Response<List<Tweet>>): List<Tweet> {
-        return when (result.code()) {
+    private fun getErrorTweets(result: Response<List<Tweet>>?): List<Tweet> {
+        return when (result?.code()) {
             429 -> DefaultTweetConfig.tooManyRequestList
             else -> DefaultTweetConfig.undefinedErrorList
         }

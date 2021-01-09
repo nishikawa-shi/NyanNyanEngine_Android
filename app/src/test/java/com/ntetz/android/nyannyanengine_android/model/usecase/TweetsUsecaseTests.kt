@@ -42,7 +42,7 @@ class TweetsUsecaseTests {
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(null)
 
         val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
-        Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
+        Truth.assertThat(testUsecase.getLatestTweets(this, mockContext)).isEqualTo(
             listOf(
                 Tweet(
                     id = 28,
@@ -72,7 +72,13 @@ class TweetsUsecaseTests {
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
             )
-            `when`(mockTweetsRepository.getLatestTweets(token = testUser, scope = this)).thenReturn(
+            `when`(
+                mockTweetsRepository.getLatestTweets(
+                    token = testUser,
+                    scope = this,
+                    context = mockContext
+                )
+            ).thenReturn(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -84,7 +90,7 @@ class TweetsUsecaseTests {
             )
 
             val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
-            Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
+            Truth.assertThat(testUsecase.getLatestTweets(this, mockContext)).isEqualTo(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -111,7 +117,13 @@ class TweetsUsecaseTests {
             `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
                 testUser
             )
-            `when`(mockTweetsRepository.getLatestTweets(token = testUser, scope = this)).thenReturn(
+            `when`(
+                mockTweetsRepository.getLatestTweets(
+                    token = testUser,
+                    scope = this,
+                    context = mockContext
+                )
+            ).thenReturn(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -123,7 +135,7 @@ class TweetsUsecaseTests {
             )
 
             val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
-            Truth.assertThat(testUsecase.getLatestTweets(this)).isEqualTo(
+            Truth.assertThat(testUsecase.getLatestTweets(this, mockContext)).isEqualTo(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -154,7 +166,8 @@ class TweetsUsecaseTests {
                 mockTweetsRepository.getPreviousTweets(
                     maxId = 1234567890123456789,
                     token = testUser,
-                    scope = this
+                    scope = this,
+                    context = mockContext
                 )
             ).thenReturn(
                 listOf(
@@ -168,7 +181,7 @@ class TweetsUsecaseTests {
             )
 
             val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
-            Truth.assertThat(testUsecase.getPreviousTweets(maxId = 1234567890123456789, this)).isEqualTo(
+            Truth.assertThat(testUsecase.getPreviousTweets(maxId = 1234567890123456789, this, mockContext)).isEqualTo(
                 listOf(
                     Tweet(
                         id = 2828,
@@ -200,7 +213,8 @@ class TweetsUsecaseTests {
                     tweetBody = "testtweeeetBody",
                     point = 10,
                     token = testUser,
-                    scope = this
+                    scope = this,
+                    context = mockContext
                 )
             ).thenReturn(
                 Tweet(
@@ -268,7 +282,13 @@ class TweetsUsecaseTests {
             )
             delay(20) // これがないとCIでコケる
 
-            verify(mockTweetsRepository, times(1)).postTweet("testTweetBody\ntestTagBody", 10, testUser, this)
+            verify(mockTweetsRepository, times(1)).postTweet(
+                "testTweetBody\ntestTagBody",
+                10,
+                testUser,
+                this,
+                mockContext
+            )
             return@withContext
         }
     }

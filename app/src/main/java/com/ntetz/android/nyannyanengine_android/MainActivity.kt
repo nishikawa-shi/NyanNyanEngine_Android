@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -39,6 +41,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
 
     private var isSignedIn: Boolean = false
 
+    private val _refreshTweetListEvent = MutableLiveData(false)
+    val refreshTweetListEvent: LiveData<Boolean>
+        get() = _refreshTweetListEvent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -66,6 +72,10 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {
         main_nav_view.getHeaderView(0).current_rank.text = userInfo?.getCurrentRank(this)
         main_nav_view.getHeaderView(0).current_extends.text = userInfo?.currentExtends?.toString()
+    }
+
+    fun updateTweetList() {
+        _refreshTweetListEvent.postValue(true)
     }
 
     override fun onSupportNavigateUp() = (
@@ -100,7 +110,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
 
     private fun openAuthorizePage(scope: CoroutineScope) {
         scope.launch {
-            val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this) ?: return@launch
+            val authorizePageUri = accountUsecase.createAuthorizationEndpoint(this, this@MainActivity) ?: return@launch
             startActivity(Intent(Intent.ACTION_VIEW, authorizePageUri))
             userActionUsecase.tap(userAction = UserAction.SIGN_IN, scope = this)
         }

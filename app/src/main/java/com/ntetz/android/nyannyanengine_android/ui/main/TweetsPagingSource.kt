@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.main
 
+import android.content.Context
 import androidx.paging.PagingSource
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
@@ -7,13 +8,14 @@ import kotlinx.coroutines.CoroutineScope
 
 class TweetsPagingSource(
     private val tweetsUsecase: ITweetsUsecase,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val context: Context
 ) : PagingSource<Long, Tweet>() {
     override suspend fun load(params: LoadParams<Long>): LoadResult<Long, Tweet> {
         val maxId = params.key
 
         if (maxId == null) {
-            val tweets = tweetsUsecase.getLatestTweets(scope)
+            val tweets = tweetsUsecase.getLatestTweets(scope, context)
             val prevKey = null
             val nextKey = if (tweets[0].isError) null else tweets.last().id
             return LoadResult.Page(
@@ -24,7 +26,7 @@ class TweetsPagingSource(
         }
 
         return try {
-            val tweets = tweetsUsecase.getPreviousTweets(maxId, scope)
+            val tweets = tweetsUsecase.getPreviousTweets(maxId, scope, context)
             val prevKey = if (tweets[0].isError) maxId else tweets.first().id
             val nextKey = if (tweets[0].isError) null else tweets.last().id
             LoadResult.Page(

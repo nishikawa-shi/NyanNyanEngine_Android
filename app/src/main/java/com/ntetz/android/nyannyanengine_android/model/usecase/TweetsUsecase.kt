@@ -11,8 +11,8 @@ import com.ntetz.android.nyannyanengine_android.util.nekosanPoint
 import kotlinx.coroutines.CoroutineScope
 
 interface ITweetsUsecase {
-    suspend fun getLatestTweets(scope: CoroutineScope): List<Tweet>
-    suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope): List<Tweet>
+    suspend fun getLatestTweets(scope: CoroutineScope, context: Context): List<Tweet>
+    suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope, context: Context): List<Tweet>
     suspend fun postTweet(tweetBody: String, scope: CoroutineScope, context: Context): Tweet
 }
 
@@ -21,14 +21,14 @@ class TweetsUsecase(
     private val accountRepository: IAccountRepository,
     private val hashtagsRepository: IHashtagsRepository
 ) : ITweetsUsecase {
-    override suspend fun getLatestTweets(scope: CoroutineScope): List<Tweet> {
+    override suspend fun getLatestTweets(scope: CoroutineScope, context: Context): List<Tweet> {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
-        return tweetsRepository.getLatestTweets(token = user, scope = scope)
+        return tweetsRepository.getLatestTweets(token = user, scope = scope, context = context)
     }
 
-    override suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope): List<Tweet> {
+    override suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope, context: Context): List<Tweet> {
         val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
-        return tweetsRepository.getPreviousTweets(maxId = maxId, token = user, scope = scope)
+        return tweetsRepository.getPreviousTweets(maxId = maxId, token = user, scope = scope, context = context)
     }
 
     override suspend fun postTweet(tweetBody: String, scope: CoroutineScope, context: Context): Tweet {
@@ -38,7 +38,13 @@ class TweetsUsecase(
 
         accountRepository.incrementNekosanPoint(totalPoint, user)
         accountRepository.incrementTweetCount(user)
-        return tweetsRepository.postTweet(getTweetBodyWithHashtags(tweetBody, hashtags), totalPoint, user, scope)
+        return tweetsRepository.postTweet(
+            getTweetBodyWithHashtags(tweetBody, hashtags),
+            totalPoint,
+            user,
+            scope,
+            context
+        )
     }
 
     private fun getTweetBodyWithHashtags(tweetBody: String, hashtags: List<DefaultHashTagComponent>): String {

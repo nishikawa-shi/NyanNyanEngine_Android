@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.sign_in
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class SignInViewModel(
     private val accountUsecase: IAccountUsecase,
-    private val userActionUsecase: IUserActionUsecase
+    private val userActionUsecase: IUserActionUsecase,
+    private val context: Context
 ) : ViewModel() {
     private val _signInEvent: MutableLiveData<SignInResultComponent?> = MutableLiveData()
     val signInEvent: LiveData<SignInResultComponent?>
@@ -30,7 +32,8 @@ class SignInViewModel(
                 accountUsecase.fetchAccessToken(
                     oauthVerifier = oauthVerifier,
                     oauthToken = oauthToken,
-                    scope = this
+                    scope = this,
+                    context = context
                 )
             )
             userActionUsecase.complete(userAction = UserAction.SIGN_IN, scope = this)
