@@ -14,6 +14,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:theme="@style/ContentsViewTheme"
         tools:context="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment">
 
         <androidx.recyclerview.widget.RecyclerView
