@@ -31,7 +31,7 @@
     <fragment
         android:id="@+id/hashtagSettingFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"
-        android:label="HashtagSettingFragment" />
+        android:label="@string/settings_hashtag_name" />
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.sign_in.SignInFragment"
