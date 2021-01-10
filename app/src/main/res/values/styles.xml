@@ -28,6 +28,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NyanNyanDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="InputViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 明示的に指定しない場合、backgroundの色に応じた色、ここでは緑色に自動的に設定される。 -->
         <item name="colorAccent">@color/colorAccent</item>
