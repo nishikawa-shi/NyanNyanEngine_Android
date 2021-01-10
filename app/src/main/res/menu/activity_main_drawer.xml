@@ -11,7 +11,13 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_auth"
+            android:id="@+id/nav_sign_in"
             android:title="@string/menu_sign_in" />
+    </group>
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_sign_out"
+            android:title="@string/menu_sign_out" />
     </group>
 </menu>

@@ -66,13 +66,13 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         isSignedIn = (userInfo != DefaultUserConfig.notSignInUser)
         val name = userInfo?.name ?: getString(R.string.default_twitter_name)
         val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
-        val authMenuTitle = if (isSignedIn) getString(R.string.menu_sign_out) else getString(R.string.menu_sign_in)
 
         main_nav_view.getHeaderView(0).nyan_nyan_user_statuses.isVisible = isSignedIn
         main_nav_view.getHeaderView(0).twitter_name.text = name
         main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
-        main_nav_view.menu.findItem(R.id.nav_auth).title = authMenuTitle
         main_nav_view.menu.findItem(R.id.nav_settings_hash_tag).isVisible = isSignedIn
+        main_nav_view.menu.findItem(R.id.nav_sign_in).isVisible = !isSignedIn
+        main_nav_view.menu.findItem(R.id.nav_sign_out).isVisible = isSignedIn
         main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.fineImageUrl) {
             transformations(RoundedCornersTransformation(16f))
         }
@@ -95,7 +95,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         main_drawer.closeDrawers()
         when (item.itemId) {
             R.id.nav_settings_hash_tag -> openHashtagSettingScreen()
-            R.id.nav_auth -> openPageWithSignedInStatus(this)
+            R.id.nav_sign_in -> openAuthorizePage(this)
+            R.id.nav_sign_out -> openSignOutDialog(this)
         }
         return NavigationUI.onNavDestinationSelected(
             item,
@@ -108,14 +109,6 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         launch {
             userActionUsecase.tap(userAction = UserAction.SETTING_HASH_TAG, scope = this)
         }
-    }
-
-    private fun openPageWithSignedInStatus(scope: CoroutineScope) {
-        if (!isSignedIn) {
-            openAuthorizePage(scope)
-            return
-        }
-        openSignOutDialog(scope)
     }
 
     private fun openAuthorizePage(scope: CoroutineScope) {
