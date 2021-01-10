@@ -27,7 +27,7 @@
     <fragment
         android:id="@+id/postNekogoFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
-        android:label="PostNekogoFragment" >
+        android:label="@string/post_nekogo_name" >
         <action
             android:id="@+id/action_postNekogoFragment_to_mainFragment"
             app:destination="@id/mainFragment" />

@@ -8,6 +8,7 @@
 
     <string name="home_timeline_description_post_nekogo">Post cat language</string>
 
+    <string name="post_nekogo_name">Meow Meow Engine</string>
     <string name="post_default_speaker_desc">Tired Dr. Nyannya</string>
     <string name="post_nekogo_speaker_desc">Meowing Dr. Nyannya</string>
     <string name="post_input_original_text">This text is translated into cat lang. below, meeow.</string>
