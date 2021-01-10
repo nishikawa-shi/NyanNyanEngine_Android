@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/mainFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.main.MainFragment"
-        android:label="main_fragment"
+        android:label="@string/default_timeline_name"
         tools:layout="@layout/main_fragment" >
         <action
             android:id="@+id/action_mainFragment_to_postNekogoFragment"
