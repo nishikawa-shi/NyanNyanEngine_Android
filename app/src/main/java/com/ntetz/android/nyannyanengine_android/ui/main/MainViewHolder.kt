@@ -31,6 +31,7 @@ class MainViewHolder(
         binding.tweetTextBody = item.text
 
         binding.twitterImage.load(item.user.fineImageUrl) {
+            placeholder(R.mipmap.ic_launcher_foreground)
             crossfade(true)
             transformations(RoundedCornersTransformation(16f))
         }
