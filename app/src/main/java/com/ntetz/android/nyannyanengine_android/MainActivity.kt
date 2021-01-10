@@ -67,15 +67,15 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         val name = userInfo?.name ?: getString(R.string.default_twitter_name)
         val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
 
-        main_nav_view.getHeaderView(0).nyan_nyan_user_statuses.isVisible = isSignedIn
-        main_nav_view.getHeaderView(0).twitter_name.text = name
-        main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
-        main_nav_view.menu.findItem(R.id.nav_settings_hash_tag).isVisible = isSignedIn
-        main_nav_view.menu.findItem(R.id.nav_sign_in).isVisible = !isSignedIn
-        main_nav_view.menu.findItem(R.id.nav_sign_out).isVisible = isSignedIn
         main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.fineImageUrl) {
             transformations(RoundedCornersTransformation(16f))
         }
+        main_nav_view.getHeaderView(0).nyan_nyan_user_statuses.isVisible = isSignedIn
+        main_nav_view.getHeaderView(0).twitter_name.text = name
+        main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
+        main_nav_view.menu.findItem(R.id.nav_sign_in).isVisible = !isSignedIn
+        main_nav_view.menu.findItem(R.id.nav_settings_hash_tag).isVisible = isSignedIn
+        main_nav_view.menu.findItem(R.id.nav_sign_out).isVisible = isSignedIn
     }
 
     fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {

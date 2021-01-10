@@ -5,14 +5,14 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_settings_hash_tag"
-            android:title="@string/menu_hash_tag" />
+            android:id="@+id/nav_sign_in"
+            android:title="@string/menu_sign_in" />
     </group>
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_sign_in"
-            android:title="@string/menu_sign_in" />
+            android:id="@+id/nav_settings_hash_tag"
+            android:title="@string/menu_hash_tag" />
     </group>
 
     <group android:checkableBehavior="single">
