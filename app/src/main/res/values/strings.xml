@@ -30,10 +30,10 @@
     <string name="menu_sign_out">Sign out</string>
 
     <string name="sign_in_processing">Signing in…</string>
-    <string name="logout_sheet_body">want sign out?</string>
-    <string name="logout_sheet_exec">sign out</string>
-    <string name="logout_sheet_cancel">stay signed in</string>
-    <string name="logout_processing">Signing out…</string>
+    <string name="sign_out_sheet_body">want sign out?</string>
+    <string name="sign_out_sheet_exec">sign out</string>
+    <string name="sign_out_sheet_cancel">stay signed in</string>
+    <string name="sign_out_processing">Signing out…</string>
 
     <string name="nekosan_nakigoe_type1">Meow</string>
     <string name="nekosan_nakigoe_type2">Miaow</string>
