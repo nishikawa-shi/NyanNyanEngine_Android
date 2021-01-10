@@ -16,6 +16,7 @@
     <string name="post_button_name">Tweet as Cat</string>
     <string name="post_result">"\n is your cry, meeow."</string>
 
+    <string name="settings_hashtag_name">Hash tags</string>
     <string name="settings_title_hashtag_engine">#MeowMeowEngine</string>
     <string name="settings_title_hashtag_nadenade">#PetMeMeeow🧶</string>
     <string name="settings_lowest_rank">Baby Nyan-nya</string>
