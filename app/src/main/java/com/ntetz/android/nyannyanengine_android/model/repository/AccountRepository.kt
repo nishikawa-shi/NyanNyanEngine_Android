@@ -221,9 +221,11 @@ class AccountRepository(
     ): Response<String> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getScalarClient(context)
-                    .requestToken(authorization)
-                    .execute()
+                runCatching {
+                    twitterApi.getScalarClient(context)
+                        .requestToken(authorization)
+                        .execute()
+                }.getOrThrow()
             }
         }
     }
@@ -237,13 +239,15 @@ class AccountRepository(
     ): Response<String> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getScalarClient(context)
-                    .accessToken(
-                        oauthVerifier = oauthVerifier,
-                        oauthToken = oauthToken,
-                        authorization = authorization
-                    )
-                    .execute()
+                runCatching {
+                    twitterApi.getScalarClient(context)
+                        .accessToken(
+                            oauthVerifier = oauthVerifier,
+                            oauthToken = oauthToken,
+                            authorization = authorization
+                        )
+                        .execute()
+                }.getOrThrow()
             }
         }
     }
@@ -255,11 +259,13 @@ class AccountRepository(
     ): Response<User> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getObjectClient(context)
-                    .verifyCredentials(
-                        authorization = authorization
-                    )
-                    .execute()
+                runCatching {
+                    twitterApi.getObjectClient(context)
+                        .verifyCredentials(
+                            authorization = authorization
+                        )
+                        .execute()
+                }.getOrThrow()
             }
         }
     }
@@ -271,11 +277,13 @@ class AccountRepository(
     ): Response<AccessTokenInvalidation> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getObjectClient(context)
-                    .invalidateToken(
-                        authorization = authorization
-                    )
-                    .execute()
+                runCatching {
+                    twitterApi.getObjectClient(context)
+                        .invalidateToken(
+                            authorization = authorization
+                        )
+                        .execute()
+                }.getOrThrow()
             }
         }
     }

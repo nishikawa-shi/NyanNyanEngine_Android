@@ -165,10 +165,12 @@ class TweetsRepository(
     ): Response<List<Tweet>>? {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getObjectClient(context)
-                    .getTweets(
-                        authorization = authorization
-                    ).execute()
+                runCatching {
+                    twitterApi.getObjectClient(context)
+                        .getTweets(
+                            authorization = authorization
+                        ).execute()
+                }.getOrThrow()
             }
         }
     }
@@ -181,13 +183,15 @@ class TweetsRepository(
     ): Response<List<Tweet>> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getObjectClient(context)
-                    .getTweetsWithPage(
-                        authorization = authorization,
-                        count = TwitterEndpoints.homeTimelineCountParamDefaultValue,
-                        maxId = maxId
-                    )
-                    .execute()
+                runCatching {
+                    twitterApi.getObjectClient(context)
+                        .getTweetsWithPage(
+                            authorization = authorization,
+                            count = TwitterEndpoints.homeTimelineCountParamDefaultValue,
+                            maxId = maxId
+                        )
+                        .execute()
+                }.getOrThrow()
             }
         }
     }
@@ -200,12 +204,14 @@ class TweetsRepository(
     ): Response<Tweet> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
-                twitterApi.getObjectClient(context)
-                    .postTweet(
-                        status = tweetBody,
-                        authorization = authorization
-                    )
-                    .execute()
+                runCatching {
+                    twitterApi.getObjectClient(context)
+                        .postTweet(
+                            status = tweetBody,
+                            authorization = authorization
+                        )
+                        .execute()
+                }.getOrThrow()
             }
         }
     }
