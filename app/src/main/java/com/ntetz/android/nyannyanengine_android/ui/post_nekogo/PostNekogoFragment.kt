@@ -53,7 +53,7 @@ class PostNekogoFragment : Fragment() {
             findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
         })
         viewModel.userInfoEvent.observe(viewLifecycleOwner, {
-            binding.tweetButton.isEnabled = (it != DefaultUserConfig.notSignInUser)
+            binding.signedIn = (it != DefaultUserConfig.notSignInUser)
         })
         viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)

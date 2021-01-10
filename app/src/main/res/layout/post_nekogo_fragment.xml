@@ -10,6 +10,10 @@
             name="inputText"
             type="String" />
 
+        <variable
+            name="signedIn"
+            type="boolean" />
+
     </data>
 
     <LinearLayout
@@ -91,6 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:enabled="@{signedIn &amp;&amp; (inputText.length() &gt; 0)}"
                 android:text="@string/post_button_name"
                 android:theme="@style/NekogoTweetButton"
                 app:layout_constraintEnd_toEndOf="@+id/nekogoResult"
