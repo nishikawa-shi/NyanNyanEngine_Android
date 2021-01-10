@@ -1,9 +1,11 @@
 package com.ntetz.android.nyannyanengine_android.ui.post_nekogo
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -20,6 +22,11 @@ class PostNekogoFragment : Fragment() {
 
     private val viewModel: PostNekogoViewModel by viewModel()
     private lateinit var binding: PostNekogoFragmentBinding
+
+    override fun onStop() {
+        super.onStop()
+        closeKeyboard()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,5 +64,10 @@ class PostNekogoFragment : Fragment() {
         })
         viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)
+    }
+
+    private fun closeKeyboard() {
+        val manager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return
+        manager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
