@@ -32,7 +32,6 @@
             android:id="@+id/twitter_image"
             android:layout_width="@dimen/image_middle"
             android:layout_height="@dimen/image_middle"
-            android:layout_marginStart="@dimen/small_margin"
             android:layout_marginTop="@dimen/small_margin"
             android:contentDescription="@string/tweet_list_desc"
             android:scaleType="fitCenter"

@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import com.ntetz.android.nyannyanengine_android.MainActivity
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.MainFragmentBinding
@@ -48,6 +51,12 @@ class MainFragment : Fragment() {
         binding.postNekogoFragmentOpenButton.setOnClickListener {
             viewModel.logOpenPostNekogoScreen()
             findNavController().navigate(R.id.action_mainFragment_to_postNekogoFragment)
+        }
+
+        lifecycleScope.launch {
+            adapter.loadStateFlow.collectLatest {
+                binding.tweetProgressLoader.isGone = !(it.refresh is LoadState.Loading)
+            }
         }
 
         viewModel.userInfoEvent.observe(viewLifecycleOwner, {
