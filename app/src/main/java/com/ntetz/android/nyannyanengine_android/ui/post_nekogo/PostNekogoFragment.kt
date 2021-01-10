@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.PostNekogoFragmentBinding
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class PostNekogoFragment : Fragment() {
@@ -52,7 +53,7 @@ class PostNekogoFragment : Fragment() {
             findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
         })
         viewModel.userInfoEvent.observe(viewLifecycleOwner, {
-            binding.testButton.isEnabled = (it != null)
+            binding.tweetButton.isEnabled = (it != DefaultUserConfig.notSignInUser)
         })
         viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)
