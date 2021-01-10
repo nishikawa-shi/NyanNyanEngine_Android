@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.main
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ class MainViewHolder(
             binding.isNyanNyan = !(binding.isNyanNyan as Boolean)
             viewModel.logToggleTweet(bindingAdapterPosition, (binding.isNyanNyan as Boolean))
         }
+        binding.tweetBodyFrame.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         binding.isNyanNyan = !item.isError
         binding.nyanNyanTweetTextBody = item.text.toNyanNyan(context)
         binding.tweetTextBody = item.text
