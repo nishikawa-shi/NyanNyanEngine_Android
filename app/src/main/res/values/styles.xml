@@ -4,7 +4,6 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorSecondary</item>
         <item name="titleTextColor">@color/onPrimary</item>
         <item name="colorControlNormal">@color/onPrimary</item>
     </style>
@@ -18,6 +17,12 @@
         <item name="itemTextAppearance">@style/TextAppearance.MenuListEntry</item>
     </style>
 
+    <style name="ContentsViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@color/colorBackGround</item>
+        <!-- 明示的に指定しない場合、backgroundの色に応じた色、ここでは緑色に自動的に設定される。 -->
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
     <style name="TextAppearance.SelfTwitterName" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/onPrimary</item>
         <item name="android:textSize">@dimen/large_text_size</item>
@@ -29,6 +34,22 @@
     </style>
 
     <style name="TextAppearance.MenuListEntry" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textSize">@dimen/middle_text_size</item>
+    </style>
+
+    <style name="TextAppearance.TweetListUserName" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/middle_text_size</item>
+    </style>
+
+    <style name="TextAppearance.TweetListUserMeta" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
+    </style>
+
+    <style name="TextAppearance.TweetListBody" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textColor">@color/onPrimary</item>
         <item name="android:textSize">@dimen/middle_text_size</item>
     </style>
