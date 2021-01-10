@@ -3,7 +3,6 @@ package com.ntetz.android.nyannyanengine_android.model.repository
 import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
-import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
@@ -40,7 +39,7 @@ interface IAccountRepository {
         context: Context
     ): AccessToken
 
-    suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope, context: Context): User
+    suspend fun verifyAccessToken(token: IAccessToken, scope: CoroutineScope, context: Context): User?
     suspend fun loadTwitterUser(scope: CoroutineScope): TwitterUserRecord?
     suspend fun saveTwitterUser(record: TwitterUserRecord, scope: CoroutineScope)
     suspend fun deleteTwitterUser(
@@ -50,7 +49,7 @@ interface IAccountRepository {
     ): AccessTokenInvalidation?
 
     suspend fun fetchNyanNyanConfig()
-    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?)
+    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord)
     suspend fun incrementNekosanPoint(value: Int, twitterUser: TwitterUserRecord)
     suspend fun incrementTweetCount(twitterUser: TwitterUserRecord)
 }
@@ -120,7 +119,7 @@ class AccountRepository(
         token: IAccessToken,
         scope: CoroutineScope,
         context: Context
-    ): User {
+    ): User? {
         val requestMetadata = TwitterRequestMetadata(
             method = TwitterEndpoints.verifyCredentialsMethod,
             path = TwitterEndpoints.verifyCredentialsPath,
@@ -135,13 +134,13 @@ class AccountRepository(
             val result = verifyAccessTokenToWeb(authorization, scope, context)
             val body = result.body()
             if (!result.isSuccessful || body == null) {
-                return getErrorUser()
+                return null
             }
             body
         } catch (e: NoConnectivityException) {
-            getErrorUser()
+            null
         } catch (e: Exception) {
-            getErrorUser()
+            null
         }
     }
 
@@ -174,7 +173,7 @@ class AccountRepository(
         firebaseClient.fetchNyanNyanConfig()
     }
 
-    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?) {
+    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord) {
         firebaseClient.fetchNyanNyanUser(twitterUser)
     }
 
@@ -294,10 +293,6 @@ class AccountRepository(
                 twitterUserDao.deleteAll()
             }
         }
-    }
-
-    private fun getErrorUser(): User {
-        return DefaultUserConfig.notSignInUser
     }
 
     private fun Response<String>.toAccessToken(): AccessToken {

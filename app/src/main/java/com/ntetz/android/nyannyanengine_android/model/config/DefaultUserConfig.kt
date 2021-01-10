@@ -1,12 +1,15 @@
 package com.ntetz.android.nyannyanengine_android.model.config
 
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanUser
-import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
+import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 
 object DefaultUserConfig {
-    val notSignInUser = User(
-        name = "にゃんにゃ先生",
+    val notSignInUser = TwitterUserRecord(
+        "28",
+        oauthToken = "nyanToken",
+        oauthTokenSecret = "nyanTokenSecret",
         screenName = "NNyansu",
+        name = "にゃんにゃ先生",
         profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
     )
 

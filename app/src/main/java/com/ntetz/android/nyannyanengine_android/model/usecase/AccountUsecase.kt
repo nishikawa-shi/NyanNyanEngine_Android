@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
@@ -27,11 +28,11 @@ interface IAccountUsecase {
         context: Context
     ): SignInResultComponent?
 
-    suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord?
+    suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord
     suspend fun deleteAccessToken(scope: CoroutineScope, context: Context): AccessTokenInvalidation?
 
     suspend fun fetchNyanNyanConfig()
-    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?)
+    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord)
 }
 
 class AccountUsecase(private val accountRepository: IAccountRepository) : IAccountUsecase {
@@ -72,10 +73,6 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         }
         val verifyApiResult = accountRepository.verifyAccessToken(tokenApiResult, scope, context)
         val twitterUserRecord = createTwitterUserRecord(tokenApiResult, verifyApiResult)
-            ?: return SignInResultComponent(
-                isSucceeded = false,
-                errorMessage = "shortage response. code: 9997"
-            )
         runCatching { accountRepository.saveTwitterUser(twitterUserRecord, scope) }
             .onFailure {
                 return SignInResultComponent(
@@ -86,8 +83,8 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         return SignInResultComponent(isSucceeded = true)
     }
 
-    override suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord? {
-        return accountRepository.loadTwitterUser(scope)
+    override suspend fun loadAccessToken(scope: CoroutineScope): TwitterUserRecord {
+        return accountRepository.loadTwitterUser(scope) ?: DefaultUserConfig.notSignInUser
     }
 
     override suspend fun deleteAccessToken(scope: CoroutineScope, context: Context): AccessTokenInvalidation? {
@@ -99,16 +96,20 @@ class AccountUsecase(private val accountRepository: IAccountRepository) : IAccou
         accountRepository.fetchNyanNyanConfig()
     }
 
-    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord?) {
+    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord) {
         accountRepository.fetchNyanNyanUser(twitterUser)
     }
 
-    private fun createTwitterUserRecord(tokenApiResponse: AccessToken, verifyApiResult: User): TwitterUserRecord? {
+    private fun createTwitterUserRecord(
+        tokenApiResponse: AccessToken,
+        verifyApiResult: User? = null
+    ): TwitterUserRecord {
+        verifyApiResult ?: return DefaultUserConfig.notSignInUser
         return TwitterUserRecord(
-            id = tokenApiResponse.id ?: return null,
+            id = tokenApiResponse.id ?: return DefaultUserConfig.notSignInUser,
             oauthToken = tokenApiResponse.oauthToken,
             oauthTokenSecret = tokenApiResponse.oauthTokenSecret,
-            screenName = tokenApiResponse.screenName ?: return null,
+            screenName = tokenApiResponse.screenName ?: return DefaultUserConfig.notSignInUser,
             name = verifyApiResult.name,
             profileImageUrlHttps = verifyApiResult.profileImageUrlHttps
         )

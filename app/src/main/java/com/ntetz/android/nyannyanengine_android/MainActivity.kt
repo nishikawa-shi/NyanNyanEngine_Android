@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.google.android.material.navigation.NavigationView
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.NyanNyanUserComponent
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     }
 
     fun updateUserInfo(userInfo: TwitterUserRecord?) {
-        isSignedIn = (userInfo != null)
+        isSignedIn = (userInfo != DefaultUserConfig.notSignInUser)
         val name = userInfo?.name ?: getString(R.string.default_twitter_name)
         val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
         val authMenuTitle = if (isSignedIn) getString(R.string.menu_sign_out) else getString(R.string.menu_sign_in)
