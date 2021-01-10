@@ -18,6 +18,22 @@ data class TwitterUserRecord(
     val sealedUserId: String
         get() = id.toMD5()
 
+    val fineImageUrl: String?
+        get() {
+            this.profileImageUrlHttps ?: return this.profileImageUrlHttps
+            val match =
+                Regex("""^https?://(.+)_normal(.+)$""").find(this.profileImageUrlHttps)?.groups
+                    ?: return this.profileImageUrlHttps
+            // 全体での一致と、クラス化した部分の2箇所の一致を合わせて3つ
+            if (match.size != 3) {
+                return this.profileImageUrlHttps
+            }
+
+            val urlBody = match[1]?.value ?: return this.profileImageUrlHttps
+            val fileExt = match[2]?.value ?: return this.profileImageUrlHttps
+            return listOf("https://", urlBody, fileExt).joinToString("")
+        }
+
     private fun String.toMD5(): String {
         val digest = MessageDigest.getInstance("MD5").also { it.update(this.toByteArray()) }
         val messageDigest = digest.digest()
