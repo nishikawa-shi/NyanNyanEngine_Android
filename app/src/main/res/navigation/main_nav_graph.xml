@@ -27,11 +27,7 @@
     <fragment
         android:id="@+id/postNekogoFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
-        android:label="@string/post_nekogo_name" >
-        <action
-            android:id="@+id/action_postNekogoFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
+        android:label="@string/post_nekogo_name" />
     <fragment
         android:id="@+id/hashtagSettingFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"
@@ -67,9 +63,5 @@
         android:id="@+id/signOutFragment"
         android:name="com.ntetz.android.nyannyanengine_android.ui.sign_out.SignOutFragment"
         android:label="@string/sign_out_processing"
-        tools:layout="@layout/sign_out_fragment" >
-        <action
-            android:id="@+id/action_signOutFragment_to_mainFragment"
-            app:destination="@id/mainFragment" />
-    </fragment>
+        tools:layout="@layout/sign_out_fragment" />
 </navigation>
