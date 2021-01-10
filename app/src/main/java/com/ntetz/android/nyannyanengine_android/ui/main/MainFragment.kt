@@ -61,6 +61,9 @@ class MainFragment : Fragment() {
             (activity as? MainActivity)?.updateNyanNyanUserInfo(it)
         })
         (activity as? MainActivity)?.refreshTweetListEvent?.observe(viewLifecycleOwner, {
+            if (!it) {
+                return@observe
+            }
             viewModel.loadUserInfo()
             adapter.refresh()
         })
