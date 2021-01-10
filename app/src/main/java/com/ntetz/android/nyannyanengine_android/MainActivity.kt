@@ -123,7 +123,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         scope.launch {
             userActionUsecase.tap(userAction = UserAction.SIGN_OUT, scope = this)
         }
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(this, R.style.NyanNyanDialog)
             .setMessage(getString(R.string.sign_out_sheet_body))
             .setPositiveButton(getString(R.string.sign_out_sheet_exec)) { _, _ ->
                 navController.navigate(R.id.action_mainFragment_to_signOutFragment)
