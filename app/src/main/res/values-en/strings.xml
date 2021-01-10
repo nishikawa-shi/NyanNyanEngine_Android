@@ -8,6 +8,7 @@
 
     <string name="home_timeline_description_post_nekogo">Post cat language</string>
 
+    <string name="post_default_speaker_desc">Tired Dr. Nyannya</string>
     <string name="post_input_original_text">This text is translated into cat lang. below, meeow.</string>
     <string name="post_point"> point 😺💰 \n\n</string>
     <string name="post_button_name">Tweet as Cat</string>

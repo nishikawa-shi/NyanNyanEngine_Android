@@ -26,7 +26,6 @@ class PostNekogoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = PostNekogoFragmentBinding.inflate(inflater, container, false)
-        binding.inputText = context?.getString(R.string.post_input_original_text)
         binding.testButton.setOnClickListener {
             viewModel.postNekogo(
                 binding.nekogoResult.text.toString(),

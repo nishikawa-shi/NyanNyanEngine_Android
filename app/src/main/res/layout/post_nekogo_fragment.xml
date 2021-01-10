@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -17,12 +18,40 @@
         android:orientation="vertical"
         android:theme="@style/ContentsViewTheme">
 
-        <EditText
-            android:id="@+id/input"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:background="@android:color/holo_purple"
-            android:text="@={inputText}" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/edittext_large"
+                android:layout_marginStart="@dimen/middle_margin"
+                android:layout_marginTop="@dimen/large_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:autofillHints="nekogoInput"
+                android:background="@color/colorBackGroundVariant"
+                android:gravity="start|top"
+                android:hint="@string/post_input_original_text"
+                android:inputType="textMultiLine"
+                android:padding="@dimen/small_margin"
+                android:text="@={inputText}"
+                android:textColor="@color/onPrimary"
+                app:layout_constraintEnd_toStartOf="@+id/dark_nyannya_sensei_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/dark_nyannya_sensei_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/middle_margin"
+                android:contentDescription="@string/post_default_speaker_desc"
+                android:src="@mipmap/ic_dark_nyannya_sensei_round"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/input" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/nekogoResult"
