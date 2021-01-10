@@ -40,6 +40,11 @@ class PostNekogoFragment : Fragment() {
                 context ?: return@setOnClickListener
             )
         }
+        binding.input.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                closeKeyboard()
+            }
+        }
         binding.lifecycleOwner = this
         return binding.root
     }
