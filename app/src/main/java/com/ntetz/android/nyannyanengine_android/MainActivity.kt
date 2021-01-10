@@ -124,11 +124,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
             userActionUsecase.tap(userAction = UserAction.SIGN_OUT, scope = this)
         }
         AlertDialog.Builder(this)
-            .setMessage(getString(R.string.logout_sheet_body))
-            .setPositiveButton(getString(R.string.logout_sheet_exec)) { _, _ ->
+            .setMessage(getString(R.string.sign_out_sheet_body))
+            .setPositiveButton(getString(R.string.sign_out_sheet_exec)) { _, _ ->
                 navController.navigate(R.id.action_mainFragment_to_signOutFragment)
             }
-            .setNegativeButton(getString(R.string.logout_sheet_cancel), null)
+            .setNegativeButton(getString(R.string.sign_out_sheet_cancel), null)
             .show()
     }
 }
