@@ -31,6 +31,7 @@ class MainViewHolder(
         binding.tweetTextBody = item.text
 
         binding.twitterImage.load(item.user.fineImageUrl) {
+            crossfade(true)
             transformations(RoundedCornersTransformation(16f))
         }
         val userName = "@${item.user.screenName}"
