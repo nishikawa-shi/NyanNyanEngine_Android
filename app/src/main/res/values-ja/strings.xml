@@ -9,6 +9,7 @@
     <string name="home_timeline_description_post_nekogo">ねこ語をツイート</string>
 
     <string name="post_default_speaker_desc">やみにゃんにゃ先生</string>
+    <string name="post_nekogo_speaker_desc">鳴くにゃんにゃ先生</string>
     <string name="post_input_original_text">ここに文章を書くと、下でネコ語表示されるにゃ!</string>
     <string name="post_button_name">ネコ語でツイートする</string>
     <string name="post_point"> ぽいんと😺💰 \n\n</string>

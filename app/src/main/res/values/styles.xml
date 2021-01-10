@@ -13,6 +13,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="NekogoTweetButton" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@color/colorBackGround</item>
+        <item name="android:backgroundTint">@color/tweet_button_color</item>
+    </style>
+
     <style name="MainDrawerTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="itemTextAppearance">@style/TextAppearance.MenuListEntry</item>
     </style>

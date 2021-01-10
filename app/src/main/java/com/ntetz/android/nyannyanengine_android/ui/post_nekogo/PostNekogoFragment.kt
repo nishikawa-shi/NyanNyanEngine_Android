@@ -26,7 +26,7 @@ class PostNekogoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = PostNekogoFragmentBinding.inflate(inflater, container, false)
-        binding.testButton.setOnClickListener {
+        binding.tweetButton.setOnClickListener {
             viewModel.postNekogo(
                 binding.nekogoResult.text.toString(),
                 context ?: return@setOnClickListener

@@ -53,18 +53,51 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/nekogoResult"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:background="@android:color/holo_red_light"
-            android:text="@{NekosanExtensionKt.toNyanNyan(inputText, context)}" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/testButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/post_button_name" />
+            <ImageView
+                android:id="@+id/nyannya_sensei_full_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:contentDescription="@string/post_nekogo_speaker_desc"
+                android:src="@mipmap/nyannya_sensei_full"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/nekogoResult"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/textview_middle"
+                android:layout_gravity="end"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="16dp"
+                android:layout_weight="1"
+                android:background="@color/colorBackGroundVariant"
+                android:gravity="center"
+                android:text="@{NekosanExtensionKt.toNyanNyan(inputText, context)}"
+                android:textColor="@color/onPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/nyannya_sensei_full_image"
+                app:layout_constraintTop_toTopOf="@+id/nyannya_sensei_full_image" />
+
+            <Button
+                android:id="@+id/tweet_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/post_button_name"
+                android:theme="@style/NekogoTweetButton"
+                app:layout_constraintEnd_toEndOf="@+id/nekogoResult"
+                app:layout_constraintTop_toBottomOf="@+id/nekogoResult" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     </LinearLayout>
 </layout>
