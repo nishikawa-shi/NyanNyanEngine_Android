@@ -50,7 +50,7 @@ class PostNekogoFragment : Fragment() {
                 textBody,
                 Toast.LENGTH_SHORT
             ).show()
-            findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
+            findNavController().popBackStack()
         })
         viewModel.userInfoEvent.observe(viewLifecycleOwner, {
             binding.signedIn = (it != DefaultUserConfig.notSignInUser)
