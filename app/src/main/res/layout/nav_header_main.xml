@@ -50,51 +50,59 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/current_rank_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/nyan_nyan_user_statuses"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/middle_margin"
-        android:text="@string/menu_nekosan_rank"
-        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/current_rank"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:text="@string/settings_teacher_rank"
-        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+        <TextView
+            android:id="@+id/current_rank_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu_nekosan_rank"
+            android:textAppearance="@style/TextAppearance.SelfTwitterId" />
 
-    <TextView
-        android:id="@+id/current_point_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/menu_nekosan_point"
-        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+        <TextView
+            android:id="@+id/current_rank"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/settings_teacher_rank"
+            android:textAppearance="@style/TextAppearance.SelfTwitterId" />
 
-    <TextView
-        android:id="@+id/current_point"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:text="@string/settings_teacher_point"
-        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+        <TextView
+            android:id="@+id/current_point_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/menu_nekosan_point"
+            android:textAppearance="@style/TextAppearance.SelfTwitterId" />
 
-    <TextView
-        android:id="@+id/current_extends_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/menu_nekosan_next"
-        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+        <TextView
+            android:id="@+id/current_point"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/settings_teacher_point"
+            android:textAppearance="@style/TextAppearance.SelfTwitterId" />
 
-    <TextView
-        android:id="@+id/current_extends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:text="@string/settings_teacher_extends"
-        android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+        <TextView
+            android:id="@+id/current_extends_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/menu_nekosan_next"
+            android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+
+        <TextView
+            android:id="@+id/current_extends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:text="@string/settings_teacher_extends"
+            android:textAppearance="@style/TextAppearance.SelfTwitterId" />
+    </LinearLayout>
+
 </LinearLayout>

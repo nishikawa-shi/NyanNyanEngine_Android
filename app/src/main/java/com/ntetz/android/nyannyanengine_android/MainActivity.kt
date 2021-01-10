@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
@@ -67,9 +68,11 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
         val authMenuTitle = if (isSignedIn) getString(R.string.menu_sign_out) else getString(R.string.menu_sign_in)
 
+        main_nav_view.getHeaderView(0).nyan_nyan_user_statuses.isVisible = isSignedIn
         main_nav_view.getHeaderView(0).twitter_name.text = name
         main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
         main_nav_view.menu.findItem(R.id.nav_auth).title = authMenuTitle
+        main_nav_view.menu.findItem(R.id.nav_settings_hash_tag).isVisible = isSignedIn
         main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.fineImageUrl) {
             transformations(RoundedCornersTransformation(16f))
         }
