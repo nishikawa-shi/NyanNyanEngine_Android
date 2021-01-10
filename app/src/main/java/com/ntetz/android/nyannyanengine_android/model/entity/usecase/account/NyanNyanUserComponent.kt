@@ -19,14 +19,15 @@ data class NyanNyanUserComponent(
         return context.getString(R.string.settings_lowest_rank)
     }
 
-    val currentExtends: Int?
+    val currentExtends: String
         get() {
+            val emptyValue = "-"
             nyanNyanConfig.ranks.keys.sortedBy { it }.forEach {
-                val required = nyanNyanConfig.ranks[it]?.point ?: return null
+                val required = nyanNyanConfig.ranks[it]?.point ?: return emptyValue
                 if (nyanNyanUser.nekosanPoint < required) {
-                    return required - nyanNyanUser.nekosanPoint
+                    return (required - nyanNyanUser.nekosanPoint).toString()
                 }
             }
-            return 99999
+            return emptyValue
         }
 }

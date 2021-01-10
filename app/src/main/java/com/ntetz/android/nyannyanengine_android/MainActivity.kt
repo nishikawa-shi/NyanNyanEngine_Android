@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {
         main_nav_view.getHeaderView(0).current_rank.text = userInfo?.getCurrentRank(this)
         main_nav_view.getHeaderView(0).current_point.text = userInfo?.nyanNyanUser?.nekosanPoint.toString()
-        main_nav_view.getHeaderView(0).current_extends.text = userInfo?.currentExtends?.toString()
+        main_nav_view.getHeaderView(0).current_extends.text = userInfo?.currentExtends
     }
 
     fun updateTweetList() {
