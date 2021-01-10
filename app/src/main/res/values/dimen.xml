@@ -7,6 +7,9 @@
     <dimen name="image_large">64dp</dimen>
     <dimen name="image_middle">48dp</dimen>
 
+    <dimen name="edittext_large">160dp</dimen>
+    <dimen name="textview_middle">64dp</dimen>
+
     <dimen name="large_text_size">24sp</dimen>
     <dimen name="middle_text_size">18sp</dimen>
     <dimen name="small_text_size">16sp</dimen>

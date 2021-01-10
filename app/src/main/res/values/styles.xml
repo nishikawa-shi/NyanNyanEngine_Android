@@ -13,12 +13,22 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="NekogoTweetButton" parent="@android:style/Widget.Button">
+        <item name="android:textColor">@color/colorBackGround</item>
+        <item name="android:backgroundTint">@color/tweet_button_color</item>
+    </style>
+
     <style name="MainDrawerTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="itemTextAppearance">@style/TextAppearance.MenuListEntry</item>
     </style>
 
     <style name="ContentsViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/colorBackGround</item>
+        <!-- 明示的に指定しない場合、backgroundの色に応じた色、ここでは緑色に自動的に設定される。 -->
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="InputViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- 明示的に指定しない場合、backgroundの色に応じた色、ここでは緑色に自動的に設定される。 -->
         <item name="colorAccent">@color/colorAccent</item>
     </style>

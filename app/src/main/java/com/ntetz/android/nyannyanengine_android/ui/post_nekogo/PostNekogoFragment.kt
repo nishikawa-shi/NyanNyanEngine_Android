@@ -1,14 +1,17 @@
 package com.ntetz.android.nyannyanengine_android.ui.post_nekogo
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.PostNekogoFragmentBinding
+import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import org.koin.android.viewmodel.ext.android.viewModel
 
 class PostNekogoFragment : Fragment() {
@@ -20,18 +23,27 @@ class PostNekogoFragment : Fragment() {
     private val viewModel: PostNekogoViewModel by viewModel()
     private lateinit var binding: PostNekogoFragmentBinding
 
+    override fun onStop() {
+        super.onStop()
+        closeKeyboard()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = PostNekogoFragmentBinding.inflate(inflater, container, false)
-        binding.inputText = context?.getString(R.string.post_input_original_text)
-        binding.testButton.setOnClickListener {
+        binding.tweetButton.setOnClickListener {
             viewModel.postNekogo(
                 binding.nekogoResult.text.toString(),
                 context ?: return@setOnClickListener
             )
+        }
+        binding.input.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                closeKeyboard()
+            }
         }
         binding.lifecycleOwner = this
         return binding.root
@@ -50,12 +62,17 @@ class PostNekogoFragment : Fragment() {
                 textBody,
                 Toast.LENGTH_SHORT
             ).show()
-            findNavController().navigate(R.id.action_postNekogoFragment_to_mainFragment)
+            findNavController().popBackStack()
         })
         viewModel.userInfoEvent.observe(viewLifecycleOwner, {
-            binding.testButton.isEnabled = (it != null)
+            binding.signedIn = (it != DefaultUserConfig.notSignInUser)
         })
         viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)
+    }
+
+    private fun closeKeyboard() {
+        val manager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager ?: return
+        manager.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
