@@ -5,6 +5,10 @@
     <string name="default_twitter_name">Dr. Nyannya</string>
     <string name="default_twitter_id">NNyansu</string>
     <string name="default_tweeted_at">28 min ago</string>
+    <string name="default_tweet_body">Login from the button above ♪\nYour twitter will be into Cat Lang.</string>
+    <string name="offline_tweet_body">Meow♪ swipe to refresh again after check internet connectivity once more😊</string>
+    <string name="too_many_request_body">Thank you for many use🎊\nMe is sleeping, so try again 30 min later🌈</string>
+    <string name="undefined_error_body">Meow😢… feeling some sick……Please play me later after a while💫</string>
     <string name="nav_header_desc">Account info</string>
     <string name="tweet_list_desc">Tweet account info</string>
 

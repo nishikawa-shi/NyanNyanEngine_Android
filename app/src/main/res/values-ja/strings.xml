@@ -3,6 +3,10 @@
     <string name="default_twitter_name">にゃんにゃ先生</string>
     <string name="default_twitter_id">NNyansu</string>
     <string name="default_tweeted_at">28分前</string>
+    <string name="default_tweet_body">左上のボタンからログインするにゃあ♪\nあなたのTwitterをネコ語化だにゃ</string>
+    <string name="offline_tweet_body">にゃーん！回線状況を確認して、もう一回ひっぱり更新して欲しいにゃん😊</string>
+    <string name="too_many_request_body">いっぱい使ってくれてありがとにゃ🎊\n猫さん休憩中だから、数十分後にもう一回試して欲しいにゃ🌈</string>
+    <string name="undefined_error_body">にゃーん😢。。。なんか調子が悪いにゃ。。。もうしばらくしてから遊んで欲しいにゃ。。。💫</string>
     <string name="nav_header_desc">アカウント情報</string>
     <string name="tweet_list_desc">ツイートアカウント情報</string>
 

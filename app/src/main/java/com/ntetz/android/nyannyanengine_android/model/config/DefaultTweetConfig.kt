@@ -1,6 +1,7 @@
 package com.ntetz.android.nyannyanengine_android.model.config
 
 import android.content.Context
+import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 
@@ -9,10 +10,10 @@ object DefaultTweetConfig {
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
-            text = "左上のボタンからログインするにゃあ♪\nあなたのTwitterをネコ語化だにゃ",
+            text = context.getString(R.string.default_tweet_body),
             user = User(
-                name = "にゃんにゃ先生",
-                screenName = "NNyansu",
+                name = context.getString(R.string.default_twitter_name),
+                screenName = context.getString(R.string.default_twitter_id),
                 profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
             )
         )
@@ -22,10 +23,10 @@ object DefaultTweetConfig {
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
-            text = "にゃーん！回線状況を確認して、もう一回ひっぱり更新して欲しいにゃん😊",
+            text = context.getString(R.string.offline_tweet_body),
             user = User(
-                name = "にゃんにゃ先生",
-                screenName = "NNyansu",
+                name = context.getString(R.string.default_twitter_name),
+                screenName = context.getString(R.string.default_twitter_id),
                 profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
             )
         )
@@ -35,10 +36,10 @@ object DefaultTweetConfig {
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
-            text = "いっぱい使ってくれてありがとにゃ🎊 \n猫さん休憩中だから、数十分後にもう一回試して欲しいにゃ",
+            text = context.getString(R.string.too_many_request_body),
             user = User(
-                name = "にゃんにゃ先生",
-                screenName = "NNyansu",
+                name = context.getString(R.string.default_twitter_name),
+                screenName = context.getString(R.string.default_twitter_id),
                 profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
             )
         )
@@ -48,10 +49,10 @@ object DefaultTweetConfig {
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
-            text = "にゃーん。。。なんか調子が悪いにゃ。。。もうしばらくしてから遊んで欲しいにゃ。。。",
+            text = context.getString(R.string.undefined_error_body),
             user = User(
-                name = "にゃんにゃ先生",
-                screenName = "NNyansu",
+                name = context.getString(R.string.default_twitter_name),
+                screenName = context.getString(R.string.default_twitter_id),
                 profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
             )
         )

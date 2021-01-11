@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
@@ -40,17 +41,20 @@ class TweetsUsecaseTests {
     @Test
     fun getTweets_認証情報がない時未ログインの値を返すこと() = runBlocking {
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(null)
+        `when`(mockContext.getString(R.string.default_tweet_body)).thenReturn("dummyDefaultBody")
+        `when`(mockContext.getString(R.string.default_twitter_name)).thenReturn("dummyDefaultName")
+        `when`(mockContext.getString(R.string.default_twitter_id)).thenReturn("dummyDefaultId")
 
         val testUsecase = TweetsUsecase(mockTweetsRepository, mockAccountRepository, mockHashtagRepository)
         Truth.assertThat(testUsecase.getLatestTweets(this, mockContext)).isEqualTo(
             listOf(
                 Tweet(
                     id = 28,
-                    text = "左上のボタンからログインするにゃあ♪\nあなたのTwitterをネコ語化だにゃ",
+                    text = "dummyDefaultBody",
                     createdAt = "Sat Jan 01 00:00:00 +0000 2021",
                     user = User(
-                        name = "にゃんにゃ先生",
-                        screenName = "NNyansu",
+                        name = "dummyDefaultName",
+                        screenName = "dummyDefaultId",
                         profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
                     )
                 )
