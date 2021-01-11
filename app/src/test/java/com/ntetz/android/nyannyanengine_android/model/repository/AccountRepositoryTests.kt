@@ -270,7 +270,7 @@ class AccountRepositoryTests {
             "testName",
             "https://ntetz.com/test.jpg"
         )
-        doNothing().`when`(mockFirebaseClient).fetchNyanNyanUser(mockTwitterUserRecord)
+        doNothing().`when`(mockFirebaseClient).fetchNyanNyanUser(mockTwitterUserRecord, mockContext)
 
         AccountRepository(
             twitterApi = mockTwitterApi,
@@ -278,10 +278,10 @@ class AccountRepositoryTests {
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,
             firebaseClient = mockFirebaseClient
-        ).fetchNyanNyanUser(mockTwitterUserRecord)
+        ).fetchNyanNyanUser(mockTwitterUserRecord, mockContext)
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 
-        Mockito.verify(mockFirebaseClient, Mockito.times(1)).fetchNyanNyanUser(mockTwitterUserRecord)
+        Mockito.verify(mockFirebaseClient, Mockito.times(1)).fetchNyanNyanUser(mockTwitterUserRecord, mockContext)
     }
 
     @Test

@@ -77,7 +77,7 @@ private val viewModelModule = module {
     viewModel { MainViewModel(get(), get(), get(), androidContext()) }
     viewModel { SignInViewModel(get(), get(), androidContext()) }
     viewModel { SignOutViewModel(get(), get(), androidContext()) }
-    viewModel { PostNekogoViewModel(get(), get(), get()) }
+    viewModel { PostNekogoViewModel(get(), get(), get(), androidContext()) }
 }
 
 private fun getUserProfileDatabase(context: Context): IUserProfileDatabase = UserProfileDatabase.getDatabase(context)

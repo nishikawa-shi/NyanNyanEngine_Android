@@ -59,13 +59,13 @@ class TweetsRepository(
             val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope, context = context)
             val body = result?.body()?.toSortedById()
             if (result?.isSuccessful != true || body == null) {
-                return getErrorTweets(result)
+                return getErrorTweets(result, context)
             }
             return body
         } catch (e: NoConnectivityException) {
-            return DefaultTweetConfig.noConnectionRequestList
+            return DefaultTweetConfig.getNoConnectionRequestList(context)
         } catch (e: Exception) {
-            return DefaultTweetConfig.undefinedErrorList
+            return DefaultTweetConfig.getUndefinedErrorList(context)
         }
     }
 
@@ -107,13 +107,13 @@ class TweetsRepository(
             )
             val body = result.body()?.toSortedById()
             if (!result.isSuccessful || body == null) {
-                return getErrorTweets(result)
+                return getErrorTweets(result, context)
             }
             return body
         } catch (e: NoConnectivityException) {
-            return DefaultTweetConfig.noConnectionRequestList
+            return DefaultTweetConfig.getNoConnectionRequestList(context)
         } catch (e: Exception) {
-            return DefaultTweetConfig.undefinedErrorList
+            return DefaultTweetConfig.getUndefinedErrorList(context)
         }
     }
 
@@ -148,13 +148,13 @@ class TweetsRepository(
             val result = postTweetToWeb(tweetBody, authorization, scope, context)
             val body = result.body()
             if (!result.isSuccessful || body == null) {
-                return getErrorTweet(result)
+                return getErrorTweet(result, context)
             }
             return body.also { it.point = point }
         } catch (e: NoConnectivityException) {
-            return DefaultTweetConfig.noConnectionRequestList[0]
+            return DefaultTweetConfig.getNoConnectionRequestList(context)[0]
         } catch (e: Exception) {
-            return DefaultTweetConfig.undefinedErrorList[0]
+            return DefaultTweetConfig.getUndefinedErrorList(context)[0]
         }
     }
 
@@ -216,17 +216,17 @@ class TweetsRepository(
         }
     }
 
-    private fun getErrorTweets(result: Response<List<Tweet>>?): List<Tweet> {
+    private fun getErrorTweets(result: Response<List<Tweet>>?, context: Context): List<Tweet> {
         return when (result?.code()) {
-            429 -> DefaultTweetConfig.tooManyRequestList
-            else -> DefaultTweetConfig.undefinedErrorList
+            429 -> DefaultTweetConfig.getTooManyRequestList(context)
+            else -> DefaultTweetConfig.getUndefinedErrorList(context)
         }
     }
 
-    private fun getErrorTweet(result: Response<Tweet>): Tweet {
+    private fun getErrorTweet(result: Response<Tweet>, context: Context): Tweet {
         return when (result.code()) {
-            429 -> DefaultTweetConfig.tooManyRequestList[0]
-            else -> DefaultTweetConfig.undefinedErrorList[0]
+            429 -> DefaultTweetConfig.getTooManyRequestList(context)[0]
+            else -> DefaultTweetConfig.getUndefinedErrorList(context)[0]
         }
     }
 

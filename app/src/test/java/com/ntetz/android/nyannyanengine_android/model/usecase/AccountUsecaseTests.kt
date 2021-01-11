@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 import android.content.Context
 import android.net.Uri
 import com.google.common.truth.Truth
+import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessTokenInvalidation
@@ -122,6 +123,8 @@ class AccountUsecaseTests {
             `when`(mockAccountRepository.verifyAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
                 User(name = "testUser", screenName = "testScName")
             )
+            `when`(mockContext.getString(R.string.default_twitter_id)).thenReturn("testIiiiid")
+            `when`(mockContext.getString(R.string.default_twitter_name)).thenReturn("testNaaaame")
 
             AccountUsecase(mockAccountRepository).fetchAccessToken("dummyVeri", "dummyTok", this, mockContext)
             verify(mockAccountRepository, times(1)).verifyAccessToken(

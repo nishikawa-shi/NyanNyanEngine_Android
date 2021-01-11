@@ -59,11 +59,11 @@ class MainViewModelTests {
 
     @Test
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
-        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext).loadUserInfo()
         delay(20) // これがないとCIでコケる
 
-        verify(mockAccountUsecase, times(1)).loadAccessToken(TestUtil.any())
+        verify(mockAccountUsecase, times(1)).loadAccessToken(TestUtil.any(), TestUtil.any())
         return@runBlocking
     }
 
@@ -79,7 +79,7 @@ class MainViewModelTests {
 
     @Test
     fun loadUserInfo_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
-        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(
             TwitterUserRecord(
                 "testId", "testToken", "testTokenSecret", "testScName", "testName", null
             )
@@ -107,12 +107,12 @@ class MainViewModelTests {
             "testName",
             null
         )
-        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(mockUser)
-        `when`(mockAccountUsecase.fetchNyanNyanUser(mockUser)).thenReturn(null)
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(mockUser)
+        `when`(mockAccountUsecase.fetchNyanNyanUser(mockUser, mockContext)).thenReturn(null)
         MainViewModel(mockAccountUsecase, mockTweetUsecase, mockUserActionUsecase, mockContext).loadNyanNyanUserInfo()
         delay(20) // これがないとCIでコケる
 
-        verify(mockAccountUsecase, times(1)).fetchNyanNyanUser(mockUser)
+        verify(mockAccountUsecase, times(1)).fetchNyanNyanUser(mockUser, mockContext)
         return@runBlocking
     }
 
