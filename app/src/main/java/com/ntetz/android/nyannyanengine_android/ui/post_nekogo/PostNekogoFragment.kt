@@ -60,7 +60,7 @@ class PostNekogoFragment : Fragment() {
             Toast.makeText(
                 context,
                 textBody,
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
             findNavController().popBackStack()
         })
