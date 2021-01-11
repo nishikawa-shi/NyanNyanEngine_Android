@@ -65,7 +65,7 @@ class PostNekogoFragment : Fragment() {
             findNavController().popBackStack()
         })
         viewModel.userInfoEvent.observe(viewLifecycleOwner, {
-            binding.signedIn = (it != DefaultUserConfig.notSignInUser)
+            binding.signedIn = (it != DefaultUserConfig.getNotSignInUser(context ?: return@observe))
         })
         viewModel.loadUserInfo()
         super.onActivityCreated(savedInstanceState)

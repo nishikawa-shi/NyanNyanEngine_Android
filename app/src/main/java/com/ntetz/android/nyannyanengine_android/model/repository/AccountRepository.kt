@@ -49,7 +49,7 @@ interface IAccountRepository {
     ): AccessTokenInvalidation?
 
     suspend fun fetchNyanNyanConfig()
-    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord)
+    suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord, context: Context)
     suspend fun incrementNekosanPoint(value: Int, twitterUser: TwitterUserRecord)
     suspend fun incrementTweetCount(twitterUser: TwitterUserRecord)
 }
@@ -173,8 +173,8 @@ class AccountRepository(
         firebaseClient.fetchNyanNyanConfig()
     }
 
-    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord) {
-        firebaseClient.fetchNyanNyanUser(twitterUser)
+    override suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord, context: Context) {
+        firebaseClient.fetchNyanNyanUser(twitterUser, context)
     }
 
     override suspend fun incrementNekosanPoint(value: Int, twitterUser: TwitterUserRecord) {

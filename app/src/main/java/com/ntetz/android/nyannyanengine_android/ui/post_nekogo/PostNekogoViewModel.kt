@@ -16,7 +16,8 @@ import kotlinx.coroutines.launch
 class PostNekogoViewModel(
     private val accountUsecase: IAccountUsecase,
     private val tweetsUsecase: ITweetsUsecase,
-    private val userActionUsecase: IUserActionUsecase
+    private val userActionUsecase: IUserActionUsecase,
+    private val context: Context
 ) : ViewModel() {
     private val _userInfoEvent: MutableLiveData<TwitterUserRecord?> = MutableLiveData()
     val userInfoEvent: LiveData<TwitterUserRecord?>
@@ -28,7 +29,7 @@ class PostNekogoViewModel(
 
     fun loadUserInfo() {
         viewModelScope.launch {
-            _userInfoEvent.postValue(accountUsecase.loadAccessToken(this))
+            _userInfoEvent.postValue(accountUsecase.loadAccessToken(this, context))
         }
     }
 

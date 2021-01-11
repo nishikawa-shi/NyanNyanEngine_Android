@@ -51,14 +51,14 @@ class MainViewModel(
 
     fun loadUserInfo() {
         viewModelScope.launch {
-            _userInfoEvent.postValue(accountUsecase.loadAccessToken(this))
+            _userInfoEvent.postValue(accountUsecase.loadAccessToken(this, context))
             accountUsecase.fetchNyanNyanConfig()
         }
     }
 
     fun loadNyanNyanUserInfo() {
         viewModelScope.launch {
-            accountUsecase.fetchNyanNyanUser(accountUsecase.loadAccessToken(this))
+            accountUsecase.fetchNyanNyanUser(accountUsecase.loadAccessToken(this, context), context)
         }
     }
 

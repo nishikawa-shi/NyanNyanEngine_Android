@@ -1,10 +1,11 @@
 package com.ntetz.android.nyannyanengine_android.model.config
 
+import android.content.Context
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 
 object DefaultTweetConfig {
-    val notSignInlist = listOf(
+    fun getNotSignInlist(context: Context) = listOf(
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
@@ -17,7 +18,7 @@ object DefaultTweetConfig {
         )
     )
 
-    val noConnectionRequestList = listOf(
+    fun getNoConnectionRequestList(context: Context) = listOf(
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
@@ -30,7 +31,7 @@ object DefaultTweetConfig {
         )
     )
 
-    val tooManyRequestList = listOf(
+    fun getTooManyRequestList(context: Context) = listOf(
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",
@@ -43,7 +44,7 @@ object DefaultTweetConfig {
         )
     )
 
-    val undefinedErrorList = listOf(
+    fun getUndefinedErrorList(context: Context) = listOf(
         Tweet(
             id = 28,
             createdAt = "Sat Jan 01 00:00:00 +0000 2021",

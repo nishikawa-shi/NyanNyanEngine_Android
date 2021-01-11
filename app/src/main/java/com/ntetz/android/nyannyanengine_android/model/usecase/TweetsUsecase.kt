@@ -22,17 +22,17 @@ class TweetsUsecase(
     private val hashtagsRepository: IHashtagsRepository
 ) : ITweetsUsecase {
     override suspend fun getLatestTweets(scope: CoroutineScope, context: Context): List<Tweet> {
-        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
+        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.getNotSignInlist(context)
         return tweetsRepository.getLatestTweets(token = user, scope = scope, context = context)
     }
 
     override suspend fun getPreviousTweets(maxId: Long, scope: CoroutineScope, context: Context): List<Tweet> {
-        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist
+        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.getNotSignInlist(context)
         return tweetsRepository.getPreviousTweets(maxId = maxId, token = user, scope = scope, context = context)
     }
 
     override suspend fun postTweet(tweetBody: String, scope: CoroutineScope, context: Context): Tweet {
-        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.notSignInlist[0]
+        val user = accountRepository.loadTwitterUser(scope) ?: return DefaultTweetConfig.getNotSignInlist(context)[0]
         val hashtags = hashtagsRepository.getDefaultHashtags(scope, context)
         val totalPoint = getTweetNekosanPoint(tweetBody, hashtags)
 

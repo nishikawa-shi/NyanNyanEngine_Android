@@ -60,23 +60,24 @@ class PostNekogoViewModelTests {
 
     @Test
     fun loadUserInfo_loadAccessTokenが呼ばれること() = runBlocking {
-        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(null)
-        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).loadUserInfo()
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(null)
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase, mockContext).loadUserInfo()
         delay(20) // これがないとCIでコケる
 
-        Mockito.verify(mockAccountUsecase, Mockito.times(1)).loadAccessToken(TestUtil.any())
+        Mockito.verify(mockAccountUsecase, Mockito.times(1)).loadAccessToken(TestUtil.any(), TestUtil.any())
         return@runBlocking
     }
 
     @Test
     fun loadUserInfo_対応するアクセストークン取得結果liveDataが更新されること() = runBlocking {
-        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any())).thenReturn(
+        `when`(mockAccountUsecase.loadAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(
             TwitterUserRecord(
                 "testId", "testToken", "testTokenSecret", "testScName", "testName", null
             )
         )
 
-        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
+        val testViewModel =
+            PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase, mockContext)
         testViewModel.loadUserInfo()
         delay(20) // これがないとCIでコケる
 
@@ -91,7 +92,7 @@ class PostNekogoViewModelTests {
     @Test
     fun postNekogo_postTweetが呼ばれること() = runBlocking {
         `when`(mockTweetsUsecase.postTweet(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(null)
-        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase).postNekogo(
+        PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase, mockContext).postNekogo(
             "testNekogo",
             mockContext
         )
@@ -112,7 +113,8 @@ class PostNekogoViewModelTests {
             )
         )
 
-        val testViewModel = PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase)
+        val testViewModel =
+            PostNekogoViewModel(mockAccountUsecase, mockTweetsUsecase, mockUserActionUsecase, mockContext)
         testViewModel.postNekogo("dummyTTweeett", mockContext)
         delay(20) // これがないとCIでコケる
 
@@ -143,7 +145,8 @@ class PostNekogoViewModelTests {
         PostNekogoViewModel(
             mockAccountUsecase,
             mockTweetsUsecase,
-            mockUserActionUsecase
+            mockUserActionUsecase,
+            mockContext
         ).postNekogo("dummyInputText", mockContext)
         delay(20) // これがないとCIでコケる
 

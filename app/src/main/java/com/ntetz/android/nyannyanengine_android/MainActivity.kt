@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     }
 
     fun updateUserInfo(userInfo: TwitterUserRecord?) {
-        isSignedIn = (userInfo != DefaultUserConfig.notSignInUser)
+        isSignedIn = (userInfo != DefaultUserConfig.getNotSignInUser(this))
         val name = userInfo?.name ?: getString(R.string.default_twitter_name)
         val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
 

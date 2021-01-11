@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.dao.firebase
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.analytics.ktx.analytics
@@ -23,7 +24,7 @@ interface IFirebaseClient {
 
     fun initialize()
     fun logEvent(type: AnalyticsEvent, textParams: Map<String, String>?, numParams: Map<String, Int>?)
-    fun fetchNyanNyanUser(twitterUserRecord: TwitterUserRecord)
+    fun fetchNyanNyanUser(twitterUserRecord: TwitterUserRecord, context: Context)
     fun incrementNyanNyanUser(key: String, value: Int, twitterUserRecord: TwitterUserRecord)
     fun fetchNyanNyanConfig()
 }
@@ -55,10 +56,10 @@ class FirebaseClient : IFirebaseClient {
         }
     }
 
-    override fun fetchNyanNyanUser(twitterUserRecord: TwitterUserRecord) {
-        if (twitterUserRecord == DefaultUserConfig.notSignInUser) {
+    override fun fetchNyanNyanUser(twitterUserRecord: TwitterUserRecord, context: Context) {
+        if (twitterUserRecord == DefaultUserConfig.getNotSignInUser(context)) {
             _nyanNyanUserEvent.postValue(
-                DefaultUserConfig.notSignInNyanNyanUser
+                DefaultUserConfig.getNotSignInNyanNyanUser(context)
             )
             return
         }
