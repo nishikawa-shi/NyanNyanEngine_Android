@@ -6,7 +6,12 @@ import java.security.MessageDigest
 
 fun String?.toNyanNyan(context: Context): String {
     if (this == null) {
-        return context.getText(R.string.nekosan_nakigoe_type99).toString()
+        return listOf(
+            context.getText(R.string.nekosan_nakigoe_type7),
+            context.getText(R.string.nekosan_nakigoe_type2),
+            context.getText(R.string.nekosan_nakigoe_type3),
+            "🎉"
+        ).joinToString("")
     }
     if (this.isEmpty()) {
         return ""
