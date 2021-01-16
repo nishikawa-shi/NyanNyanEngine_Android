@@ -56,8 +56,8 @@ android {
         exclude "META-INF/atomicfu.kotlin_module"
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
     }
 
     flavorDimensions "apiEnv"
