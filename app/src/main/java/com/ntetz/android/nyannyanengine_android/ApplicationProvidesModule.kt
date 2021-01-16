@@ -10,6 +10,8 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfi
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.repository.AccountRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
+import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
+import com.ntetz.android.nyannyanengine_android.model.repository.TweetsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -35,6 +37,13 @@ object ApplicationProvidesModule {
     fun provideDefaultHashtagsDao(
         userProfileDatabase: IUserProfileDatabase
     ): IDefaultHashtagsDao = userProfileDatabase.defaultHashtagsDao()
+
+    @Provides
+    fun provideTweetsRepository(
+        twitterApi: ITwitterApi
+    ): ITweetsRepository = TweetsRepository(
+        twitterApiObjectClient = twitterApi.objectClient
+    )
 
     @Provides
     fun provideAccountRepository(

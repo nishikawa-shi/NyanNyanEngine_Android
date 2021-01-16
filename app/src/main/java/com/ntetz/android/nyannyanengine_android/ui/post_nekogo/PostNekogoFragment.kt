@@ -8,19 +8,21 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.PostNekogoFragmentBinding
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
-import org.koin.android.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class PostNekogoFragment : Fragment() {
 
     companion object {
         fun newInstance() = PostNekogoFragment()
     }
 
-    private val viewModel: PostNekogoViewModel by viewModel()
+    private val viewModel: PostNekogoViewModel by viewModels()
     private lateinit var binding: PostNekogoFragmentBinding
 
     override fun onStop() {

@@ -12,7 +12,9 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.HashtagUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IHashtagUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.TweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.UserActionUsecase
 import dagger.Binds
 import dagger.Module
@@ -36,6 +38,9 @@ abstract class ApplicationBindsModule {
 
     @Binds
     abstract fun bindAccountUsecase(accountUsecase: AccountUsecase): IAccountUsecase
+
+    @Binds
+    abstract fun bindTweetsUsecase(tweetsUsecase: TweetsUsecase): ITweetsUsecase
 
     @Binds
     abstract fun bindHashtagUsecase(hashtagUsecase: HashtagUsecase): IHashtagUsecase

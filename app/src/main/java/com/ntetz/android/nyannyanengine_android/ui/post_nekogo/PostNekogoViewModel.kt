@@ -1,6 +1,7 @@
 package com.ntetz.android.nyannyanengine_android.ui.post_nekogo
 
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,13 +12,14 @@ import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_tran
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 
-class PostNekogoViewModel(
+class PostNekogoViewModel @ViewModelInject constructor(
     private val accountUsecase: IAccountUsecase,
     private val tweetsUsecase: ITweetsUsecase,
     private val userActionUsecase: IUserActionUsecase,
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
     private val _userInfoEvent: MutableLiveData<TwitterUserRecord?> = MutableLiveData()
     val userInfoEvent: LiveData<TwitterUserRecord?>
