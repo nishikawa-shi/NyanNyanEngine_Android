@@ -5,6 +5,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.DefaultHashtagConfi
 import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.FirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
+import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.TwitterApi
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfileDatabase
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.UserProfileDatabase
@@ -38,7 +39,8 @@ private val viewModelModule = module {
     single { ApplicationUsecase(getUserProfileDatabase(androidContext()), get()) }
     single<IAccountUsecase> {
         val repository = AccountRepository(
-            twitterApi = TwitterApi,
+            twitterApiScalarClient = get<ITwitterApi>().scalarClient,
+            twitterApiObjectClient = get<ITwitterApi>().objectClient,
             twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao(),
             firebaseClient = get()
         )
@@ -50,10 +52,11 @@ private val viewModelModule = module {
     }
     single<ITweetsUsecase> {
         val tweetRepository = TweetsRepository(
-            twitterApi = TwitterApi
+            twitterApiObjectClient = get<ITwitterApi>().objectClient
         )
         val accountRepository = AccountRepository(
-            twitterApi = TwitterApi,
+            twitterApiScalarClient = get<ITwitterApi>().scalarClient,
+            twitterApiObjectClient = get<ITwitterApi>().objectClient,
             twitterUserDao = getUserProfileDatabase(androidContext()).twitterUserDao(),
             firebaseClient = get()
         )
@@ -66,9 +69,13 @@ private val viewModelModule = module {
         )
     }
 
+    single<ITwitterApi> {
+        TwitterApi(androidContext())
+    }
+
     viewModel { MainViewModel(get(), get(), get(), androidContext()) }
     viewModel { SignInViewModel(get(), get(), androidContext()) }
-    viewModel { SignOutViewModel(get(), get(), androidContext()) }
+    viewModel { SignOutViewModel(get(), get()) }
     viewModel { PostNekogoViewModel(get(), get(), get(), androidContext()) }
 }
 

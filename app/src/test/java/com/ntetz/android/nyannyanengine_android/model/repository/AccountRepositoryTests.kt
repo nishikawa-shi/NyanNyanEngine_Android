@@ -5,7 +5,6 @@ import com.google.common.truth.Truth
 import com.ntetz.android.nyannyanengine_android.TestUtil
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
-import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.AccessToken
@@ -27,7 +26,10 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class AccountRepositoryTests {
     @Mock
-    private lateinit var mockTwitterApi: ITwitterApi
+    private lateinit var mockTwitterApiScalarClient: ITwitterApiEndpoints
+
+    @Mock
+    private lateinit var mockTwitterApiObjectClient: ITwitterApiEndpoints
 
     @Mock
     private lateinit var mockTwitterConfig: ITwitterConfig
@@ -47,20 +49,20 @@ class AccountRepositoryTests {
             val mockEndpoints = TestUtil.mockNormalRetrofit
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse("mockResponseString")
-            `when`(mockTwitterApi.getScalarClient(mockContext)).thenReturn(mockEndpoints)
 
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
             `when`(mockTwitterConfig.callbackUrl).thenReturn("")
             val testRepository =
                 AccountRepository(
-                    twitterApi = mockTwitterApi,
+                    twitterApiScalarClient = mockEndpoints,
+                    twitterApiObjectClient = mockEndpoints,
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder,
                     twitterUserDao = mockTwitterUserDao,
                     firebaseClient = mockFirebaseClient
                 )
-            Truth.assertThat(testRepository.getAuthorizationToken(this, mockContext))
+            Truth.assertThat(testRepository.getAuthorizationToken(this))
                 .isEqualTo("mockResponseString")
         }
     }
@@ -73,19 +75,19 @@ class AccountRepositoryTests {
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse("error!")
 
-            `when`(mockTwitterApi.getScalarClient(mockContext)).thenReturn(mockEndpoints)
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
             val testRepository =
                 AccountRepository(
-                    twitterApi = mockTwitterApi,
+                    twitterApiScalarClient = mockEndpoints,
+                    twitterApiObjectClient = mockEndpoints,
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder,
                     twitterUserDao = mockTwitterUserDao,
                     firebaseClient = mockFirebaseClient
                 )
-            Truth.assertThat(testRepository.getAccessToken("", "", this, mockContext).errorDescription)
+            Truth.assertThat(testRepository.getAccessToken("", "", this).errorDescription)
                 .isEqualTo("network error. code: 500")
         }
     }
@@ -97,13 +99,13 @@ class AccountRepositoryTests {
                 .create(ITwitterApiEndpoints::class.java)
                 .returningResponse(User(name = "testUser", screenName = "testScName"))
 
-            `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
             `when`(mockTwitterConfig.apiSecret).thenReturn("")
             `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
             val testRepository =
                 AccountRepository(
-                    twitterApi = mockTwitterApi,
+                    twitterApiScalarClient = mockEndpoints,
+                    twitterApiObjectClient = mockEndpoints,
                     twitterConfig = mockTwitterConfig,
                     base64Encoder = TestUtil.mockBase64Encoder,
                     twitterUserDao = mockTwitterUserDao,
@@ -112,8 +114,7 @@ class AccountRepositoryTests {
             Truth.assertThat(
                 testRepository.verifyAccessToken(
                     AccessToken(true, null, null, "", "", null),
-                    this,
-                    mockContext
+                    this
                 )
             ).isEqualTo(User(name = "testUser", screenName = "testScName"))
         }
@@ -136,7 +137,8 @@ class AccountRepositoryTests {
 
         Truth.assertThat(
             AccountRepository(
-                twitterApi = mockTwitterApi,
+                twitterApiScalarClient = mockTwitterApiScalarClient,
+                twitterApiObjectClient = mockTwitterApiObjectClient,
                 twitterConfig = mockTwitterConfig,
                 base64Encoder = TestUtil.mockBase64Encoder,
                 twitterUserDao = mockTwitterUserDao,
@@ -165,10 +167,11 @@ class AccountRepositoryTests {
             name = "testName",
             profileImageUrlHttps = null
         )
-        Mockito.doNothing().`when`(mockTwitterUserDao).upsert(testTwitterUserRecord)
+        doNothing().`when`(mockTwitterUserDao).upsert(testTwitterUserRecord)
 
         AccountRepository(
-            twitterApi = mockTwitterApi,
+            twitterApiScalarClient = mockTwitterApiScalarClient,
+            twitterApiObjectClient = mockTwitterApiObjectClient,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,
@@ -184,13 +187,13 @@ class AccountRepositoryTests {
         val mockEndpoints = TestUtil.mockNormalRetrofit
             .create(ITwitterApiEndpoints::class.java)
             .returningResponse(AccessTokenInvalidation("dummyToken"))
-        `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
         `when`(mockTwitterConfig.apiSecret).thenReturn("")
         `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
         val testRepository =
             AccountRepository(
-                twitterApi = mockTwitterApi,
+                twitterApiScalarClient = mockEndpoints,
+                twitterApiObjectClient = mockEndpoints,
                 twitterConfig = mockTwitterConfig,
                 base64Encoder = TestUtil.mockBase64Encoder,
                 twitterUserDao = mockTwitterUserDao,
@@ -206,8 +209,7 @@ class AccountRepositoryTests {
                     name = "testName",
                     profileImageUrlHttps = null
                 ),
-                this,
-                mockContext
+                this
             )
         ).isEqualTo(AccessTokenInvalidation("dummyToken"))
     }
@@ -217,12 +219,12 @@ class AccountRepositoryTests {
         val mockEndpoints = TestUtil.mockNormalRetrofit
             .create(ITwitterApiEndpoints::class.java)
             .returningResponse(AccessTokenInvalidation("dummyToken"))
-        `when`(mockTwitterApi.getObjectClient(mockContext)).thenReturn(mockEndpoints)
         `when`(mockTwitterConfig.apiSecret).thenReturn("")
         `when`(mockTwitterConfig.consumerKey).thenReturn("")
 
         AccountRepository(
-            twitterApi = mockTwitterApi,
+            twitterApiScalarClient = mockEndpoints,
+            twitterApiObjectClient = mockEndpoints,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,
@@ -236,8 +238,7 @@ class AccountRepositoryTests {
                 name = "testName",
                 profileImageUrlHttps = null
             ),
-            this,
-            mockContext
+            this
         )
         delay(20) // これがないと、initialize内部のCoroutineの起動を見届けられない模様。CI上だと落ちるので長めの時間
 
@@ -249,7 +250,8 @@ class AccountRepositoryTests {
         doNothing().`when`(mockFirebaseClient).fetchNyanNyanConfig()
 
         AccountRepository(
-            twitterApi = mockTwitterApi,
+            twitterApiScalarClient = mockTwitterApiScalarClient,
+            twitterApiObjectClient = mockTwitterApiObjectClient,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,
@@ -273,7 +275,8 @@ class AccountRepositoryTests {
         doNothing().`when`(mockFirebaseClient).fetchNyanNyanUser(mockTwitterUserRecord, mockContext)
 
         AccountRepository(
-            twitterApi = mockTwitterApi,
+            twitterApiScalarClient = mockTwitterApiScalarClient,
+            twitterApiObjectClient = mockTwitterApiObjectClient,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,
@@ -297,7 +300,8 @@ class AccountRepositoryTests {
         doNothing().`when`(mockFirebaseClient).incrementNyanNyanUser("np", 3, mockTwitterUserRecord)
 
         AccountRepository(
-            twitterApi = mockTwitterApi,
+            twitterApiScalarClient = mockTwitterApiScalarClient,
+            twitterApiObjectClient = mockTwitterApiObjectClient,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,
@@ -321,7 +325,8 @@ class AccountRepositoryTests {
         doNothing().`when`(mockFirebaseClient).incrementNyanNyanUser("tc", 1, mockTwitterUserRecord)
 
         AccountRepository(
-            twitterApi = mockTwitterApi,
+            twitterApiScalarClient = mockTwitterApiScalarClient,
+            twitterApiObjectClient = mockTwitterApiObjectClient,
             twitterConfig = mockTwitterConfig,
             base64Encoder = TestUtil.mockBase64Encoder,
             twitterUserDao = mockTwitterUserDao,

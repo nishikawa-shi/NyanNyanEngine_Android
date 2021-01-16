@@ -5,7 +5,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.DefaultTweetConfig
 import com.ntetz.android.nyannyanengine_android.model.config.ITwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterConfig
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
-import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
+import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApiEndpoints
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.NoConnectivityException
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.IAccessToken
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
@@ -38,7 +38,7 @@ interface ITweetsRepository {
 }
 
 class TweetsRepository(
-    private val twitterApi: ITwitterApi,
+    private val twitterApiObjectClient: ITwitterApiEndpoints,
     private val twitterConfig: ITwitterConfig = TwitterConfig(),
     private val base64Encoder: IBase64Encoder = Base64Encoder()
 ) : ITweetsRepository {
@@ -56,7 +56,7 @@ class TweetsRepository(
         ).getOAuthValue(token)
 
         try {
-            val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope, context = context)
+            val result = getLatestTweetsFromWeb(authorization = authorization, scope = scope)
             val body = result?.body()?.toSortedById()
             if (result?.isSuccessful != true || body == null) {
                 return getErrorTweets(result, context)
@@ -102,8 +102,7 @@ class TweetsRepository(
             val result = getPreviousTweetsFromWeb(
                 maxId = maxId.toString(),
                 authorization = authorization,
-                scope = scope,
-                context = context
+                scope = scope
             )
             val body = result.body()?.toSortedById()
             if (!result.isSuccessful || body == null) {
@@ -145,7 +144,7 @@ class TweetsRepository(
         ).getOAuthValue(token)
 
         try {
-            val result = postTweetToWeb(tweetBody, authorization, scope, context)
+            val result = postTweetToWeb(tweetBody, authorization, scope)
             val body = result.body()
             if (!result.isSuccessful || body == null) {
                 return getErrorTweet(result, context)
@@ -160,16 +159,14 @@ class TweetsRepository(
 
     private suspend fun getLatestTweetsFromWeb(
         authorization: String,
-        scope: CoroutineScope,
-        context: Context
+        scope: CoroutineScope
     ): Response<List<Tweet>>? {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
                 runCatching {
-                    twitterApi.getObjectClient(context)
-                        .getTweets(
-                            authorization = authorization
-                        ).execute()
+                    twitterApiObjectClient.getTweets(
+                        authorization = authorization
+                    ).execute()
                 }.getOrThrow()
             }
         }
@@ -178,13 +175,12 @@ class TweetsRepository(
     private suspend fun getPreviousTweetsFromWeb(
         maxId: String,
         authorization: String,
-        scope: CoroutineScope,
-        context: Context
+        scope: CoroutineScope
     ): Response<List<Tweet>> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
                 runCatching {
-                    twitterApi.getObjectClient(context)
+                    twitterApiObjectClient
                         .getTweetsWithPage(
                             authorization = authorization,
                             count = TwitterEndpoints.homeTimelineCountParamDefaultValue,
@@ -199,13 +195,12 @@ class TweetsRepository(
     private suspend fun postTweetToWeb(
         tweetBody: String,
         authorization: String,
-        scope: CoroutineScope,
-        context: Context
+        scope: CoroutineScope
     ): Response<Tweet> {
         return withContext(scope.coroutineContext) {
             withContext(Dispatchers.IO) {
                 runCatching {
-                    twitterApi.getObjectClient(context)
+                    twitterApiObjectClient
                         .postTweet(
                             status = tweetBody,
                             authorization = authorization

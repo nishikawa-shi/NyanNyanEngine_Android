@@ -11,12 +11,15 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.create
 
 interface ITwitterApi {
-    fun getScalarClient(context: Context): ITwitterApiEndpoints
-    fun getObjectClient(context: Context): ITwitterApiEndpoints
+    val scalarClient: ITwitterApiEndpoints
+    val objectClient: ITwitterApiEndpoints
 }
 
-object TwitterApi : ITwitterApi {
-    override fun getScalarClient(context: Context): ITwitterApiEndpoints {
+class TwitterApi(private val context: Context) : ITwitterApi {
+    override val scalarClient = createScalarClient()
+    override val objectClient = createObjectClient()
+
+    private fun createScalarClient(): ITwitterApiEndpoints {
         val okHttpClient = OkHttpClient.Builder().addInterceptor(NetworkConnectionInterceptor(context)).build()
         return Retrofit
             .Builder()
@@ -27,7 +30,7 @@ object TwitterApi : ITwitterApi {
             .create()
     }
 
-    override fun getObjectClient(context: Context): ITwitterApiEndpoints {
+    private fun createObjectClient(): ITwitterApiEndpoints {
         val okHttpClient = OkHttpClient.Builder().addInterceptor(NetworkConnectionInterceptor(context)).build()
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())

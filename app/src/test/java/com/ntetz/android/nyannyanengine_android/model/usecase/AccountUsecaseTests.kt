@@ -32,11 +32,11 @@ class AccountUsecaseTests {
 
     @Test
     fun createAuthorizationEndpoint_レポジトリと共通設定に基づいた値が取得できること() = runBlocking {
-        `when`(mockAccountRepository.getAuthorizationToken(this, mockContext)).thenReturn(
+        `when`(mockAccountRepository.getAuthorizationToken(this)).thenReturn(
             "oauth_token=val1&oauth_token_secret=val2"
         )
 
-        val testUri = AccountUsecase(mockAccountRepository).createAuthorizationEndpoint(this, mockContext)
+        val testUri = AccountUsecase(mockAccountRepository).createAuthorizationEndpoint(this)
 
         // 実際は比較にはなっていないが参考のため。Robolectricを使いたくない都合上、Uriクラスがnullを返すのでnull同士の比較で通っているだけ
         Truth.assertThat(testUri)
@@ -45,12 +45,12 @@ class AccountUsecaseTests {
 
     @Test
     fun createAuthorizationEndpoint_authorizationAPIがレポジトリを通して1度呼ばれること() = runBlocking {
-        `when`(mockAccountRepository.getAuthorizationToken(this, mockContext)).thenReturn(
+        `when`(mockAccountRepository.getAuthorizationToken(this)).thenReturn(
             "oauth_token=val1&oauth_token_secret=val2"
         )
 
-        AccountUsecase(mockAccountRepository).createAuthorizationEndpoint(this, mockContext)
-        verify(mockAccountRepository, times(1)).getAuthorizationToken(this, mockContext)
+        AccountUsecase(mockAccountRepository).createAuthorizationEndpoint(this)
+        verify(mockAccountRepository, times(1)).getAuthorizationToken(this)
         return@runBlocking
     }
 
@@ -60,7 +60,6 @@ class AccountUsecaseTests {
         withContext(Dispatchers.IO) {
             `when`(
                 mockAccountRepository.getAccessToken(
-                    TestUtil.any(),
                     TestUtil.any(),
                     TestUtil.any(),
                     TestUtil.any()
@@ -93,7 +92,6 @@ class AccountUsecaseTests {
                 mockAccountRepository.getAccessToken(
                     TestUtil.any(),
                     TestUtil.any(),
-                    TestUtil.any(),
                     TestUtil.any()
                 )
             ).thenReturn(
@@ -101,7 +99,7 @@ class AccountUsecaseTests {
             )
 
             AccountUsecase(mockAccountRepository).fetchAccessToken("dummyVeri", "dummyTok", this, mockContext)
-            verify(mockAccountRepository, times(1)).getAccessToken("dummyVeri", "dummyTok", this, mockContext)
+            verify(mockAccountRepository, times(1)).getAccessToken("dummyVeri", "dummyTok", this)
             return@withContext
         }
     }
@@ -114,13 +112,12 @@ class AccountUsecaseTests {
                 mockAccountRepository.getAccessToken(
                     TestUtil.any(),
                     TestUtil.any(),
-                    TestUtil.any(),
                     TestUtil.any()
                 )
             ).thenReturn(
                 mockToken
             )
-            `when`(mockAccountRepository.verifyAccessToken(TestUtil.any(), TestUtil.any(), TestUtil.any())).thenReturn(
+            `when`(mockAccountRepository.verifyAccessToken(TestUtil.any(), TestUtil.any())).thenReturn(
                 User(name = "testUser", screenName = "testScName")
             )
             `when`(mockContext.getString(R.string.default_twitter_id)).thenReturn("testIiiiid")
@@ -128,7 +125,7 @@ class AccountUsecaseTests {
 
             AccountUsecase(mockAccountRepository).fetchAccessToken("dummyVeri", "dummyTok", this, mockContext)
             verify(mockAccountRepository, times(1)).verifyAccessToken(
-                mockToken, this, mockContext
+                mockToken, this
             )
             return@withContext
         }
@@ -147,11 +144,11 @@ class AccountUsecaseTests {
         `when`(mockAccountRepository.loadTwitterUser(this)).thenReturn(
             mockUser
         )
-        `when`(mockAccountRepository.deleteTwitterUser(mockUser, this, mockContext)).thenReturn(
+        `when`(mockAccountRepository.deleteTwitterUser(mockUser, this)).thenReturn(
             AccessTokenInvalidation("dummyTokenIsDeleted")
         )
 
-        Truth.assertThat(AccountUsecase(mockAccountRepository).deleteAccessToken(this, mockContext))
+        Truth.assertThat(AccountUsecase(mockAccountRepository).deleteAccessToken(this))
             .isEqualTo(AccessTokenInvalidation("dummyTokenIsDeleted"))
     }
 }
