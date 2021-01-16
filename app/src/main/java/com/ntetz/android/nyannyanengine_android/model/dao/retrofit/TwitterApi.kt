@@ -4,6 +4,7 @@ import android.content.Context
 import com.ntetz.android.nyannyanengine_android.model.config.TwitterEndpoints
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import javax.inject.Inject
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -15,7 +16,7 @@ interface ITwitterApi {
     val objectClient: ITwitterApiEndpoints
 }
 
-class TwitterApi(private val context: Context) : ITwitterApi {
+class TwitterApi @Inject constructor(private val context: Context) : ITwitterApi {
     override val scalarClient = createScalarClient()
     override val objectClient = createObjectClient()
 

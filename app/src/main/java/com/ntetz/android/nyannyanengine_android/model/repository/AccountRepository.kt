@@ -22,6 +22,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.User
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.util.Base64Encoder
 import com.ntetz.android.nyannyanengine_android.util.IBase64Encoder
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -52,7 +53,7 @@ interface IAccountRepository {
     suspend fun incrementTweetCount(twitterUser: TwitterUserRecord)
 }
 
-class AccountRepository(
+class AccountRepository @Inject constructor(
     private val twitterApiScalarClient: ITwitterApiEndpoints,
     private val twitterApiObjectClient: ITwitterApiEndpoints,
     private val twitterConfig: ITwitterConfig = TwitterConfig(),
