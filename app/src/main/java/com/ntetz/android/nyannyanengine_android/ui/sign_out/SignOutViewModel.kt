@@ -1,6 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.sign_out
 
-import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,10 +11,9 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import kotlinx.coroutines.launch
 
-class SignOutViewModel(
+class SignOutViewModel @ViewModelInject constructor(
     private val accountUsecase: IAccountUsecase,
-    private val userActionUsecase: IUserActionUsecase,
-    private val context: Context
+    private val userActionUsecase: IUserActionUsecase
 ) : ViewModel() {
     private val _signOutEvent: MutableLiveData<AccessTokenInvalidation?> = MutableLiveData()
     val signOutEvent: LiveData<AccessTokenInvalidation?>
@@ -23,7 +22,7 @@ class SignOutViewModel(
     fun executeSignOut() {
         viewModelScope.launch {
             _signOutEvent.postValue(
-                accountUsecase.deleteAccessToken(this, context)
+                accountUsecase.deleteAccessToken(this)
             )
             userActionUsecase.complete(userAction = UserAction.SIGN_OUT, scope = this)
         }

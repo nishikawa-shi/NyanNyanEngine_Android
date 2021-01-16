@@ -8,6 +8,7 @@ import com.ntetz.android.nyannyanengine_android.model.repository.IAccountReposit
 import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.ITweetsRepository
 import com.ntetz.android.nyannyanengine_android.util.nekosanPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 
 interface ITweetsUsecase {
@@ -16,7 +17,7 @@ interface ITweetsUsecase {
     suspend fun postTweet(tweetBody: String, scope: CoroutineScope, context: Context): Tweet
 }
 
-class TweetsUsecase(
+class TweetsUsecase @Inject constructor(
     private val tweetsRepository: ITweetsRepository,
     private val accountRepository: IAccountRepository,
     private val hashtagsRepository: IHashtagsRepository
