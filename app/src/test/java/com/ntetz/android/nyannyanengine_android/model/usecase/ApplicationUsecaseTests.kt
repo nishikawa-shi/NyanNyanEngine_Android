@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.model.usecase
 
+import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.IUserProfileDatabase
 import org.junit.Test
@@ -18,19 +19,22 @@ class ApplicationUsecaseTests {
     @Mock
     private lateinit var mockFirebaseClient: IFirebaseClient
 
+    @Mock
+    private lateinit var mockDefaultHashtagConfig: IDefaultHashtagConfig
+
     @Test
     fun launch_userProfileDatabaseのinitializeが1度呼ばれること() {
-        doNothing().`when`(mockUserProfileDatabase).initialize()
+        doNothing().`when`(mockUserProfileDatabase).initialize(mockDefaultHashtagConfig)
 
-        ApplicationUsecase(mockUserProfileDatabase, mockFirebaseClient).launch()
-        verify(mockUserProfileDatabase, times(1)).initialize()
+        ApplicationUsecase(mockUserProfileDatabase, mockFirebaseClient, mockDefaultHashtagConfig).launch()
+        verify(mockUserProfileDatabase, times(1)).initialize(mockDefaultHashtagConfig)
     }
 
     @Test
     fun launch_firebaseClientのinitializeが1度呼ばれること() {
         doNothing().`when`(mockFirebaseClient).initialize()
 
-        ApplicationUsecase(mockUserProfileDatabase, mockFirebaseClient).launch()
+        ApplicationUsecase(mockUserProfileDatabase, mockFirebaseClient, mockDefaultHashtagConfig).launch()
         verify(mockFirebaseClient, times(1)).initialize()
     }
 }

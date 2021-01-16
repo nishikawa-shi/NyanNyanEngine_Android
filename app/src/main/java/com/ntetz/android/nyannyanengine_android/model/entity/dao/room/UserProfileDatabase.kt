@@ -9,11 +9,9 @@ import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsD
 import com.ntetz.android.nyannyanengine_android.model.dao.room.ITwitterUserDao
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.koin.core.KoinComponent
-import org.koin.core.inject
 
 interface IUserProfileDatabase {
-    fun initialize()
+    fun initialize(defaultHashtagConfig: IDefaultHashtagConfig)
     fun defaultHashtagsDao(): IDefaultHashtagsDao
     fun twitterUserDao(): ITwitterUserDao
 }
@@ -23,12 +21,11 @@ interface IUserProfileDatabase {
     version = 1,
     exportSchema = false
 )
-abstract class UserProfileDatabase : RoomDatabase(), KoinComponent, IUserProfileDatabase {
+abstract class UserProfileDatabase : RoomDatabase(), IUserProfileDatabase {
     abstract override fun defaultHashtagsDao(): IDefaultHashtagsDao
     abstract override fun twitterUserDao(): ITwitterUserDao
-    private val defaultHashtagConfig: IDefaultHashtagConfig by inject()
 
-    override fun initialize() {
+    override fun initialize(defaultHashtagConfig: IDefaultHashtagConfig) {
         INSTANCE?.let { database ->
             GlobalScope.launch {
                 defaultHashtagConfig.populate(database.defaultHashtagsDao())

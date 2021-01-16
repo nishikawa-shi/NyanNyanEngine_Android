@@ -1,8 +1,6 @@
 package com.ntetz.android.nyannyanengine_android
 
 import android.content.Context
-import com.ntetz.android.nyannyanengine_android.model.config.DefaultHashtagConfig
-import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConfig
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.FirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.dao.retrofit.ITwitterApi
@@ -14,7 +12,6 @@ import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsReposit
 import com.ntetz.android.nyannyanengine_android.model.repository.MetricsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.TweetsRepository
 import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
-import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
@@ -28,10 +25,8 @@ object MainModule {
 }
 
 private val viewModelModule = module {
-    single<IDefaultHashtagConfig> { DefaultHashtagConfig() }
     single<IFirebaseClient> { FirebaseClient() }
 
-    single { ApplicationUsecase(getUserProfileDatabase(androidContext()), get()) }
     single<IAccountUsecase> {
         val repository = AccountRepository(
             twitterApiScalarClient = get<ITwitterApi>().scalarClient,
