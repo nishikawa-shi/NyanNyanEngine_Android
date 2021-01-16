@@ -2,6 +2,7 @@ package com.ntetz.android.nyannyanengine_android.model.repository
 
 import com.ntetz.android.nyannyanengine_android.model.dao.firebase.IFirebaseClient
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.AnalyticsEvent
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,7 +17,7 @@ interface IMetricsRepository {
     )
 }
 
-class MetricsRepository(
+class MetricsRepository @Inject constructor(
     private val firebaseClient: IFirebaseClient
 ) : IMetricsRepository {
     override suspend fun logEvent(
