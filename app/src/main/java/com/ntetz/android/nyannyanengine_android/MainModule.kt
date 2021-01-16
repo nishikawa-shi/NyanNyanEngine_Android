@@ -20,9 +20,7 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.TweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.UserActionUsecase
-import com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel
 import org.koin.android.ext.koin.androidContext
-import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 object MainModule {
@@ -69,8 +67,6 @@ private val viewModelModule = module {
     single<ITwitterApi> {
         TwitterApi(androidContext())
     }
-
-    viewModel { MainViewModel(get(), get(), get(), androidContext()) }
 }
 
 private fun getUserProfileDatabase(context: Context): IUserProfileDatabase = UserProfileDatabase.getDatabase(context)
