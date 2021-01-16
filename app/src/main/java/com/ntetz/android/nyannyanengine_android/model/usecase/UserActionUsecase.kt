@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.usecase
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.AnalyticsEvent
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.repository.IMetricsRepository
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 
 interface IUserActionUsecase {
@@ -21,7 +22,7 @@ interface IUserActionUsecase {
     )
 }
 
-class UserActionUsecase(private val metricsRepository: IMetricsRepository) : IUserActionUsecase {
+class UserActionUsecase @Inject constructor(private val metricsRepository: IMetricsRepository) : IUserActionUsecase {
     override suspend fun tap(
         userAction: UserAction,
         textParams: Map<String, String>?,
