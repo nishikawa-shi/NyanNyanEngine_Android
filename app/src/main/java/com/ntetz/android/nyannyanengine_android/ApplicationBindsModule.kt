@@ -8,7 +8,9 @@ import com.ntetz.android.nyannyanengine_android.model.repository.HashtagsReposit
 import com.ntetz.android.nyannyanengine_android.model.repository.IHashtagsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.IMetricsRepository
 import com.ntetz.android.nyannyanengine_android.model.repository.MetricsRepository
+import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.HashtagUsecase
+import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IHashtagUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.UserActionUsecase
@@ -31,6 +33,9 @@ abstract class ApplicationBindsModule {
 
     @Binds
     abstract fun bindMetricsRepository(metricsRepository: MetricsRepository): IMetricsRepository
+
+    @Binds
+    abstract fun bindAccountUsecase(accountUsecase: AccountUsecase): IAccountUsecase
 
     @Binds
     abstract fun bindHashtagUsecase(hashtagUsecase: HashtagUsecase): IHashtagUsecase

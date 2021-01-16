@@ -14,6 +14,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUse
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.NyanNyanUserComponent
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.SignInResultComponent
 import com.ntetz.android.nyannyanengine_android.model.repository.IAccountRepository
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 
 interface IAccountUsecase {
@@ -35,7 +36,7 @@ interface IAccountUsecase {
     suspend fun fetchNyanNyanUser(twitterUser: TwitterUserRecord, context: Context)
 }
 
-class AccountUsecase(private val accountRepository: IAccountRepository) : IAccountUsecase {
+class AccountUsecase @Inject constructor(private val accountRepository: IAccountRepository) : IAccountUsecase {
     override val nyanNyanConfigEvent = accountRepository.nyanNyanConfigEvent
     override val nyanNyanUserEvent = Transformations.map(accountRepository.nyanNyanUserEvent) {
         NyanNyanUserComponent(
