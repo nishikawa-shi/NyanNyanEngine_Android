@@ -13,11 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SignOutFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = SignOutFragment()
-    }
-
     private val viewModel: SignOutViewModel by viewModels()
 
     override fun onCreateView(

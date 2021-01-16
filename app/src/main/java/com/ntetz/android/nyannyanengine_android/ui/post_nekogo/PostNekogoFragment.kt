@@ -17,11 +17,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class PostNekogoFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = PostNekogoFragment()
-    }
-
     private val viewModel: PostNekogoViewModel by viewModels()
     private lateinit var binding: PostNekogoFragmentBinding
 

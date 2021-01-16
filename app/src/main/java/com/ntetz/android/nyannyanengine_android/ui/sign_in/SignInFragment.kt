@@ -15,12 +15,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SignInFragment : Fragment() {
-
     private val args: SignInFragmentArgs by navArgs()
-
-    companion object {
-        fun newInstance() = SignInFragment()
-    }
 
     private val viewModel: SignInViewModel by viewModels()
 
