@@ -24,6 +24,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_tran
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -32,7 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavigationItemSelectedListener {
@@ -42,8 +42,12 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
-    private val accountUsecase: IAccountUsecase by inject()
-    private val userActionUsecase: IUserActionUsecase by inject()
+
+    @Inject
+    lateinit var accountUsecase: IAccountUsecase
+
+    @Inject
+    lateinit var userActionUsecase: IUserActionUsecase
 
     private var isSignedIn: Boolean = false
 
