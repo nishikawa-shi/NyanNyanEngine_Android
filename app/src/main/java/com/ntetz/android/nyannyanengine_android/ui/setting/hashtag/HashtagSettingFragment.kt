@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.ntetz.android.nyannyanengine_android.databinding.HashtagSettingFragmentBinding
-import org.koin.android.viewmodel.ext.android.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HashtagSettingFragment : Fragment() {
 
     companion object {
@@ -17,7 +19,7 @@ class HashtagSettingFragment : Fragment() {
             HashtagSettingFragment()
     }
 
-    private val viewModel: HashtagSettingViewModel by viewModel()
+    private val viewModel: HashtagSettingViewModel by viewModels()
     private lateinit var binding: HashtagSettingFragmentBinding
 
     override fun onCreateView(
