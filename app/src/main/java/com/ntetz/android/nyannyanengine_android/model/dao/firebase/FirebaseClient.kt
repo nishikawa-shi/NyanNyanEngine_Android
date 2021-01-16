@@ -60,7 +60,7 @@ class FirebaseClient @Inject constructor() : IFirebaseClient {
     override fun fetchNyanNyanUser(twitterUserRecord: TwitterUserRecord, context: Context) {
         if (twitterUserRecord == DefaultUserConfig.getNotSignInUser(context)) {
             _nyanNyanUserEvent.postValue(
-                DefaultUserConfig.getNotSignInNyanNyanUser(context)
+                DefaultUserConfig.getNotSignInNyanNyanUser()
             )
             return
         }
@@ -109,7 +109,6 @@ class FirebaseClient @Inject constructor() : IFirebaseClient {
             .document(user.sealedUserId)
             .set(userDocument)
             .addOnCompleteListener {
-                println("nyaoo--n ${NyanNyanUser(id = user.sealedUserId, nekosanPoint = 0, tweetCount = 0)}")
                 _nyanNyanUserEvent.postValue(
                     NyanNyanUser(id = user.sealedUserId, nekosanPoint = 0, tweetCount = 0)
                 )

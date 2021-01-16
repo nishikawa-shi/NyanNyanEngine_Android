@@ -13,12 +13,6 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class HashtagSettingFragment : Fragment() {
-
-    companion object {
-        fun newInstance() =
-            HashtagSettingFragment()
-    }
-
     private val viewModel: HashtagSettingViewModel by viewModels()
     private lateinit var binding: HashtagSettingFragmentBinding
 

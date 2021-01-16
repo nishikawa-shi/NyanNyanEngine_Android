@@ -20,6 +20,7 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -27,8 +28,9 @@ class MainViewModel @ViewModelInject constructor(
     private val accountUsecase: IAccountUsecase,
     private val tweetsUsecase: ITweetsUsecase,
     private val userActionUsecase: IUserActionUsecase,
-    @ApplicationContext private val context: Context
+    @ApplicationContext context: Context
 ) : ViewModel() {
+    private val context = WeakReference(context)
     private val _userInfoEvent: MutableLiveData<TwitterUserRecord?> = MutableLiveData()
     val userInfoEvent: LiveData<TwitterUserRecord?>
         get() = _userInfoEvent
@@ -53,14 +55,17 @@ class MainViewModel @ViewModelInject constructor(
 
     fun loadUserInfo() {
         viewModelScope.launch {
-            _userInfoEvent.postValue(accountUsecase.loadAccessToken(this, context))
+            _userInfoEvent.postValue(accountUsecase.loadAccessToken(this, context.get() ?: return@launch))
             accountUsecase.fetchNyanNyanConfig()
         }
     }
 
     fun loadNyanNyanUserInfo() {
         viewModelScope.launch {
-            accountUsecase.fetchNyanNyanUser(accountUsecase.loadAccessToken(this, context), context)
+            accountUsecase.fetchNyanNyanUser(
+                accountUsecase.loadAccessToken(this, context.get() ?: return@launch),
+                context.get() ?: return@launch
+            )
         }
     }
 

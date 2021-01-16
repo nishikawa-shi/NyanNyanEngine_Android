@@ -11,13 +11,15 @@ import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_tran
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.lang.ref.WeakReference
 import kotlinx.coroutines.launch
 
 class SignInViewModel @ViewModelInject constructor(
     private val accountUsecase: IAccountUsecase,
     private val userActionUsecase: IUserActionUsecase,
-    @ApplicationContext private val context: Context
+    @ApplicationContext context: Context
 ) : ViewModel() {
+    private val context = WeakReference(context)
     private val _signInEvent: MutableLiveData<SignInResultComponent?> = MutableLiveData()
     val signInEvent: LiveData<SignInResultComponent?>
         get() = _signInEvent
@@ -25,9 +27,7 @@ class SignInViewModel @ViewModelInject constructor(
     fun executeSignIn(oauthVerifier: String?, oauthToken: String?) {
         viewModelScope.launch {
             if (oauthVerifier == null || oauthToken == null) {
-                // TODO: 基本的には発生しないが、クエリストリングなしでアプリに遷移してきた時のエラーハンドリング
                 _signInEvent.postValue(null)
-                println("tootteruyo")
                 return@launch
             }
             _signInEvent.postValue(
@@ -35,7 +35,7 @@ class SignInViewModel @ViewModelInject constructor(
                     oauthVerifier = oauthVerifier,
                     oauthToken = oauthToken,
                     scope = this,
-                    context = context
+                    context = context.get() ?: return@launch
                 )
             )
             userActionUsecase.complete(userAction = UserAction.SIGN_IN, scope = this)

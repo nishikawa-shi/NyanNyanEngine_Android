@@ -15,5 +15,5 @@ object DefaultUserConfig {
         profileImageUrlHttps = "https://nyannyanengine.firebaseapp.com/assets/nyannya_sensei.png"
     )
 
-    fun getNotSignInNyanNyanUser(context: Context) = NyanNyanUser(id = "28", nekosanPoint = 99999, tweetCount = 0)
+    fun getNotSignInNyanNyanUser() = NyanNyanUser(id = "28", nekosanPoint = 99999, tweetCount = 0)
 }

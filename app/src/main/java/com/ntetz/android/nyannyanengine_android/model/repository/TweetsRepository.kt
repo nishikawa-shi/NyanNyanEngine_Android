@@ -76,7 +76,6 @@ class TweetsRepository @Inject constructor(
         scope: CoroutineScope,
         context: Context
     ): List<Tweet> {
-        println("nya-n previous")
         val additionalHeaders = listOf(
             TwitterSignParam(
                 TwitterEndpoints.homeTimelineCountParamName,

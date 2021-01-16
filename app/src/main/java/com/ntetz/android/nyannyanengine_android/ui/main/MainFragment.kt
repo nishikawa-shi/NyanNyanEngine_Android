@@ -21,11 +21,6 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
     private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: MainFragmentBinding
     private val adapter: MainAdapter by lazy { MainAdapter(viewModel, this.context, this) }
