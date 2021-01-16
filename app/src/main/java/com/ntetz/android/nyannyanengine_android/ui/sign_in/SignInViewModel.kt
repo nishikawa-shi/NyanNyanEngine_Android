@@ -27,9 +27,7 @@ class SignInViewModel @ViewModelInject constructor(
     fun executeSignIn(oauthVerifier: String?, oauthToken: String?) {
         viewModelScope.launch {
             if (oauthVerifier == null || oauthToken == null) {
-                // TODO: 基本的には発生しないが、クエリストリングなしでアプリに遷移してきた時のエラーハンドリング
                 _signInEvent.postValue(null)
-                println("tootteruyo")
                 return@launch
             }
             _signInEvent.postValue(
