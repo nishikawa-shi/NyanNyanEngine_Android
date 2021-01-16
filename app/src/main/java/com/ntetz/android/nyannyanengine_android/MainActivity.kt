@@ -23,6 +23,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.Nya
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.coroutines.CoroutineContext
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -33,6 +34,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavigationItemSelectedListener {
     private val job = Job()
     override val coroutineContext: CoroutineContext

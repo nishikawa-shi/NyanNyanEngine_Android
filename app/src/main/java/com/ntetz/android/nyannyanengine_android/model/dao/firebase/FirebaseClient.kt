@@ -16,6 +16,7 @@ import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNy
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.firebase.NyanNyanUser
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import java.util.*
+import javax.inject.Inject
 import kotlin.collections.HashMap
 
 interface IFirebaseClient {
@@ -29,7 +30,7 @@ interface IFirebaseClient {
     fun fetchNyanNyanConfig()
 }
 
-class FirebaseClient : IFirebaseClient {
+class FirebaseClient @Inject constructor() : IFirebaseClient {
     private val analytics = Firebase.analytics
     private val auth = Firebase.auth
     private val db = FirebaseFirestore.getInstance()

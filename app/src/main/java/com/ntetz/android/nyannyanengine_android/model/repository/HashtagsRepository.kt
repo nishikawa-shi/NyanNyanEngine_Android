@@ -5,6 +5,7 @@ import com.ntetz.android.nyannyanengine_android.model.config.IDefaultHashtagConf
 import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.DefaultHashTagComponent
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +16,7 @@ interface IHashtagsRepository {
     fun updateDefaultHashtagRecord(record: DefaultHashtagRecord, scope: CoroutineScope)
 }
 
-class HashtagsRepository(
+class HashtagsRepository @Inject constructor(
     private val defaultHashtagConfig: IDefaultHashtagConfig,
     private val defaultHashtagsDao: IDefaultHashtagsDao
 ) : IHashtagsRepository {

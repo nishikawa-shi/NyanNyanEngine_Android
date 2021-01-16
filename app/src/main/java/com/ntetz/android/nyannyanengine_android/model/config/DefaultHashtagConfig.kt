@@ -3,6 +3,7 @@ package com.ntetz.android.nyannyanengine_android.model.config
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.model.dao.room.IDefaultHashtagsDao
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.DefaultHashtagRecord
+import javax.inject.Inject
 
 interface IDefaultHashtagConfig {
     fun getInitializationRecords(): List<DefaultHashtagRecord>
@@ -11,7 +12,7 @@ interface IDefaultHashtagConfig {
     suspend fun populate(defaultHashtagsDao: IDefaultHashtagsDao)
 }
 
-class DefaultHashtagConfig : IDefaultHashtagConfig {
+class DefaultHashtagConfig @Inject constructor() : IDefaultHashtagConfig {
     private val entries = mapOf(
         1 to DefaultHashtag(R.string.settings_title_hashtag_engine, true, 30),
         2 to DefaultHashtag(R.string.settings_title_hashtag_nadenade, false, 50)
