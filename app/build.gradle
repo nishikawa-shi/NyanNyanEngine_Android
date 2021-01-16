@@ -112,17 +112,25 @@ buildscript {
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
     implementation "androidx.appcompat:appcompat:1.2.0"
     implementation "androidx.core:core-ktx:1.3.2"
     implementation "androidx.constraintlayout:constraintlayout:2.0.4"
     implementation "androidx.paging:paging-runtime-ktx:3.0.0-alpha12"
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.room:room-ktx:2.2.6"
-    kapt "androidx.room:room-compiler:2.2.6"
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "com.google.android.material:material:1.2.1"
     testImplementation "android.arch.core:core-testing:1.1.1"
+    def lifecycle_version = "2.2.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}"
+    def navigation_version = "2.3.2"
+    implementation "androidx.navigation:navigation-fragment-ktx:${navigation_version}"
+    implementation "androidx.navigation:navigation-ui-ktx:${navigation_version}"
+    def room_version = "2.2.6"
+    implementation "androidx.room:room-ktx:${room_version}"
+    kapt "androidx.room:room-compiler:${room_version}"
+
     testImplementation "junit:junit:4.13.1"
     testImplementation "org.mockito:mockito-core:3.4.0"
     testImplementation "com.google.truth:truth:1.0.1"
@@ -157,20 +165,19 @@ dependencies {
     implementation "io.coil-kt:coil:0.8.0"
 
     ktlint "com.pinterest:ktlint:0.36.0"
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.2"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.2"
-
-    implementation "com.google.android.material:material:1.2.1"
 
     // jaxbの記述は、dataBinding有効化時でも、java 11環境でgradle checkを行えるようにするためのもの。
+    def jaxb_api_version = "2.3.1"
+    def jaxb_core_version = "2.3.0.1"
+    def jaxb_impl_version = "2.3.2"
     if (project.hasProperty("kapt")) {
-        kapt "javax.xml.bind:jaxb-api:2.3.1"
-        kapt "com.sun.xml.bind:jaxb-core:2.3.0.1"
-        kapt "com.sun.xml.bind:jaxb-impl:2.3.2"
+        kapt "javax.xml.bind:jaxb-api:${jaxb_api_version}"
+        kapt "com.sun.xml.bind:jaxb-core:${jaxb_core_version}"
+        kapt "com.sun.xml.bind:jaxb-impl:${jaxb_impl_version}"
     }
-    annotationProcessor "javax.xml.bind:jaxb-api:2.3.1"
-    annotationProcessor "com.sun.xml.bind:jaxb-core:2.3.0.1"
-    annotationProcessor "com.sun.xml.bind:jaxb-impl:2.3.2"
+    annotationProcessor "javax.xml.bind:jaxb-api:${jaxb_api_version}"
+    annotationProcessor "com.sun.xml.bind:jaxb-core:${jaxb_core_version}"
+    annotationProcessor "com.sun.xml.bind:jaxb-impl:${jaxb_impl_version}"
 }
 
 task ktlint(type: JavaExec, group: "verification") {
