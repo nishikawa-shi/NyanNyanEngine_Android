@@ -14,7 +14,6 @@ import com.ntetz.android.nyannyanengine_android.model.repository.MetricsReposito
 import com.ntetz.android.nyannyanengine_android.model.repository.TweetsRepository
 import com.ntetz.android.nyannyanengine_android.model.usecase.AccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ApplicationUsecase
-import com.ntetz.android.nyannyanengine_android.model.usecase.HashtagUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IAccountUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
@@ -22,7 +21,6 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.TweetsUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.UserActionUsecase
 import com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel
 import com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoViewModel
-import com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingViewModel
 import com.ntetz.android.nyannyanengine_android.ui.sign_in.SignInViewModel
 import com.ntetz.android.nyannyanengine_android.ui.sign_out.SignOutViewModel
 import org.koin.android.ext.koin.androidContext
@@ -68,12 +66,6 @@ private val viewModelModule = module {
         )
     }
 
-    viewModel {
-        val dao = getUserProfileDatabase(androidContext()).defaultHashtagsDao()
-        val repository = HashtagsRepository(get(), dao)
-        val usecase = HashtagUsecase(repository)
-        HashtagSettingViewModel(usecase, get(), androidContext())
-    }
     viewModel { MainViewModel(get(), get(), get(), androidContext()) }
     viewModel { SignInViewModel(get(), get(), androidContext()) }
     viewModel { SignOutViewModel(get(), get(), androidContext()) }
