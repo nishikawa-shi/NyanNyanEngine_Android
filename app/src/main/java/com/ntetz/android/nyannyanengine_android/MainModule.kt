@@ -71,8 +71,8 @@ private val viewModelModule = module {
     viewModel {
         val dao = getUserProfileDatabase(androidContext()).defaultHashtagsDao()
         val repository = HashtagsRepository(get(), dao)
-        val usecase = HashtagUsecase(repository, androidContext())
-        HashtagSettingViewModel(usecase, get())
+        val usecase = HashtagUsecase(repository)
+        HashtagSettingViewModel(usecase, get(), androidContext())
     }
     viewModel { MainViewModel(get(), get(), get(), androidContext()) }
     viewModel { SignInViewModel(get(), get(), androidContext()) }

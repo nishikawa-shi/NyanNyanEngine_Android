@@ -1,5 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.setting.hashtag
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class HashtagSettingViewModel(
     private val hashtagUsecase: IHashtagUsecase,
-    private val userActionUsecase: IUserActionUsecase
+    private val userActionUsecase: IUserActionUsecase,
+    private val context: Context
 ) : ViewModel() {
     private val _defaultHashtagComponents: MutableLiveData<List<DefaultHashTagComponent>> = MutableLiveData(listOf())
     val defaultHashtagComponents: LiveData<List<DefaultHashTagComponent>>
@@ -20,12 +22,12 @@ class HashtagSettingViewModel(
 
     fun initialize() {
         viewModelScope.launch {
-            _defaultHashtagComponents.postValue(hashtagUsecase.getDefaultHashtags(this))
+            _defaultHashtagComponents.postValue(hashtagUsecase.getDefaultHashtags(this, context))
         }
     }
 
     fun updateDefaultHashtagComponent(defaultHashtagComponent: DefaultHashTagComponent) {
-        hashtagUsecase.updateDefaultHashtag(defaultHashtagComponent, viewModelScope)
+        hashtagUsecase.updateDefaultHashtag(defaultHashtagComponent, viewModelScope, context)
         viewModelScope.launch {
             userActionUsecase.complete(
                 userAction = UserAction.SETTING_HASH_TAG,

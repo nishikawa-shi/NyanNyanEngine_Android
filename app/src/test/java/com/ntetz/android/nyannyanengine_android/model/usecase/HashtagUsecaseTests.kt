@@ -31,9 +31,8 @@ class HashtagUsecaseTests {
 
         Truth.assertThat(
             HashtagUsecase(
-                mockHashtagRepository,
-                mockContext
-            ).getDefaultHashtags(this)
+                mockHashtagRepository
+            ).getDefaultHashtags(this, mockContext)
         ).isEqualTo(listOf(DefaultHashTagComponent(99999, "testHashtaaag", 30, true)))
     }
 
@@ -43,9 +42,10 @@ class HashtagUsecaseTests {
         val expectedRecord = DefaultHashtagRecord(3, true)
         doNothing().`when`(mockHashtagRepository).updateDefaultHashtagRecord(expectedRecord, this)
 
-        HashtagUsecase(mockHashtagRepository, mockContext).updateDefaultHashtag(
+        HashtagUsecase(mockHashtagRepository).updateDefaultHashtag(
             testDefaultHashTagComponent,
-            this
+            this,
+            mockContext
         )
 
         verify(mockHashtagRepository, times(1)).updateDefaultHashtagRecord(expectedRecord, this)
