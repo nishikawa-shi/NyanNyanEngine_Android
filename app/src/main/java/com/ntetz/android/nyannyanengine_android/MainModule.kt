@@ -23,7 +23,6 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.UserActionUsecase
 import com.ntetz.android.nyannyanengine_android.ui.main.MainViewModel
 import com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoViewModel
 import com.ntetz.android.nyannyanengine_android.ui.sign_in.SignInViewModel
-import com.ntetz.android.nyannyanengine_android.ui.sign_out.SignOutViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -75,7 +74,6 @@ private val viewModelModule = module {
 
     viewModel { MainViewModel(get(), get(), get(), androidContext()) }
     viewModel { SignInViewModel(get(), get(), androidContext()) }
-    viewModel { SignOutViewModel(get(), get()) }
     viewModel { PostNekogoViewModel(get(), get(), get(), androidContext()) }
 }
 
