@@ -8,6 +8,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
+import coil.transform.GrayscaleTransformation
 import coil.transform.RoundedCornersTransformation
 import com.ntetz.android.nyannyanengine_android.R
 import com.ntetz.android.nyannyanengine_android.databinding.MainCellBinding
@@ -34,6 +35,7 @@ class MainViewHolder(
             placeholder(R.mipmap.ic_launcher_foreground)
             crossfade(true)
             transformations(RoundedCornersTransformation(16f))
+            transformations(GrayscaleTransformation())
         }
         val userName = "@${item.user.screenName}"
         binding.screenName.text = userName
