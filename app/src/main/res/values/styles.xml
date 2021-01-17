@@ -31,6 +31,7 @@
 
     <style name="NyanNyanDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/colorBackGround</item>
     </style>
 
     <style name="InputViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
