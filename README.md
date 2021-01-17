@@ -11,7 +11,7 @@ The funny Twitter client android app. Every tweet you post and see are converted
 ## Designs
 
 <p align="center">
-	<img width="180 alt="image" src="https://user-images.githubusercontent.com/38374045/104847929-f2606e00-5925-11eb-906a-e3866d19ffde.png">
+	<img width="180 alt="image" src="https://user-images.githubusercontent.com/38374045/104849963-fbeed380-592f-11eb-93cf-f440770ae2d4.png">
 	<img width="180" alt="image" src="https://user-images.githubusercontent.com/38374045/104833404-c3bda580-58db-11eb-93e4-b8a6e6ace57f.png">
 </p>
 
