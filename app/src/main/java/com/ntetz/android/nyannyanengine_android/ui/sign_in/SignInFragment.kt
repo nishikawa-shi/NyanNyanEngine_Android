@@ -32,7 +32,7 @@ class SignInFragment : Fragment() {
 
         viewModel.signInEvent.observe(viewLifecycleOwner, Observer {
             (activity as? MainActivity)?.updateTweetList()
-            findNavController().popBackStack()
+            findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
         })
         viewModel.executeSignIn(
             oauthVerifier = this.args.oauthVerifier,
