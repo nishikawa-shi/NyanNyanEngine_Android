@@ -34,8 +34,10 @@ class MainViewHolder(
         binding.twitterImage.load(item.user.fineImageUrl) {
             placeholder(R.mipmap.ic_launcher_foreground)
             crossfade(true)
-            transformations(RoundedCornersTransformation(16f))
-            transformations(GrayscaleTransformation())
+            transformations(
+                GrayscaleTransformation(),
+                RoundedCornersTransformation(16f)
+            )
         }
         val userName = "@${item.user.screenName}"
         binding.screenName.text = userName
