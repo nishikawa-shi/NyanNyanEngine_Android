@@ -1,9 +1,10 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/colorBackGround</item>
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="titleTextColor">@color/onPrimary</item>
         <item name="colorControlNormal">@color/onPrimary</item>
     </style>
@@ -11,6 +12,7 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
     <style name="NekogoTweetButton" parent="@android:style/Widget.Button">
@@ -30,6 +32,7 @@
 
     <style name="NyanNyanDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:background">@color/colorBackGround</item>
     </style>
 
     <style name="InputViewTheme" parent="Theme.AppCompat.Light.NoActionBar">
