@@ -12,3 +12,22 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Build secrets
+
+app/gradle_secret.properties
+app/nyan_nyan_engine_android_release.jks
+
+# Deployment secrets
+
+app/android-deploy-user-dev.json
+app/android-deploy-user-prd.json
+
+# Bundle secrets
+
+secure-config-master-lib.cpp
+
+# Firebase secrets
+
+app/src/dev/google-services.json
+app/src/prd/google-services.json

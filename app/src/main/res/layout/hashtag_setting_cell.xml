@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingViewModel" />
+
+        <variable
+            name="position"
+            type="Integer" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/middle_margin"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/hashtag_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{viewModel.defaultHashtagComponents[position].textBody}"
+            android:textAppearance="@style/TextAppearance.MenuListEntry"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tool:text="Hashtag name"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/hashtag_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="@{viewModel.defaultHashtagComponents[position].enabled}"
+            app:layout_constraintBottom_toBottomOf="@+id/hashtag_name"
+            app:layout_constraintEnd_toEndOf="@+id/hashtag_name"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

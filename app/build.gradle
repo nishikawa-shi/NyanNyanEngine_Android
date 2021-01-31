@@ -1,15 +1,43 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: "com.android.application"
+apply plugin: "com.google.firebase.appdistribution"
+apply plugin: "com.google.gms.google-services"
+apply plugin: "com.google.firebase.crashlytics"
+apply plugin: "dagger.hilt.android.plugin"
+apply plugin: "kotlin-android"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "kotlin-kapt"
+
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
+def keyPropertiesFile = rootProject.file("app/gradle_secret.properties")
+def keyProperties = new Properties()
+keyProperties.load(new FileInputStream(keyPropertiesFile))
 
 android {
-    compileSdkVersion 28
+    signingConfigs {
+        release {
+            storeFile file(keyProperties["storeFilePath"])
+            storePassword keyProperties["storePassword"]
+            keyAlias keyProperties["keyAlias"]
+            keyPassword keyProperties["keyPassword"]
+        }
+    }
 
+    compileSdkVersion 30
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 
     defaultConfig {
         applicationId "com.ntetz.android.nyannyanengine_android"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -19,19 +47,152 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 
+    packagingOptions {
+        exclude "META-INF/atomicfu.kotlin_module"
+    }
+
+    buildFeatures {
+        dataBinding true
+    }
+
+    flavorDimensions "apiEnv"
+    productFlavors {
+        dev {
+            dimension "apiEnv"
+            applicationIdSuffix ".dev"
+            firebaseAppDistribution {
+                appId = keyProperties["appDistributionIdDev"]
+                serviceCredentialsFile = "$rootDir/app/android-deploy-user-dev.json"
+                groups = keyProperties["appDistributionGroupsDev"]
+            }
+        }
+        prd {
+            dimension "apiEnv"
+            firebaseAppDistribution {
+                appId = keyProperties["appDistributionIdPrd"]
+                serviceCredentialsFile = "$rootDir/app/android-deploy-user-prd.json"
+                groups = keyProperties["appDistributionGroupsPrd"]
+            }
+        }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    // API用の設定値はあまり目立たせたくないのでNDKを利用
+    ndkVersion "21.3.6528147"
+    externalNativeBuild {
+        cmake {
+            path file("src/main/cpp/CMakeLists.txt")
+        }
+    }
+}
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+    }
+
+    configurations {
+        ktlint
+    }
+
+    dependencies {
+        classpath "com.google.firebase:firebase-appdistribution-gradle:2.0.1"
+    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    implementation "androidx.appcompat:appcompat:1.2.0"
+    implementation "androidx.core:core-ktx:1.3.2"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.4"
+    implementation "androidx.paging:paging-runtime-ktx:3.0.0-alpha12"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
+    implementation "com.google.android.material:material:1.2.1"
+    testImplementation "android.arch.core:core-testing:1.1.1"
+    def lifecycle_version = "2.2.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}"
+    def navigation_version = "2.3.2"
+    implementation "androidx.navigation:navigation-fragment-ktx:${navigation_version}"
+    implementation "androidx.navigation:navigation-ui-ktx:${navigation_version}"
+    def room_version = "2.2.6"
+    implementation "androidx.room:room-ktx:${room_version}"
+    kapt "androidx.room:room-compiler:${room_version}"
+
+    testImplementation "junit:junit:4.13.1"
+    testImplementation "org.mockito:mockito-core:3.4.0"
+    testImplementation "com.google.truth:truth:1.0.1"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.0"
+    androidTestImplementation "androidx.test.ext:junit:1.1.2"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.3.0"
+
+    implementation platform("com.google.firebase:firebase-bom:26.2.0")
+    implementation "com.google.firebase:firebase-analytics-ktx"
+    implementation "com.google.firebase:firebase-auth-ktx"
+    implementation "com.google.firebase:firebase-crashlytics-ktx"
+    implementation "com.google.firebase:firebase-firestore:22.0.1"
+
+    def dagger_hilt_version = "2.31-alpha"
+    implementation "com.google.dagger:hilt-android:${dagger_hilt_version}"
+    kapt "com.google.dagger:hilt-android-compiler:${dagger_hilt_version}"
+
+    def dagger_hilt_view_model_version = "1.0.0-alpha02"
+    implementation "androidx.hilt:hilt-lifecycle-viewmodel:${dagger_hilt_view_model_version}"
+    kapt "androidx.hilt:hilt-compiler:${dagger_hilt_view_model_version}"
+
+    def retrofit_version = "2.9.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofit_version"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit_version"
+    testImplementation "com.squareup.retrofit2:retrofit-mock:$retrofit_version"
+
+    def moshi_version = "1.11.0"
+    implementation "com.squareup.moshi:moshi:$moshi_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
+
+    def coil_version = "0.8.0"
+    implementation "io.coil-kt:coil:${coil_version}"
+    implementation "io.coil-kt:coil-base:${coil_version}"
+
+    ktlint "com.pinterest:ktlint:0.36.0"
+
+    // jaxbの記述は、dataBinding有効化時でも、java 11環境でgradle checkを行えるようにするためのもの。
+    def jaxb_api_version = "2.3.1"
+    def jaxb_core_version = "2.3.0.1"
+    def jaxb_impl_version = "2.3.2"
+    if (project.hasProperty("kapt")) {
+        kapt "javax.xml.bind:jaxb-api:${jaxb_api_version}"
+        kapt "com.sun.xml.bind:jaxb-core:${jaxb_core_version}"
+        kapt "com.sun.xml.bind:jaxb-impl:${jaxb_impl_version}"
+    }
+    annotationProcessor "javax.xml.bind:jaxb-api:${jaxb_api_version}"
+    annotationProcessor "com.sun.xml.bind:jaxb-core:${jaxb_core_version}"
+    annotationProcessor "com.sun.xml.bind:jaxb-impl:${jaxb_impl_version}"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
 }

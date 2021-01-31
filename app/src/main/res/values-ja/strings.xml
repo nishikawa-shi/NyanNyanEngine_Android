@@ -1,0 +1,59 @@
+<resources>
+    <string name="default_timeline_name">ネコさんビューアー</string>
+    <string name="default_twitter_name">にゃんにゃ先生</string>
+    <string name="default_twitter_id">NNyansu</string>
+    <string name="default_tweeted_at">28分前</string>
+    <string name="default_tweet_body">左上のボタンからログインするにゃあ♪\nあなたのTwitterをネコ語化だにゃ</string>
+    <string name="offline_tweet_body">にゃーん！回線状況を確認して、もう一回ひっぱり更新して欲しいにゃん😊</string>
+    <string name="too_many_request_body">いっぱい使ってくれてありがとにゃ🎊\n猫さん休憩中だから、数十分後にもう一回試して欲しいにゃ🌈</string>
+    <string name="undefined_error_body">にゃーん😢。。。なんか調子が悪いにゃ。。。もうしばらくしてから遊んで欲しいにゃ。。。💫</string>
+    <string name="nav_header_desc">アカウント情報</string>
+    <string name="tweet_list_desc">ツイートアカウント情報</string>
+
+    <string name="home_timeline_description_post_nekogo">ねこ語をツイート</string>
+
+    <string name="post_nekogo_name">にゃんにゃんエンジン</string>
+    <string name="post_default_speaker_desc">やみにゃんにゃ先生</string>
+    <string name="post_nekogo_speaker_desc">鳴くにゃんにゃ先生</string>
+    <string name="post_input_original_text">ここに文章を書くと、下でネコ語表示されるにゃ!</string>
+    <string name="post_button_name">ネコ語でツイートする</string>
+    <string name="post_point"> ぽいんと😺💰 \n\n</string>
+    <string name="post_result">\nってツイートしたにゃ</string>
+
+    <string name="settings_hashtag_name">はっしゅたぐ</string>
+    <string name="settings_title_hashtag_engine">#にゃんにゃんエンジン</string>
+    <string name="settings_title_hashtag_nadenade">#なでてほしいにゃ🧶</string>
+    <string name="settings_lowest_rank">幼にゃんにゃ</string>
+    <string name="settings_teacher_rank">エンジェルにゃんにゃ</string>
+    <string name="settings_teacher_point">99999</string>
+    <string name="settings_teacher_extends">0</string>
+
+    <string name="menu_nekosan_rank">ネコさんランク</string>
+    <string name="menu_nekosan_point">ネコさんぽいんと</string>
+    <string name="menu_nekosan_next">次のランクまで</string>
+    <string name="menu_hash_tag">はっしゅたぐ</string>
+    <string name="menu_sign_in">ログインする</string>
+    <string name="menu_sign_out">ログアウトする</string>
+
+    <string name="sign_in_processing">ログイン中…</string>
+    <string name="sign_out_sheet_body">ログアウトしますか？</string>
+    <string name="sign_out_sheet_exec">ログアウトする</string>
+    <string name="sign_out_sheet_cancel">ログアウトしない</string>
+    <string name="sign_out_processing">ログアウト中…</string>
+
+    <string name="nekosan_nakigoe_type1">にゃん</string>
+    <string name="nekosan_nakigoe_type2">にゃお</string>
+    <string name="nekosan_nakigoe_type3">にゃー</string>
+    <string name="nekosan_nakigoe_type4">にゃ</string>
+    <string name="nekosan_nakigoe_type5">にゃーん</string>
+    <string name="nekosan_nakigoe_type6">にゃーお</string>
+    <string name="nekosan_nakigoe_type7">にゃおーん</string>
+    <string name="nekosan_nakigoe_type8">にゃーおん</string>
+    <string name="nekosan_nakigoe_type9">にゃあ</string>
+    <string name="nekosan_nakigoe_type99">ごろごろ</string>
+
+    <string name="time_suffix_sec">秒前</string>
+    <string name="time_suffix_min">分前</string>
+    <string name="time_suffix_hour">時間前</string>
+    <string name="time_suffix_day">日前</string>
+</resources>

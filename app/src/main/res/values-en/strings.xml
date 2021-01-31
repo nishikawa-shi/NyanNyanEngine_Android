@@ -1,0 +1,59 @@
+<resources>
+    <string name="default_timeline_name">Cat-san Viewer</string>
+    <string name="default_twitter_name">Dr. Nyannya</string>
+    <string name="default_twitter_id">NNyansu</string>
+    <string name="default_tweeted_at">28 min ago</string>
+    <string name="default_tweet_body">Login from the button above ♪\nYour twitter will be into Cat Lang.</string>
+    <string name="offline_tweet_body">Meow♪ swipe to refresh again after check internet connectivity once more😊</string>
+    <string name="too_many_request_body">Thank you for many use🎊\nMe is sleeping, so try again 30 min later🌈</string>
+    <string name="undefined_error_body">Meow😢… feeling some sick……Please play me later after a while💫</string>
+    <string name="nav_header_desc">Account info</string>
+    <string name="tweet_list_desc">Tweet account info</string>
+
+    <string name="home_timeline_description_post_nekogo">Post cat language</string>
+
+    <string name="post_nekogo_name">Meow Meow Engine</string>
+    <string name="post_default_speaker_desc">Tired Dr. Nyannya</string>
+    <string name="post_nekogo_speaker_desc">Meowing Dr. Nyannya</string>
+    <string name="post_input_original_text">This text is translated into cat lang. below, meeow.</string>
+    <string name="post_point"> point 😺💰 \n\n</string>
+    <string name="post_button_name">Tweet as Cat</string>
+    <string name="post_result">"\n is your cry, meeow."</string>
+
+    <string name="settings_hashtag_name">Hash tags</string>
+    <string name="settings_title_hashtag_engine">#MeowMeowEngine</string>
+    <string name="settings_title_hashtag_nadenade">#PetMeMeeow🧶</string>
+    <string name="settings_lowest_rank">Baby Nyan-nya</string>
+    <string name="settings_teacher_rank">Angel Nyan-nya</string>
+    <string name="settings_teacher_point">99999</string>
+    <string name="settings_teacher_extends">0</string>
+
+    <string name="menu_nekosan_rank">Meow rank</string>
+    <string name="menu_nekosan_point">Meow point</string>
+    <string name="menu_nekosan_next">To next rank</string>
+    <string name="menu_hash_tag">Hash Tags</string>
+    <string name="menu_sign_in">Sign in</string>
+    <string name="menu_sign_out">Sign out</string>
+
+    <string name="sign_in_processing">Signing in…</string>
+    <string name="sign_out_sheet_body">want sign out?</string>
+    <string name="sign_out_sheet_exec">sign out</string>
+    <string name="sign_out_sheet_cancel">stay signed in</string>
+    <string name="sign_out_processing">Signing out…</string>
+
+    <string name="nekosan_nakigoe_type1">Meow</string>
+    <string name="nekosan_nakigoe_type2">Miaow</string>
+    <string name="nekosan_nakigoe_type3">Mew</string>
+    <string name="nekosan_nakigoe_type4">Meoow</string>
+    <string name="nekosan_nakigoe_type5">Meeow</string>
+    <string name="nekosan_nakigoe_type6">Miau</string>
+    <string name="nekosan_nakigoe_type7">Miaaaow</string>
+    <string name="nekosan_nakigoe_type8">Myau</string>
+    <string name="nekosan_nakigoe_type9">Nyan</string>
+    <string name="nekosan_nakigoe_type99">Purr</string>
+
+    <string name="time_suffix_sec">s ago</string>
+    <string name="time_suffix_min">m ago</string>
+    <string name="time_suffix_hour">h ago</string>
+    <string name="time_suffix_day">d ago</string>
+</resources>

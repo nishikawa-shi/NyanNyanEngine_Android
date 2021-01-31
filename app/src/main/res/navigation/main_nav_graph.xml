@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.main.MainFragment"
+        android:label="@string/default_timeline_name"
+        tools:layout="@layout/main_fragment" >
+        <action
+            android:id="@+id/action_mainFragment_to_postNekogoFragment"
+            app:destination="@id/postNekogoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/action_mainFragment_to_hashtagSettingFragment"
+            app:destination="@id/hashtagSettingFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_signOutFragment"
+            app:destination="@id/signOutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/postNekogoFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.post_nekogo.PostNekogoFragment"
+        android:label="@string/post_nekogo_name" />
+    <fragment
+        android:id="@+id/hashtagSettingFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment"
+        android:label="@string/settings_hashtag_name" />
+    <fragment
+        android:id="@+id/signInFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.sign_in.SignInFragment"
+        android:label="@string/sign_in_processing"
+        tools:layout="@layout/sign_in_fragment">
+        <action
+            android:id="@+id/action_singInFragment_to_mainFragment"
+            app:destination="@id/mainFragment" />
+        <deepLink
+            android:id="@+id/dev_twitter_callback"
+            android:autoVerify="true"
+            app:uri="https://nyannyanengine-ios-d.firebaseapp.com/authorized/?oauth_token={oauthToken}&amp;oauth_verifier={oauthVerifier}" />
+        <deepLink
+            android:id="@+id/prod_twitter_callback"
+            android:autoVerify="true"
+            app:uri="https://nyannyanengine.firebaseapp.com/authorized/?oauth_token={oauthToken}&amp;oauth_verifier={oauthVerifier}" />
+        <argument
+            android:name="oauthToken"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+        <argument
+            android:name="oauthVerifier"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+    </fragment>
+    <fragment
+        android:id="@+id/signOutFragment"
+        android:name="com.ntetz.android.nyannyanengine_android.ui.sign_out.SignOutFragment"
+        android:label="@string/sign_out_processing"
+        tools:layout="@layout/sign_out_fragment" />
+</navigation>

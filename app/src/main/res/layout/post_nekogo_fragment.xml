@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.ntetz.android.nyannyanengine_android.util.NekosanExtensionKt" />
+
+        <variable
+            name="inputText"
+            type="String" />
+
+        <variable
+            name="signedIn"
+            type="boolean" />
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackGround"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:theme="@style/InputViewTheme">
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/input"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/edittext_large"
+                    android:layout_marginStart="@dimen/middle_margin"
+                    android:layout_marginTop="@dimen/large_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:autofillHints="nekogoInput"
+                    android:background="@color/colorBackGroundVariant"
+                    android:gravity="start|top"
+                    android:hint="@string/post_input_original_text"
+                    android:inputType="textMultiLine"
+                    android:padding="@dimen/small_margin"
+                    android:text="@={inputText}"
+                    android:textColor="@color/onPrimary"
+                    app:layout_constraintEnd_toStartOf="@+id/dark_nyannya_sensei_image"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/dark_nyannya_sensei_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/middle_margin"
+                    android:contentDescription="@string/post_default_speaker_desc"
+                    android:src="@mipmap/ic_dark_nyannya_sensei_round"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/input" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/nyannya_sensei_full_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/post_nekogo_speaker_desc"
+                    android:src="@mipmap/nyannya_sensei_full"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/nekogoResult"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/textview_middle"
+                    android:layout_gravity="end"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorBackGroundVariant"
+                    android:gravity="center"
+                    android:text="@{NekosanExtensionKt.toNyanNyan(inputText, context)}"
+                    android:textColor="@color/onPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/nyannya_sensei_full_image"
+                    app:layout_constraintTop_toTopOf="@+id/nyannya_sensei_full_image" />
+
+                <Button
+                    android:id="@+id/tweet_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:enabled="@{signedIn &amp;&amp; (inputText.length() &gt; 0)}"
+                    android:text="@string/post_button_name"
+                    android:theme="@style/NekogoTweetButton"
+                    app:layout_constraintEnd_toEndOf="@+id/nekogoResult"
+                    app:layout_constraintTop_toBottomOf="@+id/nekogoResult" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+</layout>

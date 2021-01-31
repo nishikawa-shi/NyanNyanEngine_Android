@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingViewModel" />
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:theme="@style/ContentsViewTheme"
+        tools:context="com.ntetz.android.nyannyanengine_android.ui.setting.hashtag.HashtagSettingFragment">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/hashtag_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="3"/>
+
+    </FrameLayout>
+</layout>

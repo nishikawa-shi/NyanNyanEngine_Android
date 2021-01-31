@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="isNyanNyan"
+            type="Boolean" />
+
+        <variable
+            name="nyanNyanTweetTextBody"
+            type="String" />
+
+        <variable
+            name="tweetTextBody"
+            type="String" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:padding="@dimen/middle_margin">
+
+        <ImageView
+            android:id="@+id/twitter_image"
+            android:layout_width="@dimen/image_middle"
+            android:layout_height="@dimen/image_middle"
+            android:layout_marginTop="@dimen/small_margin"
+            android:contentDescription="@string/tweet_list_desc"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/user_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:background="@android:color/transparent"
+            android:orientation="horizontal"
+            android:weightSum="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/twitter_image"
+            app:layout_constraintTop_toTopOf="@+id/twitter_image">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/default_twitter_name"
+                android:textAppearance="@style/TextAppearance.TweetListUserName" />
+
+            <TextView
+                android:id="@+id/screen_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.35"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/default_twitter_id"
+                android:textAppearance="@style/TextAppearance.TweetListUserMeta" />
+
+            <TextView
+                android:id="@+id/tweeted_at"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:background="@android:color/transparent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/default_tweeted_at"
+                android:textAlignment="viewEnd"
+                android:textAppearance="@style/TextAppearance.TweetListUserMeta" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:id="@+id/tweet_body_frame"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/user_info"
+            app:layout_constraintTop_toBottomOf="@+id/user_info">
+
+            <TextView
+                android:id="@+id/tweet_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/small_margin"
+                android:animateLayoutChanges="true"
+                android:background="@android:color/transparent"
+                android:text="@{isNyanNyan ? nyanNyanTweetTextBody : tweetTextBody}"
+                android:textAppearance="@style/TextAppearance.TweetListBody"
+                tool:text="tweet body" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

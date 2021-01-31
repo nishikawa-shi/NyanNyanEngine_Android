@@ -1,31 +1,127 @@
-# Android
-# Build your Android project with Gradle.
-# Add steps that test, sign, and distribute the APK, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/android
-
 trigger:
 - master
+- develop
 - feature/*
+- refactor/*
 
 pool:
   vmImage: 'macos-latest'
 
-steps:
-- task: Gradle@2
-  displayName: '全環境に対してlint'
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'lint'
-- task: Gradle@2
-  displayName: 'Debug環境でビルド'
-  inputs:
-    workingDirectory: ''
-    gradleWrapperFile: 'gradlew'
-    gradleOptions: '-Xmx3072m'
-    publishJUnitResults: false
-    testResultsFiles: '**/TEST-*.xml'
-    tasks: 'assembleDebug'
+stages:
+- stage: qa_stage
+  displayName: 動作検証ステージ
+  condition: always()
+  jobs:
+  - job: check_job
+    displayName: 標準のcheckエラー検出
+    steps:
+    - task: DownloadSecureFile@1
+      displayName: 'Firebase dev環境用の設定ファイルを取得'
+      name: FirebaseDevSettings
+      inputs:
+        secureFile: nyannyanengine-android-google-services-dev.json
+    - script: |
+        sudo ln -s $(FirebaseDevSettings.secureFilePath) app/src/dev/google-services.json
+      displayName: 'Firebase dev環境用設定ファイルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'Firebase prd環境用の設定ファイルを取得'
+      name: FirebasePrdSettings
+      inputs:
+        secureFile: nyannyanengine-android-google-services-prd.json
+    - script: |
+        sudo ln -s $(FirebasePrdSettings.secureFilePath) app/src/prd/google-services.json
+      displayName: 'Firebase prd環境用設定ファイルの参照をプロジェクト内部に設置'
+    - script: |
+        echo $(Build.BuildId) | xargs -I {} sed -e 's/versionCode 1/versionCode {}/g' app/build.gradle > app/build.gradle.versioned
+        diff app/build.gradle.versioned app/build.gradle
+        mv app/build.gradle.versioned app/build.gradle
+      displayName: 'build.gradleのVersionCode更新'
+    - script: |
+        cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
+      displayName: 'appモジュールビルド用ダミー設定の設置'
+    - task: Gradle@2
+      displayName: '全環境に対してのbuild, lint, test'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        tasks: 'check'
+- stage: beta_app_deploy_stage
+  displayName: β版アプリ配布ステージ
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/develop')
+  dependsOn: qa_stage
+  jobs:
+  - job: firebase_deploy_job
+    displayName: Firebaseへapk配布
+    steps:
+    - script: |
+        echo $(Build.BuildId) | xargs -I {} sed -e 's/versionCode 1/versionCode {}/g' app/build.gradle > app/build.gradle.versioned
+        diff app/build.gradle.versioned app/build.gradle
+        mv app/build.gradle.versioned app/build.gradle
+      displayName: 'build.gradleのVersionCode更新'
+    - task: DownloadSecureFile@1
+      displayName: 'Firebase dev環境用の設定ファイルを取得'
+      name: FirebaseDevSettings
+      inputs:
+        secureFile: nyannyanengine-android-google-services-dev.json
+    - script: |
+        sudo ln -s $(FirebaseDevSettings.secureFilePath) app/src/dev/google-services.json
+      displayName: 'Firebase dev環境用設定ファイルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'Firebase prd環境用の設定ファイルを取得'
+      name: FirebasePrdSettings
+      inputs:
+        secureFile: nyannyanengine-android-google-services-prd.json
+    - script: |
+        sudo ln -s $(FirebasePrdSettings.secureFilePath) app/src/prd/google-services.json
+      displayName: 'Firebase prd環境用設定ファイルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'App Distribution dev環境用のクレデンシャルを取得'
+      name: deployUserDevCredential
+      inputs:
+        secureFile: nyannyanengine-android-deploy-user-dev.json
+    - script: |
+        sudo ln -s $(deployUserDevCredential.secureFilePath) app/android-deploy-user-dev.json
+      displayName: 'App Distribution dev環境用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'App Distribution prd環境用のクレデンシャルを取得'
+      name: deployUserPrdCredential
+      inputs:
+        secureFile: nyannyanengine-android-deploy-user-prd.json
+    - script: |
+        sudo ln -s $(deployUserPrdCredential.secureFilePath) app/android-deploy-user-prd.json
+      displayName: 'App Distribution prd環境用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'ビルド用のクレデンシャルを取得'
+      name: appKeyProperties
+      inputs:
+        secureFile: app_gradle_secret.properties
+    - script: |
+        sudo ln -s $(appKeyProperties.secureFilePath) app/gradle_secret.properties
+      displayName: 'ビルド用クレデンシャルの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: 'リリースビルド署名用キーストアを取得'
+      name: appReleaseKeystore
+      inputs:
+        secureFile: app_nyan_nyan_engine_android_release.jks
+    - script: |
+        sudo ln -s $(appReleaseKeystore.secureFilePath) app/nyan_nyan_engine_android_release.jks
+      displayName: 'リリースビルド署名用キーストアの参照をプロジェクト内部に設置'
+    - task: DownloadSecureFile@1
+      displayName: '秘匿系設定ファイルを取得'
+      name: privateBundle
+      inputs:
+        secureFile: secure-config-master-lib.cpp
+    - script: |
+        sudo ln -s $(privateBundle.secureFilePath) app/src/main/cpp/secure-config-master-lib.cpp
+      displayName: '秘匿系設定ファイルの参照をプロジェクト内部に設置'
+    - task: Gradle@2
+      displayName: 'dev環境Releaseビルドを配布'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        gradleOptions: '-Xmx3072m'
+        tasks: 'assembleDevRelease appDistributionUploadDevRelease'
+    - task: Gradle@2
+      displayName: 'prd環境Releaseビルドを配布'
+      inputs:
+        gradleWrapperFile: 'gradlew'
+        gradleOptions: '-Xmx3072m'
+        tasks: 'assemblePrdRelease appDistributionUploadPrdRelease'
