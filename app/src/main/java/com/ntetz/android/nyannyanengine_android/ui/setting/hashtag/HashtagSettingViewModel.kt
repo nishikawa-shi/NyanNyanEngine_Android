@@ -1,7 +1,6 @@
 package com.ntetz.android.nyannyanengine_android.ui.setting.hashtag
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,11 +9,14 @@ import com.ntetz.android.nyannyanengine_android.model.entity.usecase.hashtag.Def
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.screen_transition.UserAction
 import com.ntetz.android.nyannyanengine_android.model.usecase.IHashtagUsecase
 import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.lang.ref.WeakReference
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-class HashtagSettingViewModel @ViewModelInject constructor(
+@HiltViewModel
+class HashtagSettingViewModel @Inject constructor(
     private val hashtagUsecase: IHashtagUsecase,
     private val userActionUsecase: IUserActionUsecase,
     @ApplicationContext context: Context

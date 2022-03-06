@@ -105,7 +105,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.google.firebase:firebase-appdistribution-gradle:2.0.1"
+        classpath 'com.google.firebase:firebase-appdistribution-gradle:2.1.1'
     }
 }
 
@@ -144,13 +144,9 @@ dependencies {
     implementation "com.google.firebase:firebase-crashlytics-ktx"
     implementation "com.google.firebase:firebase-firestore:22.0.1"
 
-    def dagger_hilt_version = "2.31-alpha"
+    def dagger_hilt_version = "2.41"
     implementation "com.google.dagger:hilt-android:${dagger_hilt_version}"
     kapt "com.google.dagger:hilt-android-compiler:${dagger_hilt_version}"
-
-    def dagger_hilt_view_model_version = "1.0.0-alpha02"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:${dagger_hilt_view_model_version}"
-    kapt "androidx.hilt:hilt-compiler:${dagger_hilt_view_model_version}"
 
     def retrofit_version = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
