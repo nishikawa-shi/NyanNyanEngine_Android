@@ -24,11 +24,7 @@ class HashtagSettingFragment : Fragment() {
         binding = HashtagSettingFragmentBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        return binding.root
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.initialize()
 
         val adapter = HashtagSettingAdapter(viewModel, this)
@@ -38,5 +34,7 @@ class HashtagSettingFragment : Fragment() {
         })
 
         binding.hashtagList.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+
+        return binding.root
     }
 }

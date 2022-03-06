@@ -24,12 +24,6 @@ class SignInFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.sign_in_fragment, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
         viewModel.signInEvent.observe(viewLifecycleOwner, Observer {
             (activity as? MainActivity)?.updateTweetList()
             findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
@@ -38,5 +32,7 @@ class SignInFragment : Fragment() {
             oauthVerifier = this.args.oauthVerifier,
             oauthToken = this.args.oauthToken
         )
+
+        return inflater.inflate(R.layout.sign_in_fragment, container, false)
     }
 }

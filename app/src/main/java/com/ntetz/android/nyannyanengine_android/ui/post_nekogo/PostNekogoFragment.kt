@@ -43,10 +43,7 @@ class PostNekogoFragment : Fragment() {
             }
         }
         binding.lifecycleOwner = this
-        return binding.root
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
         viewModel.postTweetEvent.observe(viewLifecycleOwner, {
             val textBody = listOf(
                 it?.point,
@@ -65,7 +62,8 @@ class PostNekogoFragment : Fragment() {
             binding.signedIn = (it != DefaultUserConfig.getNotSignInUser(context ?: return@observe))
         })
         viewModel.loadUserInfo()
-        super.onActivityCreated(savedInstanceState)
+
+        return binding.root
     }
 
     private fun closeKeyboard() {

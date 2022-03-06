@@ -34,11 +34,6 @@ class MainFragment : Fragment() {
         binding = MainFragmentBinding.inflate(inflater, container, false)
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
-        return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         binding.tweetList.adapter = adapter
         binding.tweetListFrame.setOnRefreshListener {
@@ -75,6 +70,8 @@ class MainFragment : Fragment() {
         })
         viewModel.loadUserInfo()
         setupAdapter()
+
+        return binding.root
     }
 
     private fun setupAdapter() {
