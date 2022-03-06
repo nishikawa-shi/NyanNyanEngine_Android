@@ -39,6 +39,12 @@ stages:
     - script: |
         cp -pi app/gradle_secret_sample.properties app/gradle_secret.properties
       displayName: 'appモジュールビルド用ダミー設定の設置'
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '11'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+      displayName: 'ビルド用Javaバージョン指定'
     - task: Gradle@2
       displayName: '全環境に対してのbuild, lint, test'
       inputs:
@@ -113,6 +119,12 @@ stages:
     - script: |
         sudo ln -s $(privateBundle.secureFilePath) app/src/main/cpp/secure-config-master-lib.cpp
       displayName: '秘匿系設定ファイルの参照をプロジェクト内部に設置'
+    - task: JavaToolInstaller@0
+      inputs:
+        versionSpec: '11'
+        jdkArchitectureOption: 'x64'
+        jdkSourceOption: 'PreInstalled'
+      displayName: 'ビルド用Javaバージョン指定'
     - task: Gradle@2
       displayName: 'dev環境Releaseビルドを配布'
       inputs:
