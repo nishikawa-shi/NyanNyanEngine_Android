@@ -17,6 +17,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import coil.api.load
 import coil.transform.RoundedCornersTransformation
 import com.google.android.material.navigation.NavigationView
+import com.ntetz.android.nyannyanengine_android.databinding.ActivityMainBinding
+import com.ntetz.android.nyannyanengine_android.databinding.NavHeaderMainBinding
 import com.ntetz.android.nyannyanengine_android.model.config.DefaultUserConfig
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.room.TwitterUserRecord
 import com.ntetz.android.nyannyanengine_android.model.entity.usecase.account.NyanNyanUserComponent
@@ -26,9 +28,6 @@ import com.ntetz.android.nyannyanengine_android.model.usecase.IUserActionUsecase
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -40,6 +39,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job
 
+    private lateinit var binding: ActivityMainBinding
+    private lateinit var navHeaderMainBinding: NavHeaderMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var navController: NavController
 
@@ -57,15 +58,17 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(main_toolbar)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        navHeaderMainBinding = NavHeaderMainBinding.bind(this.binding.mainNavView.getHeaderView(0))
+        setContentView(this.binding.root)
+        setSupportActionBar(binding.mainBar.mainToolbar)
 
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.main_nav_fragment) as NavHostFragment
         navController = navHostFragment.navController
-        appBarConfiguration = AppBarConfiguration(navController.graph, main_drawer)
+        appBarConfiguration = AppBarConfiguration(navController.graph, binding.mainDrawer)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        main_nav_view.setNavigationItemSelectedListener(this)
+        binding.mainNavView.setNavigationItemSelectedListener(this)
     }
 
     fun updateUserInfo(userInfo: TwitterUserRecord?) {
@@ -73,21 +76,21 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
         val name = userInfo?.name ?: getString(R.string.default_twitter_name)
         val screenName = "@${userInfo?.screenName ?: getString(R.string.default_twitter_id)}"
 
-        main_nav_view.getHeaderView(0).twitter_image.load(userInfo?.fineImageUrl) {
+        navHeaderMainBinding.twitterImage.load(userInfo?.fineImageUrl) {
             transformations(RoundedCornersTransformation(16f))
         }
-        main_nav_view.getHeaderView(0).nyan_nyan_user_statuses.isVisible = isSignedIn
-        main_nav_view.getHeaderView(0).twitter_name.text = name
-        main_nav_view.getHeaderView(0).twitter_screen_name.text = screenName
-        main_nav_view.menu.findItem(R.id.nav_sign_in).isVisible = !isSignedIn
-        main_nav_view.menu.findItem(R.id.nav_settings_hash_tag).isVisible = isSignedIn
-        main_nav_view.menu.findItem(R.id.nav_sign_out).isVisible = isSignedIn
+        navHeaderMainBinding.nyanNyanUserStatuses.isVisible = isSignedIn
+        navHeaderMainBinding.twitterName.text = name
+        navHeaderMainBinding.twitterScreenName.text = screenName
+        binding.mainNavView.menu.findItem(R.id.nav_sign_in).isVisible = !isSignedIn
+        binding.mainNavView.menu.findItem(R.id.nav_settings_hash_tag).isVisible = isSignedIn
+        binding.mainNavView.menu.findItem(R.id.nav_sign_out).isVisible = isSignedIn
     }
 
     fun updateNyanNyanUserInfo(userInfo: NyanNyanUserComponent?) {
-        main_nav_view.getHeaderView(0).current_rank.text = userInfo?.getCurrentRank(this)
-        main_nav_view.getHeaderView(0).current_point.text = userInfo?.nyanNyanUser?.nekosanPoint.toString()
-        main_nav_view.getHeaderView(0).current_extends.text = userInfo?.currentExtends
+        navHeaderMainBinding.currentRank.text = userInfo?.getCurrentRank(this)
+        navHeaderMainBinding.currentPoint.text = userInfo?.nyanNyanUser?.nekosanPoint.toString()
+        navHeaderMainBinding.currentExtends.text = userInfo?.currentExtends
     }
 
     fun updateTweetList() {
@@ -98,7 +101,7 @@ class MainActivity : AppCompatActivity(), CoroutineScope, NavigationView.OnNavig
             navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp())
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        main_drawer.closeDrawers()
+        binding.mainDrawer.closeDrawers()
         when (item.itemId) {
             R.id.nav_settings_hash_tag -> openHashtagSettingScreen()
             R.id.nav_sign_in -> openAuthorizePage(this)
