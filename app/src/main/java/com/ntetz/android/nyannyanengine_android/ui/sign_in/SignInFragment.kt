@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.ntetz.android.nyannyanengine_android.MainActivity
@@ -24,10 +23,10 @@ class SignInFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel.signInEvent.observe(viewLifecycleOwner, Observer {
+        viewModel.signInEvent.observe(viewLifecycleOwner) {
             (activity as? MainActivity)?.updateTweetList()
             findNavController().navigate(R.id.action_singInFragment_to_mainFragment)
-        })
+        }
         viewModel.executeSignIn(
             oauthVerifier = this.args.oauthVerifier,
             oauthToken = this.args.oauthToken

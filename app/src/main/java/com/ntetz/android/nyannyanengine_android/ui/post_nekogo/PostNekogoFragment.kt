@@ -44,7 +44,7 @@ class PostNekogoFragment : Fragment() {
         }
         binding.lifecycleOwner = this
 
-        viewModel.postTweetEvent.observe(viewLifecycleOwner, {
+        viewModel.postTweetEvent.observe(viewLifecycleOwner) {
             val textBody = listOf(
                 it?.point,
                 context?.getString(R.string.post_point),
@@ -57,10 +57,10 @@ class PostNekogoFragment : Fragment() {
                 Toast.LENGTH_LONG
             ).show()
             findNavController().popBackStack()
-        })
-        viewModel.userInfoEvent.observe(viewLifecycleOwner, {
+        }
+        viewModel.userInfoEvent.observe(viewLifecycleOwner) {
             binding.signedIn = (it != DefaultUserConfig.getNotSignInUser(context ?: return@observe))
-        })
+        }
         viewModel.loadUserInfo()
 
         return binding.root
