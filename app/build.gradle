@@ -97,7 +97,7 @@ android {
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
     }
 
     configurations {
