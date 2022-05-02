@@ -20,16 +20,12 @@ class SignOutFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.sign_out_fragment, container, false)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
         viewModel.signOutEvent.observe(viewLifecycleOwner, {
             (activity as? MainActivity)?.updateTweetList()
             findNavController().popBackStack()
         })
         viewModel.executeSignOut()
+
+        return inflater.inflate(R.layout.sign_out_fragment, container, false)
     }
 }
