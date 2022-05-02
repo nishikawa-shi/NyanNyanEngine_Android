@@ -1,9 +1,8 @@
 buildscript {
-    ext.kotlin_version = "1.4.21"
+    ext.kotlin_version = "1.6.10"
     repositories {
         google()
-        jcenter()
-        
+        mavenCentral()
     }
     dependencies {
         def dagger_hilt_version = "2.41"
@@ -20,8 +19,7 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
-        
+        mavenCentral()
     }
 }
 

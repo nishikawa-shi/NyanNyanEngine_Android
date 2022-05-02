@@ -2,6 +2,7 @@ package com.ntetz.android.nyannyanengine_android.ui.main
 
 import android.content.Context
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.ntetz.android.nyannyanengine_android.model.entity.dao.retrofit.Tweet
 import com.ntetz.android.nyannyanengine_android.model.usecase.ITweetsUsecase
 import kotlinx.coroutines.CoroutineScope
@@ -41,4 +42,6 @@ class TweetsPagingSource(
 
     override val keyReuseSupported: Boolean
         get() = true
+
+    override fun getRefreshKey(state: PagingState<Long, Tweet>): Long? = state.anchorPosition?.toLong()
 }
